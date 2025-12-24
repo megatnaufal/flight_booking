@@ -1,0 +1,31 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Test\Fixture;
+
+use Cake\TestSuite\Fixture\TestFixture;
+
+/**
+ * AirportsFixture
+ */
+class AirportsFixture extends TestFixture
+{
+    /**
+     * Init method
+     *
+     * @return void
+     */
+    public function init(): void
+    {
+        $this->records = [
+            [
+                'id' => 1,
+                'airport_code' => 'Lorem ip',
+                'airport_name' => 'Lorem ipsum dolor sit amet',
+                'city' => 'Lorem ipsum dolor sit amet',
+                'country' => 'Lorem ipsum dolor sit amet',
+            ],
+        ];
+        parent::init();
+    }
+}
