@@ -25,6 +25,7 @@
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>
             <?= $this->Form->end() ?>
+             <legend><?= __('Add Airport') ?></legend>
         </div>
     </div>
 </div>
