@@ -25,8 +25,6 @@
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>
             <?= $this->Form->end() ?>
-            <legend><?= __('Add Airport') ?></legend>
-            <legend><?= __('Add Nasi') ?></legend>
         </div>
     </div>
 </div>
