@@ -21,7 +21,7 @@ class DashboardsController extends AppController
      */
     public function index()
     {
-        $this->Authorization->skipAuthorization();
+
         
         $flightOptions = ['limit' => 200];
         
