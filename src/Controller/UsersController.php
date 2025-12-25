@@ -97,4 +97,29 @@ class UsersController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+    /**
+     * Login method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function login()
+    {
+
+        if ($this->request->is('post')) {
+            // Authentication check would go here
+            // For now, redirect to dashboard as a mockup
+            return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
+        }
+    }
+
+    /**
+     * Logout method
+     *
+     * @return \Cake\Http\Response|null|void Redirects to login
+     */
+    public function logout()
+    {
+
+        return $this->redirect(['action' => 'login']);
+    }
 }

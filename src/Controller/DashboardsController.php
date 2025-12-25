@@ -19,7 +19,17 @@ class DashboardsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
+    /**
+     * Index method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
     public function index()
+    {
+        return $this->redirect(['action' => 'admin']);
+    }
+
+    public function admin()
     {
 
         
