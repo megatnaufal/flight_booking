@@ -118,7 +118,7 @@ class UsersController extends AppController
             // In a real app, we check $this->Authentication->getIdentity()->get('role')
             // For this mock, we'll assume any email containing 'admin' is an admin
             if (str_contains($email, 'admin')) {
-                return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
+                return $this->redirect(['controller' => 'Dashboards', 'action' => 'index']);
             }
 
             return $this->redirect('/');
