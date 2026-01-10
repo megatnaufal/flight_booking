@@ -67,4 +67,14 @@ class DashboardsController extends AppController
         // 7. Pass all variables to the View
         $this->set(compact('stats', 'revenueLabels', 'revenueData', 'bookings', 'flights', 'passengers', 'users'));
     }
+
+    /**
+     * Admin method - redirects to index
+     *
+     * @return \Cake\Http\Response|null Redirects to index
+     */
+    public function admin()
+    {
+        return $this->redirect(['action' => 'index']);
+    }
 }
