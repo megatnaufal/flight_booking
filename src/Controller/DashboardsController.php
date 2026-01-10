@@ -20,19 +20,29 @@ class DashboardsController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
-    {
+{
+    // 1. General Statistics (Including Total Revenue)
+    $stats = [
+        'flights' => 1250,
+        'bookings' => 450,
+        'passengers' => 890,
+        'users' => 120,
+        'airports' => 15,
+        'revenue' => 125400.50 // New field
+    ];
 
-        
-        $flightOptions = ['limit' => 200];
-        
-        $stats = [
-            'flights' => $this->fetchTable('Flights')->find('all', $flightOptions)->count(),
-            'bookings' => $this->fetchTable('Bookings')->find()->count(),
-            'users' => $this->fetchTable('Users')->find()->count(),
-            'passengers' => $this->fetchTable('Passengers')->find()->count(),
-            'airports' => $this->fetchTable('Airports')->find()->count(),
-        ];
+    // 2. Mock Revenue Data for the Line Chart (MYR)
+    $revenueData = [12000, 15000, 11000, 19000, 22000, 25400];
+    $revenueLabels = ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'];
 
-        $this->set(compact('stats'));
+    // 3. Mock Recent Mission Logs for the Table
+    $recentBookings = [
+        ['id' => 'MY-101', 'user' => 'Ahmad R.', 'route' => 'KUL -> KCH', 'status' => 'Paid', 'amount' => 'RM 245'],
+        ['id' => 'MY-102', 'user' => 'Siti A.', 'route' => 'PEN -> JHB', 'status' => 'Pending', 'amount' => 'RM 120'],
+        ['id' => 'MY-103', 'user' => 'Tan K.', 'route' => 'BKI -> TWU', 'status' => 'Paid', 'amount' => 'RM 95'],
+        ['id' => 'MY-104', 'user' => 'Maniam V.', 'route' => 'SZB -> LGK', 'status' => 'Paid', 'amount' => 'RM 180'],
+    ];
+
+    $this->set(compact('stats', 'revenueData', 'revenueLabels', 'recentBookings'));
     }
 }
