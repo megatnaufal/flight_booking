@@ -1,230 +1,350 @@
 <?php
 /**
  * @var \App\View\AppView $this
+ * @var array $recommendations
  */
-use Cake\Cache\Cache;
-use Cake\Core\Configure;
-use Cake\Core\Plugin;
-use Cake\Datasource\ConnectionManager;
-use Cake\Error\Debugger;
-use Cake\Http\Exception\NotFoundException;
+?>
+<style>
+    .hero-bg { background-color: #e62129; padding: 40px 0 100px 0; color: white; position: relative; }
+    .search-wrapper { margin-top: -70px; position: relative; z-index: 10; }
+    .search-card { border-radius: 8px; border: none; box-shadow: 0 4px 25px rgba(0,0,0,0.1); }
+    
+    .flight-card { border: 1px solid #efefef !important; border-radius: 12px !important; overflow: hidden; transition: box-shadow 0.3s ease; }
+    .flight-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .flight-img { height: 130px; object-fit: cover; }
+    
+    .price-tag { color: #e62129; font-weight: 700; font-size: 0.85rem; }
+    .route-text { font-size: 0.9rem; font-weight: 600; color: #333; }
+    .from-text { font-size: 0.75rem; color: #6c757d; }
+    
+    .input-box { border: 1px solid #dee2e6; border-radius: 6px; padding: 8px 12px; background: #fff; }
+    .label-mini { font-size: 0.65rem; color: #6c757d; text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
+    .btn-search-red { background-color: #e62129; color: white; border: none; font-weight: bold; border-radius: 6px; }
+    
+    /* Footer Styling based on Image 2 */
+    .footer-section { background-color: #ffffff; padding-top: 50px; border-top: 1px solid #eee; margin-top: 60px; }
+    .footer-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 20px; color: #333; }
+    .footer-link { font-size: 0.85rem; color: #666; text-decoration: none; display: block; margin-bottom: 8px; }
+    .footer-link:hover { color: #e62129; }
+</style>
 
-$this->disableAutoLayout();
+<div class="hero-bg text-center">
+    <div class="container">
+        <h1 class="fw-bold mb-2">Find Cheap Flight Tickets for Your Trip</h1>
+        <p class="opacity-75">Book Flight Tickets & Enjoy Travel Deals to Your Destination</p>
+    </div>
+</div>
 
-$checkConnection = function (string $name) {
-    $error = null;
-    $connected = false;
-    try {
-        ConnectionManager::get($name)->getDriver()->connect();
-        // No exception means success
-        $connected = true;
-    } catch (Exception $connectionError) {
-        $error = $connectionError->getMessage();
-        if (method_exists($connectionError, 'getAttributes')) {
-            $attributes = $connectionError->getAttributes();
-            if (isset($attributes['message'])) {
-                $error .= '<br />' . $attributes['message'];
+<div class="container search-wrapper">
+    <div class="card search-card p-3 p-lg-4">
+        <form action="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" method="get">
+            <!-- Top Options Row -->
+            <div class="d-flex flex-wrap gap-4 mb-3 border-bottom pb-3 align-items-center">
+                <!-- Journey Type -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-decoration-none small fw-bold text-secondary p-0 dropdown-toggle border-end pe-3 custom-dropdown-toggle" type="button" id="journeyTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Round Trip
+                    </button>
+                    <ul class="dropdown-menu shadow border-0" aria-labelledby="journeyTypeDropdown">
+                        <li><a class="dropdown-item active" href="#" onclick="selectJourney('One Way', this)">One Way</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="selectJourney('Round Trip', this)">Round Trip</a></li>
+                    </ul>
+                    <input type="hidden" name="journey_type" id="journeyTypeInput" value="Round Trip">
+                </div>
+
+                <!-- Passenger Count -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-decoration-none small fw-bold text-secondary p-0 dropdown-toggle border-end pe-3 custom-dropdown-toggle" type="button" id="passengerDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                        <span id="passengerLabel">1 Passenger</span>
+                    </button>
+                    <div class="dropdown-menu shadow border-0 p-3" aria-labelledby="passengerDropdown" style="min-width: 280px;">
+                        <!-- Adult -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <div class="fw-bold text-dark">Adult</div>
+                                <div class="text-muted small">Age 12+</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="btn btn-outline-danger btn-sm rounded-1 px-2" onclick="updatePassenger('adult', -1)"><i class="bi bi-dash"></i></button>
+                                <span class="fw-bold text-dark mx-2" id="count-adult">1</span>
+                                <button type="button" class="btn btn-outline-danger btn-sm rounded-1 px-2" onclick="updatePassenger('adult', 1)"><i class="bi bi-plus"></i></button>
+                            </div>
+                        </div>
+                        <!-- Child -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <div class="fw-bold text-dark">Child</div>
+                                <div class="text-muted small">Age 2-11</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-1 px-2" onclick="updatePassenger('child', -1)"><i class="bi bi-dash"></i></button>
+                                <span class="fw-bold text-dark mx-2" id="count-child">0</span>
+                                <button type="button" class="btn btn-outline-danger btn-sm rounded-1 px-2" onclick="updatePassenger('child', 1)"><i class="bi bi-plus"></i></button>
+                            </div>
+                        </div>
+                        <!-- Infant -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <div class="fw-bold text-dark">Infant</div>
+                                <div class="text-muted small">&lt; 2 years</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-1 px-2" onclick="updatePassenger('infant', -1)"><i class="bi bi-dash"></i></button>
+                                <span class="fw-bold text-dark mx-2" id="count-infant">0</span>
+                                <button type="button" class="btn btn-outline-danger btn-sm rounded-1 px-2" onclick="updatePassenger('infant', 1)"><i class="bi bi-plus"></i></button>
+                            </div>
+                        </div>
+                        <div class="text-end pt-2 border-top">
+                            <button type="button" class="btn btn-danger btn-sm px-4 fw-bold" onclick="document.getElementById('passengerDropdown').click()">Done</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="passengers_adult" id="input-adult" value="1">
+                    <input type="hidden" name="passengers_child" id="input-child" value="0">
+                    <input type="hidden" name="passengers_infant" id="input-infant" value="0">
+                </div>
+
+
+                <!-- Class -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-decoration-none small fw-bold text-secondary p-0 dropdown-toggle custom-dropdown-toggle" type="button" id="classDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Economy
+                    </button>
+                    <ul class="dropdown-menu shadow border-0" aria-labelledby="classDropdown">
+                        <li><a class="dropdown-item active" href="#" onclick="selectClass('Economy', this)">Economy</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="selectClass('Premium Economy', this)">Premium Economy</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="selectClass('Business', this)">Business</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="selectClass('First Class', this)">First Class</a></li>
+                    </ul>
+                    <input type="hidden" name="flight_class" id="classInput" value="Economy">
+                </div>
+
+                <div class="ms-auto">
+                    <a href="#" class="text-decoration-none small text-dark fw-bold"><i class="bi bi-list-check"></i> View Order List</a>
+                </div>
+            </div>
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <div class="input-box">
+                        <div class="label-mini">From</div>
+                        <select name="origin_airport_id" class="form-control border-0 p-0 shadow-none fw-bold" style="appearance: none;" required>
+                            <option value="">Select Origin</option>
+                            <?php foreach ($airports as $id => $name): ?>
+                                <option value="<?= $id ?>"><?= h($name) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-box">
+                        <div class="label-mini">To</div>
+                        <select name="dest_airport_id" class="form-control border-0 p-0 shadow-none fw-bold" style="appearance: none;" required>
+                            <option value="">Select Destination</option>
+                            <?php foreach ($airports as $id => $name): ?>
+                                <option value="<?= $id ?>"><?= h($name) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="input-box">
+                        <div class="label-mini">Departure</div>
+                        <input type="date" name="departure" id="departureDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" required onchange="updateReturnMinDate()">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="input-box">
+                        <div class="label-mini">Return</div>
+                        <input type="date" name="return" id="returnDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= date('Y-m-d', strtotime('+1 day')) ?>" min="<?= date('Y-m-d') ?>" required>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-search-red w-100 h-100 py-2"><i class="bi bi-search me-2"></i>Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <h5 class="fw-bold mb-4">Exclusive Flight Recommendations</h5>
+    <div class="row g-3">
+        <?php foreach ($recommendations as $flight): ?>
+            <div class="col-6 col-lg-3">
+                <div class="card h-100 border-0 flight-card">
+                    <img src="https://picsum.photos/seed/<?= urlencode($flight['city']) ?>/400/250" class="flight-img" alt="<?= h($flight['city']) ?>">
+                    <div class="card-body p-3">
+                        <div class="from-text"><?= h($flight['from']) ?></div>
+                        <div class="route-text mt-1">
+                             <i class="bi bi-airplane-fill me-1 small"></i> <?= h($flight['city']) ?>
+                        </div>
+                        <div class="price-tag mt-2">Start from RM <?= h($flight['price']) ?></div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<footer class="footer-section">
+    <div class="container">
+        <div class="text-center mb-5 pb-4 border-bottom">
+            <p class="text-muted small fw-bold mb-3">Accepted Payment Methods</p>
+            <div class="d-flex flex-wrap justify-content-center gap-4 opacity-50">
+                <span class="fw-bold">VISA</span> <span class="fw-bold">MasterCard</span> 
+                <span class="fw-bold">PayPal</span> <span class="fw-bold">Maybank</span>
+                <span class="fw-bold">CIMB</span> <span class="fw-bold">HSBC</span>
+                <span class="fw-bold">UOB</span> <span class="fw-bold">BSN</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <h6 class="footer-title">Airpaz</h6>
+                <a href="#" class="footer-link">Home</a>
+                <a href="#" class="footer-link">About Us</a>
+                <a href="#" class="footer-link">Airpaz Blog</a>
+                <a href="#" class="footer-link">Careers</a>
+            </div>
+            <div class="col-md-2">
+                <h6 class="footer-title">Account</h6>
+                <a href="#" class="footer-link">Sign in / Register</a>
+                <a href="#" class="footer-link">Forgot Password</a>
+            </div>
+            <div class="col-md-2">
+                <h6 class="footer-title">Support</h6>
+                <a href="#" class="footer-link">Help Center</a>
+                <a href="#" class="footer-link">How to Book</a>
+                <a href="#" class="footer-link">Terms & Conditions</a>
+            </div>
+            <div class="col-md-2 text-center">
+                <h6 class="footer-title">Follow us</h6>
+                <div class="d-flex justify-content-center gap-2">
+                    <i class="bi bi-facebook fs-5 text-secondary"></i>
+                    <i class="bi bi-instagram fs-5 text-secondary"></i>
+                    <i class="bi bi-twitter-x fs-5 text-secondary"></i>
+                </div>
+            </div>
+            <div class="col-md-3 text-end">
+                <h6 class="footer-title">Our App</h6>
+                <div class="mb-2"><span class="badge bg-dark p-2 w-75">Get it on Google Play</span></div>
+                <div><span class="badge bg-dark p-2 w-75">Download on App Store</span></div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5 py-4 border-top">
+            <p class="text-muted small mb-1">Copyright 2026 Airpaz.com. All rights reserved.</p>
+            <p class="text-muted small" style="font-size: 0.65rem;">Global Airlines Holiday Sdn Bhd Bhd 105929-H</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function selectJourney(type, element) {
+        document.getElementById('journeyTypeDropdown').innerText = type;
+        document.getElementById('journeyTypeInput').value = type;
+        
+        // Handle Return Date logic
+        const returnInput = document.getElementById('returnDateInput');
+        if (type === 'One Way') {
+            returnInput.disabled = true;
+            returnInput.required = false;
+            returnInput.style.opacity = '0.5';
+            returnInput.value = ''; // Clear value
+        } else {
+            returnInput.disabled = false;
+            returnInput.required = true;
+            returnInput.style.opacity = '1';
+             // Set default if empty
+            if(!returnInput.value) {
+                 const depDate = document.getElementById('departureDateInput').value;
+                 if(depDate) returnInput.value = depDate;
             }
         }
-        if ($name === 'debug_kit') {
-            $error = 'Try adding your current <b>top level domain</b> to the
-                <a href="https://book.cakephp.org/debugkit/5/en/index.html#configuration" target="_blank">DebugKit.safeTld</a>
-            config and reload.';
-            if (!in_array('sqlite', \PDO::getAvailableDrivers())) {
-                $error .= '<br />You need to install the PHP extension <code>pdo_sqlite</code> so DebugKit can work properly.';
+        
+        updateReturnMinDate();
+
+        // Update active state
+        const items = element.closest('ul').querySelectorAll('.dropdown-item');
+        items.forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    function selectClass(type, element) {
+        document.getElementById('classDropdown').innerText = type;
+        document.getElementById('classInput').value = type;
+
+        // Update active state
+        const items = element.closest('ul').querySelectorAll('.dropdown-item');
+        items.forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    function updatePassenger(type, change) {
+        const countSpan = document.getElementById('count-' + type);
+        const inputField = document.getElementById('input-' + type);
+        let count = parseInt(countSpan.innerText);
+        
+        // Logic: Min 1 adult, Min 0 others
+        if (type === 'adult' && count + change < 1) return;
+        if (type !== 'adult' && count + change < 0) return;
+        
+        // Check max 8 passengers
+        const currentTotal = parseInt(document.getElementById('count-adult').innerText) + 
+                             parseInt(document.getElementById('count-child').innerText) + 
+                             parseInt(document.getElementById('count-infant').innerText);
+        if (change > 0 && currentTotal >= 8) return;
+
+        count += change;
+        countSpan.innerText = count;
+        inputField.value = count;
+
+        updatePassengerLabel();
+    }
+
+    function updatePassengerLabel() {
+        const adults = parseInt(document.getElementById('count-adult').innerText);
+        const children = parseInt(document.getElementById('count-child').innerText);
+        const infants = parseInt(document.getElementById('count-infant').innerText);
+        const total = adults + children + infants;
+
+        const label = total + ' Passenger' + (total !== 1 ? 's' : '');
+        document.getElementById('passengerLabel').innerText = label;
+    }
+
+    // Initialize state on load
+    document.addEventListener("DOMContentLoaded", function() {
+        const type = document.getElementById('journeyTypeInput').value;
+        const returnInput = document.getElementById('returnDateInput');
+        
+        updateReturnMinDate();
+
+        if (type === 'One Way') {
+            returnInput.disabled = true;
+            returnInput.required = false;
+            returnInput.style.opacity = '0.5';
+        }
+    });
+
+    function updateReturnMinDate() {
+        const depInput = document.getElementById('departureDateInput');
+        const returnInput = document.getElementById('returnDateInput');
+        if (depInput.value) {
+            returnInput.min = depInput.value;
+            // If return date is before new min, clear it or set to min
+            if(returnInput.value && returnInput.value < depInput.value) {
+                returnInput.value = depInput.value;
             }
         }
     }
 
-    return compact('connected', 'error');
-};
-
-if (!Configure::read('debug')) :
-    throw new NotFoundException(
-        'Please replace templates/Pages/home.php with your own version or re-enable debug mode.'
-    );
-endif;
-
-?>
-<!DOCTYPE html>
-<html>
-<head>
-    <?= $this->Html->charset() ?>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>
-        CakePHP: the rapid development PHP framework:
-        <?= $this->fetch('title') ?>
-    </title>
-    <?= $this->Html->meta('icon') ?>
-
-    <?= $this->Html->css(['normalize.min', 'milligram.min', 'fonts', 'cake', 'home']) ?>
-
-    <?= $this->fetch('meta') ?>
-    <?= $this->fetch('css') ?>
-    <?= $this->fetch('script') ?>
-</head>
-<body>
-    <header>
-        <div class="container text-center">
-            <a href="https://cakephp.org/" target="_blank" rel="noopener">
-                <img alt="CakePHP" src="https://cakephp.org/v2/img/logos/CakePHP_Logo.svg" width="350" />
-            </a>
-            <h1>
-                Welcome to CakePHP <?= h(Configure::version()) ?> Chiffon (🍰)
-            </h1>
-        </div>
-    </header>
-    <main class="main">
-        <div class="container">
-            <div class="content">
-                <div class="row">
-                    <div class="column">
-                        <div class="message default text-center">
-                            <small>Please be aware that this page will not be shown if you turn off debug mode unless you replace templates/Pages/home.php with your own version.</small>
-                        </div>
-                        <div id="url-rewriting-warning" style="padding: 1rem; background: #fcebea; color: #cc1f1a; border-color: #ef5753;">
-                            <ul>
-                                <li class="bullet problem">
-                                    URL rewriting is not properly configured on your server.<br />
-                                    1) <a target="_blank" rel="noopener" href="https://book.cakephp.org/5/en/installation.html#url-rewriting">Help me configure it</a><br />
-                                    2) <a target="_blank" rel="noopener" href="https://book.cakephp.org/5/en/development/configuration.html#general-configuration">I don't / can't use URL rewriting</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <?php Debugger::checkSecurityKeys(); ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column">
-                        <h4>Environment</h4>
-                        <ul>
-                        <?php if (version_compare(PHP_VERSION, '8.1.0', '>=')) : ?>
-                            <li class="bullet success">Your version of PHP is 8.1.0 or higher (detected <?= PHP_VERSION ?>).</li>
-                        <?php else : ?>
-                            <li class="bullet problem">Your version of PHP is too low. You need PHP 8.1.0 or higher to use CakePHP (detected <?= PHP_VERSION ?>).</li>
-                        <?php endif; ?>
-
-                        <?php if (extension_loaded('mbstring')) : ?>
-                            <li class="bullet success">Your version of PHP has the mbstring extension loaded.</li>
-                        <?php else : ?>
-                            <li class="bullet problem">Your version of PHP does NOT have the mbstring extension loaded.</li>
-                        <?php endif; ?>
-
-                        <?php if (extension_loaded('openssl')) : ?>
-                            <li class="bullet success">Your version of PHP has the openssl extension loaded.</li>
-                        <?php else : ?>
-                            <li class="bullet problem">Your version of PHP does NOT have the openssl extension loaded.</li>
-                        <?php endif; ?>
-
-                        <?php if (extension_loaded('intl')) : ?>
-                            <li class="bullet success">Your version of PHP has the intl extension loaded.</li>
-                        <?php else : ?>
-                            <li class="bullet problem">Your version of PHP does NOT have the intl extension loaded.</li>
-                        <?php endif; ?>
-
-                        <?php if (ini_get('zend.assertions') !== '1') : ?>
-                            <li class="bullet problem">You should set <code>zend.assertions</code> to <code>1</code> in your <code>php.ini</code> for your development environment.</li>
-                        <?php endif; ?>
-                        </ul>
-                    </div>
-                    <div class="column">
-                        <h4>Filesystem</h4>
-                        <ul>
-                        <?php if (is_writable(TMP)) : ?>
-                            <li class="bullet success">Your tmp directory is writable.</li>
-                        <?php else : ?>
-                            <li class="bullet problem">Your tmp directory is NOT writable.</li>
-                        <?php endif; ?>
-
-                        <?php if (is_writable(LOGS)) : ?>
-                            <li class="bullet success">Your logs directory is writable.</li>
-                        <?php else : ?>
-                            <li class="bullet problem">Your logs directory is NOT writable.</li>
-                        <?php endif; ?>
-
-                        <?php $settings = Cache::getConfig('_cake_translations_'); ?>
-                        <?php if (!empty($settings)) : ?>
-                            <li class="bullet success">The <em><?= h($settings['className']) ?></em> is being used for core caching. To change the config edit config/app.php</li>
-                        <?php else : ?>
-                            <li class="bullet problem">Your cache is NOT working. Please check the settings in config/app.php</li>
-                        <?php endif; ?>
-                        </ul>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="column">
-                        <h4>Database</h4>
-                        <?php
-                        $result = $checkConnection('default');
-                        ?>
-                        <ul>
-                        <?php if ($result['connected']) : ?>
-                            <li class="bullet success">CakePHP is able to connect to the database.</li>
-                        <?php else : ?>
-                            <li class="bullet problem">CakePHP is NOT able to connect to the database.<br /><?= h($result['error']) ?></li>
-                        <?php endif; ?>
-                        </ul>
-                    </div>
-                    <div class="column">
-                        <h4>DebugKit</h4>
-                        <ul>
-                        <?php if (Plugin::isLoaded('DebugKit')) : ?>
-                            <li class="bullet success">DebugKit is loaded.</li>
-                            <?php
-                            $result = $checkConnection('debug_kit');
-                            ?>
-                            <?php if ($result['connected']) : ?>
-                                <li class="bullet success">DebugKit can connect to the database.</li>
-                            <?php else : ?>
-                                <li class="bullet problem">There are configuration problems present which need to be fixed:<br /><?= $result['error'] ?></li>
-                            <?php endif; ?>
-                        <?php else : ?>
-                            <li class="bullet problem">DebugKit is <strong>not</strong> loaded.</li>
-                        <?php endif; ?>
-                        </ul>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="column links">
-                        <h3>Getting Started</h3>
-                        <a target="_blank" rel="noopener" href="https://book.cakephp.org/5/en/">CakePHP Documentation</a>
-                        <a target="_blank" rel="noopener" href="https://book.cakephp.org/5/en/tutorials-and-examples/cms/installation.html">The 20 min CMS Tutorial</a>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="column links">
-                        <h3>Help and Bug Reports</h3>
-                        <a target="_blank" rel="noopener" href="https://slack-invite.cakephp.org/">Slack</a>
-                        <a target="_blank" rel="noopener" href="https://github.com/cakephp/cakephp/issues">CakePHP Issues</a>
-                        <a target="_blank" rel="noopener" href="https://discourse.cakephp.org/">CakePHP Forum</a>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="column links">
-                        <h3>Docs and Downloads</h3>
-                        <a target="_blank" rel="noopener" href="https://api.cakephp.org/">CakePHP API</a>
-                        <a target="_blank" rel="noopener" href="https://bakery.cakephp.org">The Bakery</a>
-                        <a target="_blank" rel="noopener" href="https://book.cakephp.org/5/en/">CakePHP Documentation</a>
-                        <a target="_blank" rel="noopener" href="https://plugins.cakephp.org">CakePHP plugins repo</a>
-                        <a target="_blank" rel="noopener" href="https://github.com/cakephp/">CakePHP Code</a>
-                        <a target="_blank" rel="noopener" href="https://github.com/FriendsOfCake/awesome-cakephp">CakePHP Awesome List</a>
-                        <a target="_blank" rel="noopener" href="https://www.cakephp.org">CakePHP</a>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="column links">
-                        <h3>Training and Certification</h3>
-                        <a target="_blank" rel="noopener" href="https://cakefoundation.org/">Cake Software Foundation</a>
-                        <a target="_blank" rel="noopener" href="https://training.cakephp.org/">CakePHP Training</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-</body>
-</html>
+    // Form Validation for Same Origin/Dest
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const origin = document.querySelector('select[name="origin_airport_id"]').value;
+        const dest = document.querySelector('select[name="dest_airport_id"]').value;
+        
+        if (origin && dest && origin === dest) {
+            e.preventDefault();
+            alert('Origin and Destination airports cannot be the same.');
+        }
+    });
+</script>
