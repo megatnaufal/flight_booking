@@ -372,10 +372,10 @@ $this->Html->css('flights', ['block' => true]);
 
         <div class="row">
             <div class="col-md-3">
-                <h6 class="footer-title">Airpaz</h6>
+                <h6 class="footer-title">FlyHigh</h6>
                 <a href="#" class="footer-link">Home</a>
                 <a href="#" class="footer-link">About Us</a>
-                <a href="#" class="footer-link">Airpaz Blog</a>
+                <a href="#" class="footer-link">FlyHigh Blog</a>
                 <a href="#" class="footer-link">Careers</a>
             </div>
             <div class="col-md-2">
@@ -405,7 +405,7 @@ $this->Html->css('flights', ['block' => true]);
         </div>
         
         <div class="text-center mt-5 py-4 border-top">
-            <p class="text-muted small mb-1">Copyright 2026 Airpaz.com. All rights reserved.</p>
+            <p class="text-muted small mb-1">Copyright 2026 FlyHigh.com. All rights reserved.</p>
             <p class="text-muted small" style="font-size: 0.65rem;">Global Airlines Holiday Sdn Bhd Bhd 105929-H</p>
         </div>
     </div>

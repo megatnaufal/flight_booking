@@ -270,7 +270,7 @@
 
         <div class="row">
             <div class="col-md-3">
-                <h6 class="footer-title-gotham">Airpaz Intelligence</h6>
+                <h6 class="footer-title-gotham">FlyHigh Intelligence</h6>
                 <a href="#" class="footer-link-gotham">Global Hub</a>
                 <a href="#" class="footer-link-gotham">Company Profile</a>
                 <a href="#" class="footer-link-gotham">Aviation Blog</a>
@@ -307,7 +307,7 @@
         </div>
         
         <div class="text-center mt-5 py-4 border-top border-secondary" style="border-color: rgba(255,255,255,0.05) !important;">
-            <p class="text-muted small mb-1">System Time: <?= date('Y-m-d H:i:s') ?> | © 2026 Airpaz.com Intelligence</p>
+            <p class="text-muted small mb-1">System Time: <?= date('Y-m-d H:i:s') ?> | © 2026 FlyHigh.com Intelligence</p>
             <p class="text-muted small" style="font-size: 0.65rem; opacity: 0.5;">Global Airlines Holiday Sdn Bhd Bhd 105929-H</p>
         </div>
     </div>

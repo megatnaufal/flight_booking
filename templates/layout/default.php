@@ -36,7 +36,57 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
+        /* Global Professional Font */
+        body, html {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        h1 { font-size: 2.25rem; }
+        h2 { font-size: 1.875rem; }
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; }
+        h5 { font-size: 1.125rem; }
+        h6 { font-size: 1rem; }
+
+        .small, small { font-size: 0.875rem; }
+        
+        /* Button font improvements */
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        /* Form elements */
+        input, select, textarea {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9375rem;
+        }
+
+        /* Table improvements */
+        table {
+            font-size: 0.9375rem;
+        }
+
+        th {
+            font-weight: 600;
+        }
+
         /* Top Promo Banner */
         .promo-banner { background-color: #d31d24; color: white; font-size: 0.75rem; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
         
@@ -62,7 +112,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 d-flex align-items-center gap-3">
-                    <a href="<?= $this->Url->build('/') ?>" class="text-white h3 fw-bold mb-0 text-decoration-none me-3">Airpaz</a>
+                    <a href="<?= $this->Url->build('/') ?>" class="text-white h3 fw-bold mb-0 text-decoration-none me-3">FlyHigh</a>
                     <nav class="d-none d-md-flex">
                         <a href="#" class="nav-link-custom">Flight</a>
                         <a href="#" class="nav-link-custom">Hotel</a>
