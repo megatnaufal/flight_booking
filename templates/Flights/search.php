@@ -7,132 +7,169 @@ $this->Html->css('flights', ['block' => true]);
 ?>
 
 <div class="flight-search-header">
-        <form action="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" method="get">
-            <!-- Top Options Row -->
-            <div class="d-flex flex-wrap gap-4 mb-3 border-bottom pb-3 align-items-center">
-                <!-- Journey Type -->
-                <div class="dropdown">
-                    <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle border-end pe-3 custom-dropdown-toggle-white" type="button" id="journeyTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <?= h($this->request->getQuery('journey_type', 'Round Trip')) ?>
-                    </button>
-                    <ul class="dropdown-menu shadow border-0" aria-labelledby="journeyTypeDropdown">
-                        <li><a class="dropdown-item" href="#" onclick="selectJourney('One Way', this)">One Way</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="selectJourney('Round Trip', this)">Round Trip</a></li>
-                    </ul>
-                    <input type="hidden" name="journey_type" id="journeyTypeInput" value="<?= h($this->request->getQuery('journey_type', 'Round Trip')) ?>">
-                </div>
+    <div class="container">
+        <?php 
+            $destId = $this->request->getQuery('dest_airport_id');
+            $originId = $this->request->getQuery('origin_airport_id');
+            $originName = $originId && isset($airports[$originId]) ? $airports[$originId] : 'Origin';
+            $destName = $destId && isset($airports[$destId]) ? $airports[$destId] : 'Destination';
+            
+            $depDate = $this->request->getQuery('departure');
+            $formattedDepDate = $depDate ? (new \DateTime($depDate))->format('D d M') : 'Date';
 
-                <!-- Passenger Count -->
-                <?php 
-                    $paxAdult = (int)$this->request->getQuery('passengers_adult', 1);
-                    $paxChild = (int)$this->request->getQuery('passengers_child', 0);
-                    $paxInfant = (int)$this->request->getQuery('passengers_infant', 0);
-                    $totalPax = $paxAdult + $paxChild + $paxInfant;
-                ?>
-                <div class="dropdown">
-                    <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle border-end pe-3 custom-dropdown-toggle-white" type="button" id="passengerDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                        <span id="passengerLabel"><?= $totalPax ?> Passenger<?= $totalPax !== 1 ? 's' : '' ?></span>
-                    </button>
-                    <div class="dropdown-menu shadow border-0 p-3" aria-labelledby="passengerDropdown" style="min-width: 280px;">
-                        <!-- Adult -->
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <div class="fw-bold text-dark">Adult</div>
-                                <div class="text-muted small">Age 12+</div>
-                            </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-outline-danger btn-sm rounded-1 px-2" onclick="updatePassenger('adult', -1)"><i class="bi bi-dash"></i></button>
-                                <span class="fw-bold text-dark mx-2" id="count-adult"><?= $paxAdult ?></span>
-                                <button type="button" class="btn btn-outline-danger btn-sm rounded-1 px-2" onclick="updatePassenger('adult', 1)"><i class="bi bi-plus"></i></button>
-                            </div>
-                        </div>
-                        <!-- Child -->
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <div class="fw-bold text-dark">Child</div>
-                                <div class="text-muted small">Age 2-11</div>
-                            </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-1 px-2" onclick="updatePassenger('child', -1)"><i class="bi bi-dash"></i></button>
-                                <span class="fw-bold text-dark mx-2" id="count-child"><?= $paxChild ?></span>
-                                <button type="button" class="btn btn-outline-danger btn-sm rounded-1 px-2" onclick="updatePassenger('child', 1)"><i class="bi bi-plus"></i></button>
-                            </div>
-                        </div>
-                        <!-- Infant -->
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <div class="fw-bold text-dark">Infant</div>
-                                <div class="text-muted small">&lt; 2 years</div>
-                            </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-1 px-2" onclick="updatePassenger('infant', -1)"><i class="bi bi-dash"></i></button>
-                                <span class="fw-bold text-dark mx-2" id="count-infant"><?= $paxInfant ?></span>
-                                <button type="button" class="btn btn-outline-danger btn-sm rounded-1 px-2" onclick="updatePassenger('infant', 1)"><i class="bi bi-plus"></i></button>
-                            </div>
-                        </div>
-                        <div class="text-end pt-2 border-top">
-                            <button type="button" class="btn btn-danger btn-sm px-4 fw-bold" onclick="document.getElementById('passengerDropdown').click()">Done</button>
-                        </div>
+            $class = $this->request->getQuery('flight_class', 'Economy');
+            
+            $paxAdult = (int)$this->request->getQuery('passengers_adult', 1);
+            $paxChild = (int)$this->request->getQuery('passengers_child', 0);
+            $paxInfant = (int)$this->request->getQuery('passengers_infant', 0);
+            $totalPax = $paxAdult + $paxChild + $paxInfant;
+        ?>
+
+        <!-- Summary Card -->
+        <div class="bg-white rounded p-3 d-flex justify-content-between align-items-center shadow-sm" id="searchSummaryCard">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-airplane-engines text-muted fs-4"></i>
+                <div class="vl border-start mx-2" style="height: 40px;"></div>
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <h6 class="mb-0 fw-bold text-dark"><?= h($originName) ?></h6>
+                        <i class="bi bi-arrow-right text-muted small"></i>
+                        <h6 class="mb-0 fw-bold text-dark"><?= h($destName) ?></h6>
                     </div>
-                    <input type="hidden" name="passengers_adult" id="input-adult" value="<?= $paxAdult ?>">
-                    <input type="hidden" name="passengers_child" id="input-child" value="<?= $paxChild ?>">
-                    <input type="hidden" name="passengers_infant" id="input-infant" value="<?= $paxInfant ?>">
-                </div>
-
-                <!-- Class -->
-                <div class="dropdown">
-                    <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle custom-dropdown-toggle-white" type="button" id="classDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <?= h($this->request->getQuery('flight_class', 'Economy')) ?>
-                    </button>
-                    <ul class="dropdown-menu shadow border-0" aria-labelledby="classDropdown">
-                        <li><a class="dropdown-item" href="#" onclick="selectClass('Economy', this)">Economy</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="selectClass('Premium Economy', this)">Premium Economy</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="selectClass('Business', this)">Business</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="selectClass('First Class', this)">First Class</a></li>
-                    </ul>
-                    <input type="hidden" name="flight_class" id="classInput" value="<?= h($this->request->getQuery('flight_class', 'Economy')) ?>">
+                    <div class="text-muted small">
+                        <?= h($formattedDepDate) ?> <span class="mx-1">|</span> <?= $totalPax ?> Passenger<?= $totalPax !== 1 ? 's' : '' ?> <span class="mx-1">|</span> <?= h($class) ?>
+                    </div>
                 </div>
             </div>
-            <div class="row g-2">
-                <div class="col-md-3">
-                    <div class="input-box">
-                        <div class="label-mini">From</div>
-                        <select name="origin_airport_id" class="form-control border-0 p-0 shadow-none fw-bold" style="appearance: none;" required>
-                            <option value="">Select Origin</option>
-                            <?php foreach ($airports as $id => $name): ?>
-                                <option value="<?= $id ?>" <?= $this->request->getQuery('origin_airport_id') == $id ? 'selected' : '' ?>><?= h($name) ?></option>
-                            <?php endforeach; ?>
-                        </select>
+            <button class="btn btn-light text-danger fw-bold border-0 bg-danger-subtle" onclick="toggleSearchForm()">
+                <i class="bi bi-pencil-fill me-2"></i>Change Search
+            </button>
+        </div>
+
+        <!-- Collapsible Form -->
+        <div id="flightSearchForm" style="display: none;" class="mt-3">
+            <form action="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" method="get">
+                <!-- Top Options Row -->
+                <div class="d-flex flex-wrap gap-4 mb-3 border-bottom pb-3 align-items-center">
+                    <!-- Journey Type -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle border-end pe-3 custom-dropdown-toggle-white" type="button" id="journeyTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <?= h($this->request->getQuery('journey_type', 'Round Trip')) ?>
+                        </button>
+                        <ul class="dropdown-menu shadow border-0" aria-labelledby="journeyTypeDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="selectJourney('One Way', this)">One Way</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectJourney('Round Trip', this)">Round Trip</a></li>
+                        </ul>
+                        <input type="hidden" name="journey_type" id="journeyTypeInput" value="<?= h($this->request->getQuery('journey_type', 'Round Trip')) ?>">
+                    </div>
+    
+                    <!-- Passenger Count -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle border-end pe-3 custom-dropdown-toggle-white" type="button" id="passengerDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                            <span id="passengerLabel"><?= $totalPax ?> Passenger<?= $totalPax !== 1 ? 's' : '' ?></span>
+                        </button>
+                        <div class="dropdown-menu shadow border-0 p-3" aria-labelledby="passengerDropdown" style="min-width: 280px;">
+                            <!-- Adult -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <div class="fw-bold text-dark">Adult</div>
+                                    <div class="text-muted small">Age 12+</div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button type="button" class="btn btn-outline-danger btn-sm rounded-1 px-2" onclick="updatePassenger('adult', -1)"><i class="bi bi-dash"></i></button>
+                                    <span class="fw-bold text-dark mx-2" id="count-adult"><?= $paxAdult ?></span>
+                                    <button type="button" class="btn btn-outline-danger btn-sm rounded-1 px-2" onclick="updatePassenger('adult', 1)"><i class="bi bi-plus"></i></button>
+                                </div>
+                            </div>
+                            <!-- Child -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <div class="fw-bold text-dark">Child</div>
+                                    <div class="text-muted small">Age 2-11</div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-1 px-2" onclick="updatePassenger('child', -1)"><i class="bi bi-dash"></i></button>
+                                    <span class="fw-bold text-dark mx-2" id="count-child"><?= $paxChild ?></span>
+                                    <button type="button" class="btn btn-outline-danger btn-sm rounded-1 px-2" onclick="updatePassenger('child', 1)"><i class="bi bi-plus"></i></button>
+                                </div>
+                            </div>
+                            <!-- Infant -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <div class="fw-bold text-dark">Infant</div>
+                                    <div class="text-muted small">&lt; 2 years</div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-1 px-2" onclick="updatePassenger('infant', -1)"><i class="bi bi-dash"></i></button>
+                                    <span class="fw-bold text-dark mx-2" id="count-infant"><?= $paxInfant ?></span>
+                                    <button type="button" class="btn btn-outline-danger btn-sm rounded-1 px-2" onclick="updatePassenger('infant', 1)"><i class="bi bi-plus"></i></button>
+                                </div>
+                            </div>
+                            <div class="text-end pt-2 border-top">
+                                <button type="button" class="btn btn-danger btn-sm px-4 fw-bold" onclick="document.getElementById('passengerDropdown').click()">Done</button>
+                            </div>
+                        </div>
+                        <input type="hidden" name="passengers_adult" id="input-adult" value="<?= $paxAdult ?>">
+                        <input type="hidden" name="passengers_child" id="input-child" value="<?= $paxChild ?>">
+                        <input type="hidden" name="passengers_infant" id="input-infant" value="<?= $paxInfant ?>">
+                    </div>
+    
+                    <!-- Class -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle custom-dropdown-toggle-white" type="button" id="classDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <?= h($class) ?>
+                        </button>
+                        <ul class="dropdown-menu shadow border-0" aria-labelledby="classDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="selectClass('Economy', this)">Economy</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectClass('Premium Economy', this)">Premium Economy</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectClass('Business', this)">Business</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectClass('First Class', this)">First Class</a></li>
+                        </ul>
+                        <input type="hidden" name="flight_class" id="classInput" value="<?= h($class) ?>">
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="input-box">
-                        <div class="label-mini">To</div>
-                        <select name="dest_airport_id" class="form-control border-0 p-0 shadow-none fw-bold" style="appearance: none;" required>
-                            <option value="">Select Destination</option>
-                            <?php foreach ($airports as $id => $name): ?>
-                                <option value="<?= $id ?>" <?= $this->request->getQuery('dest_airport_id') == $id ? 'selected' : '' ?>><?= h($name) ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <div class="input-box">
+                            <div class="label-mini">From</div>
+                            <select name="origin_airport_id" class="form-control border-0 p-0 shadow-none fw-bold" style="appearance: none;" required>
+                                <option value="">Select Origin</option>
+                                <?php foreach ($airports as $id => $name): ?>
+                                    <option value="<?= $id ?>" <?= $this->request->getQuery('origin_airport_id') == $id ? 'selected' : '' ?>><?= h($name) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-box">
+                            <div class="label-mini">To</div>
+                            <select name="dest_airport_id" class="form-control border-0 p-0 shadow-none fw-bold" style="appearance: none;" required>
+                                <option value="">Select Destination</option>
+                                <?php foreach ($airports as $id => $name): ?>
+                                    <option value="<?= $id ?>" <?= $this->request->getQuery('dest_airport_id') == $id ? 'selected' : '' ?>><?= h($name) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-box">
+                            <div class="label-mini">Departure</div>
+                            <input type="date" name="departure" id="departureDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= $this->request->getQuery('departure') ?: date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" required onchange="updateReturnMinDate()">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-box">
+                            <div class="label-mini">Return</div>
+                            <input type="date" name="return" id="returnDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= $this->request->getQuery('return') ?: date('Y-m-d', strtotime('+1 day')) ?>" min="<?= date('Y-m-d') ?>" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-search-red w-100 h-100 py-2"><i class="bi bi-search me-2"></i>Search</button>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="input-box">
-                        <div class="label-mini">Departure</div>
-                        <input type="date" name="departure" id="departureDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= $this->request->getQuery('departure') ?: date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" required onchange="updateReturnMinDate()">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="input-box">
-                        <div class="label-mini">Return</div>
-                        <input type="date" name="return" id="returnDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= $this->request->getQuery('return') ?: date('Y-m-d', strtotime('+1 day')) ?>" min="<?= date('Y-m-d') ?>" required>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-search-red w-100 h-100 py-2"><i class="bi bi-search me-2"></i>Search</button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="container pb-5">
@@ -147,45 +184,62 @@ $this->Html->css('flights', ['block' => true]);
                 </div>
 
                 <div class="filter-sidebar">
-                    <div class="filter-group border-0">
-                        <div class="filter-title">Airlines <i class="bi bi-chevron-up"></i></div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" id="airasia" checked>
-                            <label class="form-check-label small" for="airasia">
-                                AirAsia
-                            </label>
+                    <form id="filterForm" action="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" method="get">
+                        <!-- Preserve Search Params -->
+                         <?php foreach ($this->request->getQueryParams() as $key => $value): ?>
+                            <?php if (!in_array($key, ['airlines', 'time'])): ?>
+                                <input type="hidden" name="<?= h($key) ?>" value="<?= h($value) ?>">
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+
+                        <div class="filter-group border-0">
+                            <div class="filter-title">Airlines <i class="bi bi-chevron-up"></i></div>
+                            <?php 
+                                $selectedAirlines = $this->request->getQuery('airlines', []); 
+                                if (!is_array($selectedAirlines)) $selectedAirlines = [];
+                            ?>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="airlines[]" value="AirAsia" id="airasia" <?= in_array('AirAsia', $selectedAirlines) ? 'checked' : '' ?> onchange="this.form.submit()">
+                                <label class="form-check-label small" for="airasia">AirAsia</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="airlines[]" value="Batik Air Malaysia" id="batik" <?= in_array('Batik Air Malaysia', $selectedAirlines) ? 'checked' : '' ?> onchange="this.form.submit()">
+                                <label class="form-check-label small" for="batik">Batik Air Malaysia</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="airlines[]" value="Firefly" id="firefly" <?= in_array('Firefly', $selectedAirlines) ? 'checked' : '' ?> onchange="this.form.submit()">
+                                <label class="form-check-label small" for="firefly">FireFly</label>
+                            </div>
+                             <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="airlines[]" value="Malaysia Airlines" id="mas" <?= in_array('Malaysia Airlines', $selectedAirlines) ? 'checked' : '' ?> onchange="this.form.submit()">
+                                <label class="form-check-label small" for="mas">Malaysia Airlines</label>
+                            </div>
                         </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" id="batik" checked>
-                            <label class="form-check-label small" for="batik">
-                                Batik Air Malaysia
-                            </label>
+                        <div class="filter-group border-0">
+                            <div class="filter-title">Departure Time <i class="bi bi-chevron-up"></i></div>
+                            <?php $selectedTime = $this->request->getQuery('time', ''); ?>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input rounded-circle" type="radio" name="time" id="all" value="" <?= $selectedTime == '' ? 'checked' : '' ?> onchange="this.form.submit()">
+                                <label class="form-check-label small" for="all">All Times</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input rounded-circle" type="radio" name="time" id="early" value="early" <?= $selectedTime == 'early' ? 'checked' : '' ?> onchange="this.form.submit()">
+                                <label class="form-check-label small" for="early">Early Flight (00:00 - 06:00)</label>
+                            </div>
+                             <div class="form-check mb-2">
+                                <input class="form-check-input rounded-circle" type="radio" name="time" id="morning" value="morning" <?= $selectedTime == 'morning' ? 'checked' : '' ?> onchange="this.form.submit()">
+                                <label class="form-check-label small" for="morning">Morning Flight (06:00 - 12:00)</label>
+                            </div>
+                             <div class="form-check mb-2">
+                                <input class="form-check-input rounded-circle" type="radio" name="time" id="afternoon" value="afternoon" <?= $selectedTime == 'afternoon' ? 'checked' : '' ?> onchange="this.form.submit()">
+                                <label class="form-check-label small" for="afternoon">Afternoon Flight (12:00 - 18:00)</label>
+                            </div>
+                             <div class="form-check mb-2">
+                                <input class="form-check-input rounded-circle" type="radio" name="time" id="night" value="night" <?= $selectedTime == 'night' ? 'checked' : '' ?> onchange="this.form.submit()">
+                                <label class="form-check-label small" for="night">Night Flight (18:00 - 24:00)</label>
+                            </div>
                         </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" id="firefly" checked>
-                            <label class="form-check-label small" for="firefly">
-                                FireFly
-                            </label>
-                        </div>
-                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" id="mas" checked>
-                            <label class="form-check-label small" for="mas">
-                                Malaysia Airlines
-                            </label>
-                        </div>
-                    </div>
-                    <div class="filter-group border-0">
-                        <div class="filter-title">Departure Time <i class="bi bi-chevron-up"></i></div>
-                        <!-- Mock Time filters -->
-                        <div class="form-check mb-2">
-                            <input class="form-check-input rounded-circle" type="radio" name="time" id="early">
-                            <label class="form-check-label small" for="early">Early Flight (00:00 - 06:00)</label>
-                        </div>
-                         <div class="form-check mb-2">
-                            <input class="form-check-input rounded-circle" type="radio" name="time" id="morning">
-                            <label class="form-check-label small" for="morning">Morning Flight (06:00 - 12:00)</label>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -204,8 +258,8 @@ $this->Html->css('flights', ['block' => true]);
                 $paxInfant = (int)$this->request->getQuery('passengers_infant', 0);
                 $totalPax = $paxAdult + $paxChild + $paxInfant;
             ?>
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0 text-dark fw-normal">Departure flights to <span class="fw-bold"><?= h($destName) ?></span></h5>
+            <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
+                <h6 class="mb-0 text-dark fw-normal" style="font-size: 1.15rem;">Departure flights to <span class="fw-bold"><?= h($destName) ?></span></h6>
                 <div class="text-dark"><?= h($formattedDate) ?> | <?= $totalPax ?> Passenger<?= $totalPax !== 1 ? 's' : '' ?></div>
             </div>
 
@@ -388,6 +442,19 @@ $this->Html->css('flights', ['block' => true]);
             if(returnInput.value && returnInput.value < depInput.value) {
                 returnInput.value = depInput.value;
             }
+        }
+    }
+
+    function toggleSearchForm() {
+        const summary = document.getElementById('searchSummaryCard');
+        const form = document.getElementById('flightSearchForm');
+        
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+            summary.style.display = 'none';
+        } else {
+            form.style.display = 'none';
+            summary.style.display = 'flex';
         }
     }
 
