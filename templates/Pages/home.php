@@ -17,9 +17,10 @@
     .route-text { font-size: 0.9rem; font-weight: 600; color: #333; }
     .from-text { font-size: 0.75rem; color: #6c757d; }
     
-    .input-box { border: 1px solid #dee2e6; border-radius: 6px; padding: 8px 12px; background: #fff; }
-    .label-mini { font-size: 0.65rem; color: #6c757d; text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
-    .btn-search-red { background-color: #e62129; color: white; border: none; font-weight: bold; border-radius: 6px; }
+    .input-box { border: 1px solid #dee2e6; border-radius: 6px; padding: 14px 20px; background: #fff; }
+    .input-box input, .input-box select { font-size: 1.1rem; }
+    .label-mini { font-size: 0.8rem; color: #6c757d; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
+    .btn-search-red { background-color: #e62129; color: white; border: none; font-weight: bold; border-radius: 8px; font-size: 1.1rem; }
     
     /* Footer Styling based on Image 2 */
     .footer-section { background-color: #ffffff; padding-top: 50px; border-top: 1px solid #eee; margin-top: 60px; }

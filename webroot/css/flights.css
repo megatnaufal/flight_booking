@@ -240,3 +240,44 @@
     background-color: #e62129;
     color: #fff;
 }
+
+/* Search Card and Input Styling */
+.search-card {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+}
+
+.input-box {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 14px 20px;
+    background: #fff;
+}
+
+.input-box input,
+.input-box select {
+    font-size: 1.1rem;
+}
+
+.label-mini {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.btn-search-red {
+    background-color: #e62129;
+    color: white;
+    border: none;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 1.1rem;
+}
+
+.btn-search-red:hover {
+    background-color: #c91c23;
+    color: white;
+}
