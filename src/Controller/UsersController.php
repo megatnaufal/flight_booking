@@ -46,10 +46,16 @@ class UsersController extends AppController
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
+            // Force role to 'user' for public registration
+            $user->role = 'user';
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                if ($user->role === 'admin') {
+                    return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
+                }
+                
+                return $this->redirect('/');
             }
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
@@ -106,9 +112,16 @@ class UsersController extends AppController
     {
 
         if ($this->request->is('post')) {
-            // Authentication check would go here
-            // For now, redirect to dashboard as a mockup
-            return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
+            // Mock Authentication Logic
+            $email = $this->request->getData('email');
+            
+            // In a real app, we check $this->Authentication->getIdentity()->get('role')
+            // For this mock, we'll assume any email containing 'admin' is an admin
+            if (str_contains($email, 'admin')) {
+                return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
+            }
+
+            return $this->redirect('/');
         }
     }
 

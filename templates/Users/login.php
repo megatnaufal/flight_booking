@@ -166,7 +166,7 @@ $this->disableAutoLayout();
 
                 <!-- Guest Button -->
                 <div class="d-grid gap-2">
-                    <a href="<?= $this->Url->build(['controller' => 'Dashboards', 'action' => 'admin']) ?>" class="btn btn-lg btn-guest">
+                    <a href="<?= $this->Url->build('/') ?>" class="btn btn-lg btn-guest">
                         <i class="bi bi-person me-2"></i>Continue as Guest
                     </a>
                 </div>

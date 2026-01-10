@@ -43,4 +43,10 @@ class DashboardsController extends AppController
 
         $this->set(compact('stats'));
     }
+
+    public function user()
+    {
+        // Placeholder for user specific data
+        $this->set('title', 'My Dashboard');
+    }
 }
