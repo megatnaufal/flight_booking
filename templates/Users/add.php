@@ -100,7 +100,7 @@ $this->disableAutoLayout();
         <div class="login-card rounded-4 overflow-hidden">
             <!-- Header -->
             <div class="text-center py-4" style="border-bottom: 1px solid #222;">
-                <div class="bat-logo mx-auto mb-3"></div>
+                <img src="<?= $this->Url->build('/img/flyhigh-logo.png') ?>" alt="FlyHigh Logo" style="height: 120px; margin-bottom: 1rem; background: transparent; object-fit: contain;">
                 <h3 class="text-gold fw-bold mb-0 text-uppercase" style="letter-spacing: 4px;">Join FlyHigh</h3>
                 <small class="text-secondary text-uppercase" style="letter-spacing: 2px;">Create Account</small>
             </div>
