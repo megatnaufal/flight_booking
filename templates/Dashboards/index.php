@@ -232,7 +232,7 @@ $users = $users ?? [];
                 <div class="col-lg-8">
                     <div class="dashboard-card">
                         <h6 class="mb-4">REVENUE TREND (MYR)</h6>
-                        <div style="height: 456px;"><canvas id="revenueLineChart"></canvas></div>
+                        <div style="height: 453px;"><canvas id="revenueLineChart"></canvas></div>
                     </div>
                 </div>
                 
