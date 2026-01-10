@@ -56,7 +56,17 @@ class PagesController extends AppController
                 ['city' => 'Sibu', 'price' => '68.16', 'from' => 'Kuala Lumpur'],
                 ['city' => 'Langkawi', 'price' => '58.73', 'from' => 'Penang'],
             ];
-            $this->set(compact('recommendations'));
+            
+            // content of PagesController::display()
+            $airportsTable = $this->fetchTable('Airports');
+            $airports = $airportsTable->find('list', [
+                'keyField' => 'id',
+                'valueField' => function ($airport) {
+                    return $airport->city . ' (' . $airport->airport_code . ')';
+                }
+            ])->all()->toArray();
+
+            $this->set(compact('recommendations', 'airports'));
         }
 
         $this->set(compact('page', 'subpage'));

@@ -1,0 +1,242 @@
+.red-theme {
+    color: #e62129;
+}
+
+.bg-red-theme {
+    background-color: #e62129;
+}
+
+.btn-red-theme {
+    background-color: #e62129;
+    color: white;
+    border: none;
+    font-weight: bold;
+}
+
+.btn-red-theme:hover {
+    background-color: #c91c23;
+    color: white;
+}
+
+/* Header/Search Bar */
+.flight-search-header {
+    background-color: #e62129;
+    padding: 20px 0;
+    color: white;
+    border-radius: 0 0 10px 10px;
+}
+
+.change-search-btn {
+    background-color: #ffeaea;
+    color: #e62129;
+    font-weight: bold;
+    border: 1px solid #ffcccc;
+    font-size: 0.9rem;
+}
+
+/* Date Carousel */
+.date-carousel {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.date-card {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    min-width: 100px;
+}
+
+.date-card.active {
+    background: #e62129;
+    color: white;
+    border-color: #e62129;
+}
+
+.date-card:hover:not(.active) {
+    background-color: #f8f9fa;
+}
+
+.date-price {
+    font-size: 0.85rem;
+    font-weight: bold;
+    display: block;
+}
+
+.date-nav-btn {
+    background: white;
+    border: 1px solid #ddd;
+    color: #e62129;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+/* Filter Sidebar */
+.filter-sidebar .filter-group {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.filter-title {
+    font-weight: bold;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: #e62129;
+    border-color: #e62129;
+}
+
+.filter-price-text {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+/* Sorting Tabs */
+.sort-tabs .card {
+    border: 1px solid #eee;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sort-tabs .card.active {
+    border: 2px solid #ffcccc;
+    background-color: #fff5f5;
+}
+
+.sort-tabs .badge-circle {
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Flight Card */
+.flight-result-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background: white;
+    transition: box-shadow 0.2s;
+}
+
+.flight-result-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.airline-logo-sm {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    margin-right: 8px;
+}
+
+.flight-time {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.flight-duration {
+    font-size: 0.8rem;
+    color: #888;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 3px;
+    margin-bottom: 3px;
+    display: inline-block;
+    width: 80px;
+    text-align: center;
+}
+
+.flight-airport {
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.flight-price-section {
+    text-align: right;
+}
+
+.flight-price-label {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.flight-price-main {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.flight-price-total {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* Membership Banner */
+.membership-banner {
+    background: linear-gradient(90deg, #ff4d4d 0%, #e62129 100%);
+    color: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Home Search Dropdowns */
+.custom-dropdown-toggle {
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.custom-dropdown-toggle:hover {
+    color: #e62129;
+}
+
+.custom-dropdown-toggle-white {
+    color: white !important;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.custom-dropdown-toggle-white:hover {
+    color: #ffeaea !important;
+}
+
+.custom-dropdown-toggle::after,
+.custom-dropdown-toggle-white::after {
+    margin-left: 0.5em;
+    vertical-align: 0.1em;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: #e62129;
+    color: #fff;
+}
+
+.btn-outline-danger {
+    color: #e62129;
+    border-color: #e62129;
+}
+
+.btn-outline-danger:hover {
+    background-color: #e62129;
+    color: #fff;
+}
