@@ -124,7 +124,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                         <a href="#" class="user-nav-link">Help</a>
                         <a href="#" class="user-nav-link"><i class="bi bi-cart3"></i></a>
                     </div>
-                    <a href="#" class="user-nav-link fw-bold border-start ps-4">
+                    <a href="#" class="user-nav-link fw-bold border-start ps-4" data-bs-toggle="modal" data-bs-target="#authModal">
                         <i class="bi bi-person-circle"></i> Sign In / Register
                     </a>
                 </div>
@@ -138,6 +138,137 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             <?= $this->fetch('content') ?>
         </div>
     </main>
+
+    <!-- Authentication Modal -->
+    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%); border: 1px solid #333;">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title text-gold fw-bold" id="authModalLabel">
+                        <i class="bi bi-person-circle me-2"></i>Account Access
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <!-- Nav Tabs -->
+                    <ul class="nav nav-tabs border-bottom border-secondary" id="authTab" role="tablist" style="background: #0a0a0a;">
+                        <li class="nav-item flex-fill" role="presentation">
+                            <button class="nav-link active w-100 text-white fw-bold" id="signin-tab" data-bs-toggle="tab" data-bs-target="#signin" type="button" role="tab" aria-controls="signin" aria-selected="true" style="border: none; background: transparent;">
+                                Sign In
+                            </button>
+                        </li>
+                        <li class="nav-item flex-fill" role="presentation">
+                            <button class="nav-link w-100 text-white fw-bold" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab" aria-controls="register" aria-selected="false" style="border: none; background: transparent;">
+                                Register
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content p-4" id="authTabContent">
+                        <!-- Sign In Tab -->
+                        <div class="tab-pane fade show active" id="signin" role="tabpanel" aria-labelledby="signin-tab">
+                            <?= $this->Form->create(null, [
+                                'url' => ['controller' => 'Users', 'action' => 'login'],
+                                'class' => 'auth-form'
+                            ]) ?>
+                                <div class="mb-3">
+                                    <label class="form-label text-gold small">Email</label>
+                                    <input type="email" name="email" class="form-control form-control-dark" placeholder="your@email.com" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-gold small">Password</label>
+                                    <input type="password" name="password" class="form-control form-control-dark" placeholder="••••••••" required>
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label text-white small" for="rememberMe">Remember me</label>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-gold">Sign In</button>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="#" class="text-gold small text-decoration-none">Forgot password?</a>
+                                </div>
+                            <?= $this->Form->end() ?>
+                        </div>
+
+                        <!-- Register Tab -->
+                        <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+                            <?= $this->Form->create(null, [
+                                'url' => ['controller' => 'Users', 'action' => 'add'],
+                                'class' => 'auth-form'
+                            ]) ?>
+                                <div class="mb-3">
+                                    <label class="form-label text-gold small">Email</label>
+                                    <input type="email" name="email" class="form-control form-control-dark" placeholder="your@email.com" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-gold small">Username</label>
+                                    <input type="text" name="username" class="form-control form-control-dark" placeholder="username" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-gold small">Password</label>
+                                    <input type="password" name="password" class="form-control form-control-dark" placeholder="••••••••" required>
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                                    <label class="form-check-label text-white small" for="agreeTerms">I agree to the terms and conditions</label>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-gold">Create Account</button>
+                                </div>
+                            <?= $this->Form->end() ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .form-control-dark {
+            background: #121212;
+            border: 1px solid #333;
+            color: #ecf0f1;
+        }
+        .form-control-dark:focus {
+            background: #1a1a1a;
+            border-color: #FFD300;
+            color: #ecf0f1;
+            box-shadow: 0 0 10px rgba(255, 211, 0, 0.2);
+        }
+        .form-control-dark::placeholder {
+            color: #666;
+        }
+        .text-gold {
+            color: #FFD300;
+        }
+        .btn-gold {
+            background: linear-gradient(180deg, #FFD300 0%, #c9a600 100%);
+            color: #0a0a0a;
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-gold:hover {
+            box-shadow: 0 0 20px rgba(255, 211, 0, 0.5);
+            transform: translateY(-2px);
+            color: #0a0a0a;
+        }
+        .nav-tabs .nav-link {
+            color: #999;
+        }
+        .nav-tabs .nav-link.active {
+            color: #FFD300 !important;
+            background: transparent !important;
+            border-bottom: 2px solid #FFD300 !important;
+        }
+        .form-check-input:checked {
+            background-color: #FFD300;
+            border-color: #FFD300;
+        }
+    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
