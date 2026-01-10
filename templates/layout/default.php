@@ -124,9 +124,33 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                         <a href="#" class="user-nav-link">Help</a>
                         <a href="#" class="user-nav-link"><i class="bi bi-cart3"></i></a>
                     </div>
-                    <a href="#" class="user-nav-link fw-bold border-start ps-4" data-bs-toggle="modal" data-bs-target="#authModal">
-                        <i class="bi bi-person-circle"></i> Sign In / Register
-                    </a>
+                    <?php 
+                     $identity = $this->request->getAttribute('identity');
+                     if (!$identity) {
+                         $identity = $this->request->getSession()->read('Auth');
+                     }
+                    if ($identity): 
+                    ?>
+                        <div class="dropdown border-start ps-4">
+                            <a href="#" class="user-nav-link fw-bold dropdown-toggle text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> <?= h($identity->full_name ?: $identity->email) ?>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow" style="background: #1a1a1a; border-color: #333; min-width: 200px;">
+                                <li class="px-3 py-2 border-bottom border-secondary">
+                                    <div class="fw-bold text-gold"><?= h($identity->full_name ?: 'User') ?></div>
+                                    <div class="small text-white text-truncate" style="max-width: 180px;"><?= h($identity->email) ?></div>
+                                </li>
+                                <li><a class="dropdown-item text-white my-1" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'settings']) ?>"><i class="bi bi-gear me-2"></i> Settings</a></li>
+                                <li><a class="dropdown-item text-white my-1" href="#"><i class="bi bi-ticket-perforated me-2"></i> My Bookings</a></li>
+                                <li><hr class="dropdown-divider border-secondary"></li>
+                                <li><a class="dropdown-item text-danger my-1" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'logout']) ?>"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    <?php else: ?>
+                        <a href="#" class="user-nav-link fw-bold border-start ps-4" data-bs-toggle="modal" data-bs-target="#authModal">
+                            <i class="bi bi-person-circle"></i> Sign In / Register
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

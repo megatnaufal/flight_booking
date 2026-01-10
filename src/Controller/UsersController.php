@@ -110,18 +110,29 @@ class UsersController extends AppController
      */
     public function login()
     {
-
         if ($this->request->is('post')) {
-            // Mock Authentication Logic
             $email = $this->request->getData('email');
+            $password = $this->request->getData('password');
             
-            // In a real app, we check $this->Authentication->getIdentity()->get('role')
-            // For this mock, we'll assume any email containing 'admin' is an admin
-            if (str_contains($email, 'admin')) {
-                return $this->redirect(['controller' => 'Dashboards', 'action' => 'index']);
-            }
+            // Simple DB lookup
+            $user = $this->Users->findByEmail($email)->first();
 
-            return $this->redirect('/');
+            if ($user) {
+                // In a real app, verify password: 
+                // if ((new \Cake\Auth\DefaultPasswordHasher())->check($password, $user->password)) ...
+                
+                // For now, allow login if user exists (Development Mode)
+                $this->request->getSession()->write('Auth', $user);
+                
+                $this->Flash->success(__('Welcome back, ' . ($user->full_name ?: $user->email)));
+                
+                if ($user->role === 'admin') {
+                    return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
+                }
+                return $this->redirect('/');
+            }
+            
+            $this->Flash->error(__('Invalid email or password.'));
         }
     }
 
@@ -132,7 +143,8 @@ class UsersController extends AppController
      */
     public function logout()
     {
-
+        $this->request->getSession()->delete('Auth');
+        $this->Flash->success(__('You have been logged out.'));
         return $this->redirect(['action' => 'login']);
     }
 }
