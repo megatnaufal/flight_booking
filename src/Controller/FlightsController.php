@@ -131,22 +131,41 @@ class FlightsController extends AppController
             $originAirport = $airportsTable->get($originAirportId);
             $destAirport = $airportsTable->get($destAirportId);
 
-            $airlines = [
+            // Filter Airlines
+            $allAirlines = [
                 ['name' => 'AirAsia', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/AirAsia_New_Logo.svg/1200px-AirAsia_New_Logo.svg.png'],
-                ['name' => 'Batik Air', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Batik_Air_logo.svg/2560px-Batik_Air_logo.svg.png'],
+                ['name' => 'Batik Air Malaysia', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Batik_Air_logo.svg/2560px-Batik_Air_logo.svg.png'],
                 ['name' => 'Malaysia Airlines', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Malaysia_Airlines_Logo.svg/1200px-Malaysia_Airlines_Logo.svg.png'],
                 ['name' => 'Firefly', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Firefly_logo.svg/1280px-Firefly_logo.svg.png'],
             ];
+
+            $selectedAirlines = $this->request->getQuery('airlines', []);
+            // Filter available airlines if filter is applied
+            if (!empty($selectedAirlines) && is_array($selectedAirlines)) {
+                $airlines = array_filter($allAirlines, function($airline) use ($selectedAirlines) {
+                    return in_array($airline['name'], $selectedAirlines);
+                });
+                // Reset keys
+                $airlines = array_values($airlines);
+                // If no airlines match (shouldn't happen with correct usage), fallback to all
+                if (empty($airlines)) {
+                     $airlines = $allAirlines; 
+                }
+            } else {
+                $airlines = $allAirlines;
+            }
 
             // Get passenger count
             $passengers = (int)$this->request->getQuery('passengers_adult', 1) 
                         + (int)$this->request->getQuery('passengers_child', 0) 
                         + (int)$this->request->getQuery('passengers_infant', 0);
             $flightClass = $this->request->getQuery('flight_class', 'Economy');
+            $selectedTime = $this->request->getQuery('time', '');
 
             // Create a deterministic seed based on search params
             // This ensures the same "random" flights are generated for the same search query
-            $seedString = $originAirportId . $destAirportId . $departureDate;
+            // Include filters in seed to vary results when filters change
+            $seedString = $originAirportId . $destAirportId . $departureDate . json_encode($selectedAirlines) . $selectedTime;
             $seed = crc32($seedString);
             srand($seed);
 
@@ -156,8 +175,21 @@ class FlightsController extends AppController
             for ($i = 0; $i < $numFlights; $i++) {
                 $airline = $airlines[array_rand($airlines)];
                 
-                // Random time
-                $hour = rand(6, 22);
+                // Random time logic based on filter
+                $minHour = 6; 
+                $maxHour = 22;
+
+                if ($selectedTime === 'early') {
+                    $minHour = 0; $maxHour = 5;
+                } elseif ($selectedTime === 'morning') {
+                    $minHour = 6; $maxHour = 11;
+                } elseif ($selectedTime === 'afternoon') {
+                    $minHour = 12; $maxHour = 17;
+                } elseif ($selectedTime === 'night') {
+                    $minHour = 18; $maxHour = 23;
+                }
+
+                $hour = rand($minHour, $maxHour);
                 $minute = rand(0, 59);
                 $departureTime = new \Cake\I18n\DateTime($departureDate . " $hour:$minute:00");
                 
