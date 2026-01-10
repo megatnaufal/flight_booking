@@ -57,6 +57,9 @@ return function (RouteBuilder $routes): void {
          */
         $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
 
+        // Login shortcut route
+        $builder->connect('/login', ['controller' => 'Users', 'action' => 'login']);
+
         /*
          * ...and connect the rest of 'Pages' controller's URLs.
          */

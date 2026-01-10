@@ -33,10 +33,8 @@ class DashboardsController extends AppController
     {
 
         
-        $flightOptions = ['limit' => 200];
-        
         $stats = [
-            'flights' => $this->fetchTable('Flights')->find('all', $flightOptions)->count(),
+            'flights' => $this->fetchTable('Flights')->find()->count(),
             'bookings' => $this->fetchTable('Bookings')->find()->count(),
             'users' => $this->fetchTable('Users')->find()->count(),
             'passengers' => $this->fetchTable('Passengers')->find()->count(),
