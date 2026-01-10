@@ -21,40 +21,50 @@ class DashboardsController extends AppController
      */
     public function index()
     {
-        return $this->redirect(['action' => 'admin']);
-    }
-
-    public function admin()
-    {
-        // 1. General Statistics
-        // Combining real DB counts with mock revenue data
+        // 1. Fetch Key Statistics
+        // We use fetchTable() to get counts from the respective tables
         $stats = [
+            'revenue' => 125.4, // This is static; replace with real calculation if needed: $this->fetchTable('Bookings')->find()->sumOf('amount')
             'flights' => $this->fetchTable('Flights')->find()->count(),
             'bookings' => $this->fetchTable('Bookings')->find()->count(),
             'users' => $this->fetchTable('Users')->find()->count(),
-            'passengers' => $this->fetchTable('Passengers')->find()->count(),
-            'airports' => $this->fetchTable('Airports')->find()->count(),
-            'revenue' => 125400.50 // New field from test3 (Mock)
         ];
 
-        // 2. Mock Revenue Data for the Line Chart (MYR) - from test3
-        $revenueData = [12000, 15000, 11000, 19000, 22000, 25400];
+        // 2. Chart Data (Mock Data)
         $revenueLabels = ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'];
+        $revenueData = [12000, 15000, 11000, 19000, 22000, 25400];
 
-        // 3. Mock Recent Mission Logs for the Table - from test3
-        $recentBookings = [
-            ['id' => 'MY-101', 'user' => 'Ahmad R.', 'route' => 'KUL -> KCH', 'status' => 'Paid', 'amount' => 'RM 245'],
-            ['id' => 'MY-102', 'user' => 'Siti A.', 'route' => 'PEN -> JHB', 'status' => 'Pending', 'amount' => 'RM 120'],
-            ['id' => 'MY-103', 'user' => 'Tan K.', 'route' => 'BKI -> TWU', 'status' => 'Paid', 'amount' => 'RM 95'],
-            ['id' => 'MY-104', 'user' => 'Maniam V.', 'route' => 'SZB -> LGK', 'status' => 'Paid', 'amount' => 'RM 180'],
-        ];
+        // 3. Fetch Recent Bookings
+        // Contains 'Passengers' and 'Flights' so we can show names and flight numbers
+        $bookings = $this->fetchTable('Bookings')->find()
+            ->contain(['Passengers', 'Flights'])
+            ->limit(10)
+            ->order(['Bookings.id' => 'DESC']) // Show newest first
+            ->all();
 
-        $this->set(compact('stats', 'revenueData', 'revenueLabels', 'recentBookings'));
-    }
+        // 4. Fetch Recent Flights
+        // Contains 'OriginAirports' and 'DestAirports' to display airport codes
+        $flights = $this->fetchTable('Flights')->find()
+            ->contain(['OriginAirports', 'DestAirports'])
+            ->limit(10)
+            ->order(['Flights.id' => 'DESC'])
+            ->all();
 
-    public function user()
-    {
-        // Placeholder for user specific data
-        $this->set('title', 'My Dashboard');
+        // 5. Fetch Recent Passengers
+        // Contains 'Users' to link to the user account if it exists
+        $passengers = $this->fetchTable('Passengers')->find()
+            ->contain(['Users'])
+            ->limit(10)
+            ->order(['Passengers.id' => 'DESC'])
+            ->all();
+
+        // 6. Fetch Recent Users
+        $users = $this->fetchTable('Users')->find()
+            ->limit(10)
+            ->order(['Users.id' => 'DESC'])
+            ->all();
+
+        // 7. Pass all variables to the View
+        $this->set(compact('stats', 'revenueLabels', 'revenueData', 'bookings', 'flights', 'passengers', 'users'));
     }
 }
