@@ -45,4 +45,13 @@ class DashboardsController extends AppController
 
         $this->set(compact('stats'));
     }
+
+    /**
+     * Admin Settings method
+     */
+    public function settings()
+    {
+        // In a real app, we'd fetch config from DB
+        // For now, just render the view
+    }
 }

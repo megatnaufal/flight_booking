@@ -12,6 +12,14 @@
     </div>
     <div class="row">
         <div class="column">
+            <h3>Admin Dashboard</h3>
+        </div>
+        <div class="column" style="text-align: right;">
+            <a href="<?= $this->Url->build(['action' => 'settings']) ?>" class="button button-outline"><i class="fas fa-cogs"></i> Settings</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="column">
             <div class="dashboard-card">
                 <h4><?= __('Flights') ?></h4>
                 <p><?= $this->Number->format($stats['flights']) ?></p>

@@ -28,6 +28,64 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->Html->meta('icon') ?>
 
     <?= $this->Html->css(['normalize.min', 'milligram.min', 'fonts', 'cake', 'gotham']) ?>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .sticky-summary {
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: none; /* Hidden by default, shown via JS on scroll in real app, or forced for demo */
+        }
+        .sticky-summary .summary-details {
+            display: inline-flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        .progress-tracker {
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 0;
+            position: relative;
+        }
+        .progress-tracker::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #eee;
+            z-index: 1;
+        }
+        .progress-tracker li {
+            position: relative;
+            z-index: 2;
+            background: #fff;
+            padding: 0 10px;
+            color: #ccc;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .progress-tracker li.active {
+            color: var(--primary-blue, #0056b3);
+        }
+        .progress-tracker li.active::after {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-blue, #0056b3);
+            border-radius: 50%;
+            margin: 5px auto 0;
+        }
+    </style>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
@@ -46,6 +104,29 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             <a target="_blank" rel="noopener" href="https://api.cakephp.org/">API</a>
         </div>
     </nav>
+    
+    <!-- Sticky Search Summary -->
+    <div class="sticky-summary">
+        <div class="container">
+             <div class="summary-details">
+                 <span class="route"><strong>KUL</strong> <i class="fas fa-arrow-right"></i> <strong>BKI</strong></span>
+                 <span class="date">15 Oct 2026</span>
+                 <span class="passengers">1 Adult</span>
+             </div>
+             <a href="#" class="button button-small button-outline">Change</a>
+        </div>
+    </div>
+
+    <!-- Progress Tracker -->
+    <div class="container">
+        <ul class="progress-tracker">
+            <li class="active">Search</li>
+            <li>Select</li>
+            <li>Details</li>
+            <li>Payment</li>
+            <li>Confirmation</li>
+        </ul>
+    </div>
     <main class="main">
         <div class="container">
             <?= $this->Flash->render() ?>
