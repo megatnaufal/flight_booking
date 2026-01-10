@@ -24,12 +24,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <title><?= $this->fetch('title') ?></title>
     <?= $this->Html->meta('icon') ?>
 
-<<<<<<< HEAD
-    <?= $this->Html->css(['normalize.min', 'milligram.min', 'fonts', 'cake', 'gotham']) ?>
-=======
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
->>>>>>> test3
 
     <?= $this->Html->css(['cake']) ?>
     <?= $this->fetch('meta') ?>
