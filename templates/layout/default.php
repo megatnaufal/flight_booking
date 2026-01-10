@@ -84,13 +84,13 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         }
 
         /* Top Promo Banner */
-        .promo-banner { background-color: #d31d24; color: white; font-size: 0.75rem; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .promo-banner { background-color: #000000; color: white; font-size: 0.75rem; padding: 6px 0; border-bottom: 1px solid #333; }
         
         /* Main Navigation */
-        .top-header { background-color: #e62129; padding: 10px 0; }
+        .top-header { background-color: #000000; padding: 10px 0; border-bottom: 1px solid #333; }
         .nav-link-custom { color: white !important; font-size: 0.85rem; font-weight: 500; text-decoration: none; padding: 5px 10px; }
         .nav-link-custom:hover { opacity: 0.8; }
-        .badge-new { background-color: #ffcc00; color: #333; font-size: 0.6rem; padding: 1px 4px; border-radius: 4px; vertical-align: top; margin-left: 2px; }
+        .badge-new { background-color: #f1c40f; color: #000; font-size: 0.6rem; padding: 1px 4px; border-radius: 4px; vertical-align: top; margin-left: 2px; }
         
         /* Language/User Links */
         .user-nav-link { color: white; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 5px; }
