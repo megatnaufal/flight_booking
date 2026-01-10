@@ -87,13 +87,129 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         .promo-banner { background-color: #000000; color: white; font-size: 0.75rem; padding: 6px 0; border-bottom: 1px solid #333; }
         
         /* Main Navigation */
-        .top-header { background-color: #000000; padding: 10px 0; border-bottom: 1px solid #333; }
-        .nav-link-custom { color: white !important; font-size: 0.85rem; font-weight: 500; text-decoration: none; padding: 5px 10px; }
-        .nav-link-custom:hover { opacity: 0.8; }
-        .badge-new { background-color: #f1c40f; color: #000; font-size: 0.6rem; padding: 1px 4px; border-radius: 4px; vertical-align: top; margin-left: 2px; }
+        .top-header { 
+            background-color: #000000; 
+            padding: 0; 
+            border-bottom: 1px solid #333;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .logo-img {
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-link-custom { 
+            color: white !important; 
+            font-size: 0.9rem; 
+            font-weight: 500; 
+            text-decoration: none; 
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .nav-link-custom:hover { 
+            background: rgba(255, 211, 0, 0.1);
+            color: #FFD300 !important;
+        }
+        
+        .badge-new { 
+            background-color: #f1c40f; 
+            color: #000; 
+            font-size: 0.55rem; 
+            padding: 2px 6px; 
+            border-radius: 10px; 
+            font-weight: 600;
+            margin-left: 4px;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
         
         /* Language/User Links */
-        .user-nav-link { color: white; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 5px; }
+        .user-nav-link { 
+            color: white; 
+            font-size: 0.85rem; 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .user-nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFD300;
+        }
+        
+        /* Cart Badge */
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #FFD300;
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+        
+        /* Button Styles */
+        .btn-outline-gold {
+            border: 2px solid #FFD300;
+            color: #FFD300;
+            background: transparent;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-gold:hover {
+            background: #FFD300;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 211, 0, 0.4);
+        }
+        
+        /* Mobile Navigation */
+        .nav-link-mobile {
+            color: white;
+            text-decoration: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link-mobile:hover {
+            background: rgba(255, 211, 0, 0.1);
+            color: #FFD300;
+        }
+        
+        /* Dropdown Improvements */
+        .dropdown-menu {
+            animation: fadeIn 0.2s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(255, 211, 0, 0.1) !important;
+        }
     </style>
 </head>
 <body>
@@ -106,57 +222,139 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 
     <header class="top-header">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 d-flex align-items-center gap-3">
-                    <a href="<?= $this->Url->build('/') ?>" class="text-white h3 fw-bold mb-0 text-decoration-none me-3 d-flex align-items-center">
-                        <img src="<?= $this->Url->build('/img/flyhigh-logo.png') ?>" alt="FlyHigh" style="height: 60px;">
+            <div class="row align-items-center py-2">
+                <!-- Logo Section -->
+                <div class="col-auto">
+                    <a href="<?= $this->Url->build('/') ?>" class="d-flex align-items-center text-decoration-none">
+                        <img src="<?= $this->Url->build('/img/flyhigh-logo.png') ?>" alt="FlyHigh" style="height: 50px;" class="logo-img">
                     </a>
-                    <nav class="d-none d-md-flex">
-                        <a href="#" class="nav-link-custom">Flight</a>
-                        <a href="#" class="nav-link-custom">Hotel</a>
-                        <a href="#" class="nav-link-custom">Promo</a>
-                        <a href="#" class="nav-link-custom">Orders</a>
-                        <a href="#" class="nav-link-custom">Deals <span class="badge-new">NEW</span></a>
+                </div>
+
+                <!-- Main Navigation -->
+                <div class="col d-none d-lg-block">
+                    <nav class="d-flex align-items-center gap-1 ms-3">
+                        <a href="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" class="nav-link-custom">
+                            <i class="bi bi-airplane me-1"></i> Flights
+                        </a>
+                        <a href="#" class="nav-link-custom">
+                            <i class="bi bi-building me-1"></i> Hotels
+                        </a>
+                        <a href="#" class="nav-link-custom">
+                            <i class="bi bi-tag me-1"></i> Promos
+                        </a>
+                        <a href="#" class="nav-link-custom">
+                            <i class="bi bi-receipt me-1"></i> My Orders
+                        </a>
+                        <a href="#" class="nav-link-custom position-relative">
+                            <i class="bi bi-star me-1"></i> Deals
+                            <span class="badge-new">NEW</span>
+                        </a>
                     </nav>
                 </div>
 
-                <div class="col-lg-6 d-flex justify-content-end align-items-center gap-4">
+                <!-- Right Side Actions -->
+                <div class="col-auto ms-auto">
                     <div class="d-flex align-items-center gap-3">
-                        <a href="#" class="user-nav-link"><i class="bi bi-translate"></i> MYR</a>
-                        <a href="#" class="user-nav-link">Help</a>
-                        <a href="#" class="user-nav-link"><i class="bi bi-cart3"></i></a>
-                    </div>
-                    <?php 
-                     $identity = $this->request->getAttribute('identity');
-                     if (!$identity) {
-                         $identity = $this->request->getSession()->read('Auth');
-                     }
-                    if ($identity): 
-                    ?>
-                        <div class="dropdown border-start ps-4">
-                            <a href="#" class="user-nav-link fw-bold dropdown-toggle text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle"></i> <?= h($identity->full_name ?: $identity->email) ?>
+                        <!-- Currency & Help -->
+                        <div class="d-none d-md-flex align-items-center gap-3">
+                            <a href="#" class="user-nav-link" title="Currency">
+                                <i class="bi bi-currency-exchange"></i>
+                                <span class="d-none d-lg-inline ms-1">MYR</span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow" style="background: #1a1a1a; border-color: #333; min-width: 200px;">
-                                <li class="px-3 py-2 border-bottom border-secondary">
-                                    <div class="fw-bold text-gold"><?= h($identity->full_name ?: 'User') ?></div>
-                                    <div class="small text-white text-truncate" style="max-width: 180px;"><?= h($identity->email) ?></div>
-                                </li>
-                                <li><a class="dropdown-item text-white my-1" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'settings']) ?>"><i class="bi bi-gear me-2"></i> Settings</a></li>
-                                <li><a class="dropdown-item text-white my-1" href="#"><i class="bi bi-ticket-perforated me-2"></i> My Bookings</a></li>
-                                <li><hr class="dropdown-divider border-secondary"></li>
-                                <li><a class="dropdown-item text-danger my-1" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'logout']) ?>"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
-                            </ul>
+                            <a href="#" class="user-nav-link" title="Help Center">
+                                <i class="bi bi-question-circle"></i>
+                                <span class="d-none d-lg-inline ms-1">Help</span>
+                            </a>
                         </div>
-                    <?php else: ?>
-                        <a href="#" class="user-nav-link fw-bold border-start ps-4" data-bs-toggle="modal" data-bs-target="#authModal">
-                            <i class="bi bi-person-circle"></i> Sign In / Register
+
+                        <!-- Cart -->
+                        <a href="#" class="user-nav-link position-relative" title="Shopping Cart">
+                            <i class="bi bi-cart3 fs-5"></i>
+                            <span class="cart-badge">0</span>
                         </a>
-                    <?php endif; ?>
+
+                        <!-- User Account -->
+                        <?php 
+                         $identity = $this->request->getAttribute('identity');
+                         if (!$identity) {
+                             $identity = $this->request->getSession()->read('Auth');
+                         }
+                        if ($identity): 
+                        ?>
+                            <div class="dropdown">
+                                <a href="#" class="user-nav-link fw-bold dropdown-toggle text-decoration-none d-flex align-items-center gap-2 px-3 py-2 rounded" data-bs-toggle="dropdown" aria-expanded="false" style="background: rgba(255, 211, 0, 0.1); border: 1px solid rgba(255, 211, 0, 0.3);">
+                                    <i class="bi bi-person-circle fs-5"></i>
+                                    <span class="d-none d-lg-inline"><?= h($identity->full_name ?: $identity->email) ?></span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow-lg" style="background: #1a1a1a; border-color: #333; min-width: 250px; margin-top: 0.5rem;">
+                                    <li class="px-3 py-3 border-bottom border-secondary">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-person-circle fs-3 text-gold"></i>
+                                            <div>
+                                                <div class="fw-bold text-gold"><?= h($identity->full_name ?: 'User') ?></div>
+                                                <div class="small text-white-50 text-truncate" style="max-width: 180px;"><?= h($identity->email) ?></div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li><a class="dropdown-item text-white py-2" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'profile']) ?>"><i class="bi bi-person me-2"></i> My Profile</a></li>
+                                    <li><a class="dropdown-item text-white py-2" href="#"><i class="bi bi-ticket-perforated me-2"></i> My Bookings</a></li>
+                                    <li><a class="dropdown-item text-white py-2" href="#"><i class="bi bi-heart me-2"></i> Wishlist</a></li>
+                                    <li><a class="dropdown-item text-white py-2" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'settings']) ?>"><i class="bi bi-gear me-2"></i> Settings</a></li>
+                                    <li><hr class="dropdown-divider border-secondary my-2"></li>
+                                    <li><a class="dropdown-item text-danger py-2" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'logout']) ?>"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                                </ul>
+                            </div>
+                        <?php else: ?>
+                            <a href="#" class="btn btn-outline-gold btn-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#authModal">
+                                <i class="bi bi-person-circle me-1"></i>
+                                <span class="d-none d-sm-inline">Sign In</span>
+                            </a>
+                        <?php endif; ?>
+
+                        <!-- Mobile Menu Toggle -->
+                        <button class="btn btn-link text-white d-lg-none p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+                            <i class="bi bi-list fs-3"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
+
+    <!-- Mobile Menu Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" style="background: #0a0a0a; color: white;">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="offcanvas-title text-gold">Menu</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav class="d-flex flex-column gap-2">
+                <a href="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" class="nav-link-mobile">
+                    <i class="bi bi-airplane me-2"></i> Flights
+                </a>
+                <a href="#" class="nav-link-mobile">
+                    <i class="bi bi-building me-2"></i> Hotels
+                </a>
+                <a href="#" class="nav-link-mobile">
+                    <i class="bi bi-tag me-2"></i> Promos
+                </a>
+                <a href="#" class="nav-link-mobile">
+                    <i class="bi bi-receipt me-2"></i> My Orders
+                </a>
+                <a href="#" class="nav-link-mobile">
+                    <i class="bi bi-star me-2"></i> Deals <span class="badge-new ms-2">NEW</span>
+                </a>
+                <hr class="border-secondary">
+                <a href="#" class="nav-link-mobile">
+                    <i class="bi bi-currency-exchange me-2"></i> Currency (MYR)
+                </a>
+                <a href="#" class="nav-link-mobile">
+                    <i class="bi bi-question-circle me-2"></i> Help Center
+                </a>
+            </nav>
+        </div>
+    </div>
+
 
     <main class="main">
         <div class="container-fluid p-0">
