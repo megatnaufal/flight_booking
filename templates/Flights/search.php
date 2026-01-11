@@ -41,7 +41,7 @@ $this->Html->css('flights', ['block' => true]);
                     </div>
                 </div>
             </div>
-            <button class="btn btn-light text-danger fw-bold border-0 bg-danger-subtle" onclick="toggleSearchForm()">
+            <button class="btn fw-bold border-0" style="background-color: #F5F3FF; color: #7C3AED;" onclick="toggleSearchForm()">
                 <i class="bi bi-pencil-fill me-2"></i>Change Search
             </button>
         </div>
