@@ -4,131 +4,271 @@
  */
 $this->assign('title', 'Help Center');
 ?>
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="text-white fw-bold mb-3">How can we help you?</h1>
+
+<div class="help-hero py-5 mb-4">
+    <div class="container text-center">
+        <h1 class="fw-bold mb-2 text-white">How can we help you?</h1>
+        <p class="text-light opacity-75 mb-4">
+            Search FAQs or browse the most common questions about your flight.
+        </p>
         <div class="row justify-content-center">
-            <div class="col-md-6">
-                <input type="text" class="form-control form-control-lg form-control-dark" placeholder="Search for help articles...">
+            <div class="col-md-7">
+                <div class="search-wrapper d-flex align-items-center bg-white shadow-sm rounded-pill px-3">
+                    <i class="bi bi-search text-muted me-2"></i>
+                    <input type="text"
+                           id="helpSearchInput"
+                           class="form-control border-0 form-control-lg flex-grow-1 search-input"
+                           placeholder="Type a keyword, e.g. refund, baggage, reschedule">
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Most Features Topic -->
-    <div class="mb-5">
-        <h3 class="text-gold fw-bold mb-4">Most Features Topic</h3>
-        <div class="row g-4">
-            <?php
-            $features = [
-                ['icon' => 'bi-ticket-perforated', 'title' => 'Booking', 'desc' => 'How to book, payment issue'],
-                ['icon' => 'bi-x-circle', 'title' => 'Cancellation', 'desc' => 'Cancel policy, refund status'],
-                ['icon' => 'bi-arrow-repeat', 'title' => 'Reschedule', 'desc' => 'Change flight date/time'],
-                ['icon' => 'bi-suitcase-lg', 'title' => 'Baggage', 'desc' => 'Add baggage, weight limit'],
-                ['icon' => 'bi-person-badge', 'title' => 'Check-in', 'desc' => 'Online check-in guide'],
-                ['icon' => 'bi-shield-check', 'title' => 'Insurance', 'desc' => 'Coverage & claims'],
-            ];
-            foreach ($features as $feature): ?>
-                <div class="col-md-6 col-lg-4">
-                    <a href="#" class="text-decoration-none">
-                        <div class="card bg-dark border-secondary h-100 hover-effect">
-                            <div class="card-body p-4 d-flex align-items-center gap-3">
-                                <div class="icon-box rounded-circle d-flex align-items-center justify-content-center bg-black border border-secondary" style="width: 50px; height: 50px; min-width: 50px;">
-                                    <i class="bi <?= $feature['icon'] ?> text-gold fs-4"></i>
-                                </div>
-                                <div>
-                                    <h5 class="text-white mb-1"><?= h($feature['title']) ?></h5>
-                                    <small class="text-secondary"><?= h($feature['desc']) ?></small>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            <?php endforeach; ?>
+        <!-- Category pills -->
+        <div class="mt-3 small text-light">
+            Popular topics:
+            <button type="button" class="btn btn-sm topic-pill topic-btn">Bookings</button>
+            <button type="button" class="btn btn-sm topic-pill topic-btn">Payment</button>
+            <button type="button" class="btn btn-sm topic-pill topic-btn">Refund</button>
+            <button type="button" class="btn btn-sm topic-pill topic-btn">Check‑in</button>
         </div>
     </div>
+</div>
 
+<div class="container pb-5">
     <!-- Flight Questions -->
-    <div>
-        <h3 class="text-gold fw-bold mb-4">Flight Questions</h3>
-        <div class="accordion accordion-dark" id="faqAccordion">
-            <div class="accordion-item bg-dark border-secondary">
-                <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button collapsed bg-dark text-white shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                        How do I reschedule my flight?
-                    </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body text-secondary border-top border-secondary">
-                        To reschedule your flight, go to "My Bookings", select your flight, and click on "Reschedule". Follow the prompts to choose a new date and time. Fare differences may apply.
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="section-heading d-flex align-items-center justify-content-between mb-3">
+                <h3 class="fw-bold mb-0" style="color:#e53935;">Flight Questions</h3>
+                <span class="text-muted small">4 questions • updated regularly</span>
+            </div>
+            <p class="text-muted small mb-4">
+                These are the most frequently asked questions about changing flights, payment and basic travel rules.
+            </p>
+
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item border-0 mb-3 shadow-sm rounded-3 faq-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed shadow-none"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne"
+                                aria-expanded="false"
+                                aria-controls="collapseOne">
+                            How do I reschedule my flight?
+                        </button>
+                    </h2>
+                    <div id="collapseOne"
+                         class="accordion-collapse collapse"
+                         aria-labelledby="headingOne"
+                         data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            To reschedule your flight, go to <strong>My Bookings</strong>, select your flight,
+                            and click on <strong>Reschedule</strong>. Choose a new date and time and confirm the changes.
+                            Fare difference and change fees may apply depending on airline policy.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 mb-3 shadow-sm rounded-3 faq-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed shadow-none"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo"
+                                aria-expanded="false"
+                                aria-controls="collapseTwo">
+                            What forms of payment do you accept?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo"
+                         class="accordion-collapse collapse"
+                         aria-labelledby="headingTwo"
+                         data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Supported payment methods include major credit cards
+                            (Visa, Mastercard, American Express), FPX Online Banking,
+                            and popular e‑wallets such as GrabPay and Touch 'n Go.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 mb-3 shadow-sm rounded-3 faq-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed shadow-none"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseThree"
+                                aria-expanded="false"
+                                aria-controls="collapseThree">
+                            Can I get a refund if I cancel?
+                        </button>
+                    </h2>
+                    <div id="collapseThree"
+                         class="accordion-collapse collapse"
+                         aria-labelledby="headingThree"
+                         data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Refund eligibility depends on your airline and fare type.
+                            Check the <strong>fare rules</strong> in your e‑ticket and the details under
+                            <strong>My Bookings</strong>. Some promotional or basic fares may be non‑refundable.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 mb-3 shadow-sm rounded-3 faq-item">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed shadow-none"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseFour"
+                                aria-expanded="false"
+                                aria-controls="collapseFour">
+                            When does flight check‑in close?
+                        </button>
+                    </h2>
+                    <div id="collapseFour"
+                         class="accordion-collapse collapse"
+                         aria-labelledby="headingFour"
+                         data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            As a general guideline, airport check‑in counters close about
+                            60 minutes before international departures and 45 minutes before domestic departures.
+                            Online check‑in usually closes around 1 hour before departure time.
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="accordion-item bg-dark border-secondary">
-                <h2 class="accordion-header" id="headingTwo">
-                    <button class="accordion-button collapsed bg-dark text-white shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        What forms of payment do you accept?
-                    </button>
-                </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body text-secondary border-top border-secondary">
-                        We accept major credit cards (Visa, Mastercard, Amex), FPX Online Banking, and E-wallets (GrabPay, Touch 'n Go).
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item bg-dark border-secondary">
-                <h2 class="accordion-header" id="headingThree">
-                    <button class="accordion-button collapsed bg-dark text-white shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        Can I get a refund if I cancel?
-                    </button>
-                </h2>
-                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body text-secondary border-top border-secondary">
-                        Refund policies vary by airline and fare class. Please check the specific terms and conditions of your ticket in the "My Bookings" section.
-                    </div>
-                </div>
-            </div>
-             <div class="accordion-item bg-dark border-secondary">
-                <h2 class="accordion-header" id="headingFour">
-                    <button class="accordion-button collapsed bg-dark text-white shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                        When does flight check-in close?
-                    </button>
-                </h2>
-                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body text-secondary border-top border-secondary">
-                        Generally, check-in counters close 60 minutes before departure for international flights and 45 minutes for domestic flights. Online check-in often closes 1 hour before.
-                    </div>
-                </div>
+
+            <!-- No results message -->
+            <div id="noResultsMsg" class="text-center text-muted mt-5 d-none">
+                <i class="bi bi-search display-6 mb-3 d-block opacity-50"></i>
+                <p>No questions found matching your search.</p>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    .form-control-dark {
-        background: #121212;
-        border: 1px solid #333;
-        color: #ecf0f1;
+    /* Light overall background */
+    body {
+        background-color: #f5f5f7;
+        color: #111;
     }
-    .form-control-dark:focus {
-        background: #1a1a1a;
-        border-color: #FFD300;
-        color: #ecf0f1;
-        box-shadow: 0 0 10px rgba(255, 211, 0, 0.2);
+
+    /* Red hero (no dark mode) */
+    .help-hero {
+        background: #e53935;
+        border-bottom: 1px solid #d32f2f;
+        color: #fff;
     }
-    .hover-effect:hover {
-        transform: translateY(-5px);
-        transition: transform 0.3s ease;
-        border-color: #FFD300 !important;
+
+    .search-wrapper .search-input {
+        background: transparent;
+        border-radius: 999px;
+        box-shadow: none;
+        padding-left: 0;
+        color: #111;
+    }
+    .search-wrapper .search-input::placeholder {
+        color: #9ca3af;
+    }
+    .search-wrapper .search-input:focus {
+        box-shadow: none;
+    }
+
+    .topic-pill {
+        border-radius: 999px;
+        padding-inline: 0.9rem;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.5);
+        color: #ffffff;
+        margin-inline: 2px;
+        transition: all 0.2s;
+    }
+    .topic-pill:hover {
+        border-color: #ffffff;
+        color: #e53935;
+        background: #ffffff;
+    }
+
+    .accordion-item {
+        background-color: #ffffff;
+        border-radius: 1rem;
+    }
+
+    .accordion-button {
+        background-color: #ffffff;
+        color: #111827;
+        font-weight: 500;
+        border-radius: 1rem;
     }
     .accordion-button::after {
-        filter: invert(1);
+        filter: none;
     }
     .accordion-button:not(.collapsed) {
-        color: #FFD300;
-        background-color: #000;
-        box-shadow: inset 0 -1px 0 rgba(0,0,0,.125);
+        color: #e53935;
+        background-color: #fff3f3;
+        box-shadow: none;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
     }
     .accordion-button:not(.collapsed)::after {
-        filter: invert(1) sepia(100%) saturate(1000%) hue-rotate(360deg) brightness(103%) contrast(103%); 
+        filter: none;
+    }
+
+    .accordion-body {
+        background-color: #ffffff;
+        border-top: 1px solid #f1f1f3;
+        border-bottom-left-radius: 1rem;
+        border-bottom-right-radius: 1rem;
     }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('helpSearchInput');
+    const faqItems = document.querySelectorAll('.faq-item');
+    const topicBtns = document.querySelectorAll('.topic-btn');
+    const noResultsMsg = document.getElementById('noResultsMsg');
+
+    function filterFAQs(query) {
+        let visibleCount = 0;
+        const lowerQuery = query.toLowerCase();
+
+        faqItems.forEach(item => {
+            const buttonText = item.querySelector('.accordion-button').textContent.toLowerCase();
+            const bodyText = item.querySelector('.accordion-body').textContent.toLowerCase();
+
+            if (buttonText.includes(lowerQuery) || bodyText.includes(lowerQuery)) {
+                item.classList.remove('d-none');
+                visibleCount++;
+            } else {
+                item.classList.add('d-none');
+            }
+        });
+
+        if (visibleCount === 0) {
+            noResultsMsg.classList.remove('d-none');
+        } else {
+            noResultsMsg.classList.add('d-none');
+        }
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            filterFAQs(e.target.value);
+        });
+    }
+
+    topicBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const topic = this.textContent;
+            if (searchInput) {
+                searchInput.value = topic;
+                filterFAQs(topic);
+            }
+        });
+    });
+});
+</script>
