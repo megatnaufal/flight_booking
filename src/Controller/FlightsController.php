@@ -117,7 +117,6 @@ class FlightsController extends AppController
         $originAirport = null;
         $destAirport = null;
 
-        // Fetch airports for the dropdowns
         $airportsTable = $this->fetchTable('Airports');
         $airports = $airportsTable->find('list', [
             'keyField' => 'id',
@@ -126,183 +125,238 @@ class FlightsController extends AppController
             }
         ])->all()->toArray();
 
-        // If we have search params, generate random flights
         if ($originAirportId && $destAirportId && $departureDate) {
             $originAirport = $airportsTable->get($originAirportId);
             $destAirport = $airportsTable->get($destAirportId);
 
-            // Filter Airlines
-            $allAirlines = [
-                ['name' => 'AirAsia', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/AirAsia_New_Logo.svg/1200px-AirAsia_New_Logo.svg.png'],
-                ['name' => 'Batik Air Malaysia', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Batik_Air_logo.svg/2560px-Batik_Air_logo.svg.png'],
-                ['name' => 'Malaysia Airlines', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Malaysia_Airlines_Logo.svg/1200px-Malaysia_Airlines_Logo.svg.png'],
-                ['name' => 'Firefly', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Firefly_logo.svg/1280px-Firefly_logo.svg.png'],
-            ];
-
-            $selectedAirlines = $this->request->getQuery('airlines', []);
-            // Filter available airlines if filter is applied
-            if (!empty($selectedAirlines) && is_array($selectedAirlines)) {
-                $airlines = array_filter($allAirlines, function($airline) use ($selectedAirlines) {
-                    return in_array($airline['name'], $selectedAirlines);
-                });
-                // Reset keys
-                $airlines = array_values($airlines);
-                // If no airlines match (shouldn't happen with correct usage), fallback to all
-                if (empty($airlines)) {
-                     $airlines = $allAirlines; 
-                }
-            } else {
-                $airlines = $allAirlines;
-            }
-
-            // Get passenger count
-            $passengers = (int)$this->request->getQuery('passengers_adult', 1) 
-                        + (int)$this->request->getQuery('passengers_child', 0) 
-                        + (int)$this->request->getQuery('passengers_infant', 0);
-            $flightClass = $this->request->getQuery('flight_class', 'Economy');
-            $selectedTime = $this->request->getQuery('time', '');
-
-            // Create a deterministic seed based on search params
-            // This ensures the same "random" flights are generated for the same search query
-            // Include filters in seed to vary results when filters change
-            $seedString = $originAirportId . $destAirportId . $departureDate . json_encode($selectedAirlines) . $selectedTime;
-            $seed = crc32($seedString);
-            srand($seed);
-
-            $numFlights = rand(5, 10);
-            $results = [];
-
-            for ($i = 0; $i < $numFlights; $i++) {
-                $airline = $airlines[array_rand($airlines)];
-                
-                // Random time logic based on filter
-                $minHour = 6; 
-                $maxHour = 22;
-
-                if ($selectedTime === 'early') {
-                    $minHour = 0; $maxHour = 5;
-                } elseif ($selectedTime === 'morning') {
-                    $minHour = 6; $maxHour = 11;
-                } elseif ($selectedTime === 'afternoon') {
-                    $minHour = 12; $maxHour = 17;
-                } elseif ($selectedTime === 'night') {
-                    $minHour = 18; $maxHour = 23;
-                }
-
-                $hour = rand($minHour, $maxHour);
-                $minute = rand(0, 59);
-                $departureTime = new \Cake\I18n\DateTime($departureDate . " $hour:$minute:00");
-                
-                // Route Data Lookup
-                // Format: [OriginCode_DestCode] => ['duration_min' => int, 'price_min' => int, 'price_max' => int]
-                $routeData = [
-                    'KUL_BKI' => ['duration' => 160, 'min' => 127, 'max' => 300], // 2h 40m
-                    'BKI_KUL' => ['duration' => 160, 'min' => 127, 'max' => 300],
-                    'KUL_LGK' => ['duration' => 65, 'min' => 71, 'max' => 150], // 1h 05m
-                    'LGK_KUL' => ['duration' => 65, 'min' => 71, 'max' => 150],
-                    'KUL_PEN' => ['duration' => 60, 'min' => 33, 'max' => 110], // 1h
-                    'PEN_KUL' => ['duration' => 60, 'min' => 33, 'max' => 110],
-                    'KUL_KCH' => ['duration' => 105, 'min' => 89, 'max' => 200], // 1h 45m
-                    'KCH_KUL' => ['duration' => 105, 'min' => 89, 'max' => 200],
-                ];
-
-                $routeKey = $originAirport->airport_code . '_' . $destAirport->airport_code;
-                $data = $routeData[$routeKey] ?? null;
-
-                // Duration Logic
-                if ($data) {
-                     // Add small random variation (+- 5 mins)
-                     $durationMinutes = $data['duration'] + rand(-5, 5);
-                } else {
-                     // Fallback for unknown routes
-                    $durationMinutes = rand(60, 240);
-                }
-
-                
-                // Determine if domestic (assuming both in Malaysia if country is missing or same)
-                $isDomestic = true; 
-                // Simple heuristic: If country is not set, assume domestic. If set, compare.
-                if (isset($originAirport->country) && isset($destAirport->country)) {
-                    $isDomestic = ($originAirport->country === $destAirport->country);
-                }
-
-                // Price Logic
-                if ($data) {
-                    $minPrice = $data['min'];
-                    $maxPrice = $data['max'];
-                } else {
-                    $minPrice = 50;
-                    $maxPrice = 300;
-                    if (!$isDomestic) {
-                        $minPrice = 200;
-                        $maxPrice = 800;
-                    }
-                }
-                
-                // Airline Adjustment
-                if ($airline['name'] === 'Malaysia Airlines') {
-                    $minPrice *= 1.5; // Full service premium
-                    $maxPrice *= 1.5;
-                }
-                
-                // Class Adjustment
-                if ($flightClass === 'Business') {
-                    $minPrice *= 2.5;
-                    $maxPrice *= 2.5;
-                } elseif ($flightClass === 'First Class') {
-                    $minPrice *= 4.0;
-                    $maxPrice *= 4.0;
-                }
-
-                $flight = $this->Flights->newEmptyEntity();
-                $flight->departure_time = $departureTime;
-                
-                // Base price for 1 person
-                $singlePaxPrice = rand((int)$minPrice, (int)$maxPrice) + (rand(0, 99) / 100);
-                
-                // Set total price based on passenger count (simplified for display)
-                // In a real app, you might store single price and calculate total in view
-                // Here we store single price as base_price
-                $flight->base_price = $singlePaxPrice;
-                
-                // Attach dynamic properties
-                $flight->origin_airport = $originAirport;
-                $flight->dest_airport = $destAirport;
-                
-                // Dynamic properties for view
-                $flight->airline_name = $airline['name'];
-                $flight->airline_logo = $airline['logo'];
-                $flight->duration_text = floor($durationMinutes/60) . 'h ' . ($durationMinutes%60) . 'm';
-                
-                // Calculate arrival time (clone to avoid modifying departure)
-                $flight->arrival_time = (clone $departureTime)->modify("+$durationMinutes minutes");
-
-                // Store raw duration for sorting
-                $flight->duration_minutes = $durationMinutes;
-                
-                $results[] = $flight;
-            }
-            
-            // Sorting Logic
-            $sort = $this->request->getQuery('sort', 'recommended');
-            
-            usort($results, function($a, $b) use ($sort) {
-                switch ($sort) {
-                    case 'cheapest':
-                        return $a->base_price <=> $b->base_price;
-                    case 'fastest':
-                        return $a->duration_minutes <=> $b->duration_minutes;
-                    case 'recommended':
-                    default:
-                        // Recommended: Balance of price (70%) and duration (30%) normalization could be complex,
-                        // for now, let's stick to Price ascending as "Best Value"
-                        return $a->base_price <=> $b->base_price;
-                }
-            });
-
-            $searchResults = $results;
+            $searchResults = $this->_generateFlights($originAirport, $destAirport, $departureDate);
         }
         
         $this->set(compact('searchResults', 'airports'));
+    }
+
+    /**
+     * Select Departure Flight method
+     */
+    public function selectDeparture()
+    {
+        $this->request->allowMethod(['post']);
+        
+        $flightData = $this->request->getData();
+        $journeyType = $flightData['journey_type'] ?? 'One Way';
+        
+        // Write to Session
+        $session = $this->request->getSession();
+        $session->write('Flight.Departure', $flightData);
+        
+        if ($journeyType === 'Round Trip') {
+             return $this->redirect(['action' => 'searchReturn']);
+        }
+
+        // If One Way, go to booking
+        return $this->redirect(['controller' => 'Bookings', 'action' => 'add']);
+    }
+
+    /**
+     * Search Return Flight method
+     */
+    public function searchReturn()
+    {
+        $session = $this->request->getSession();
+        $departureFlight = $session->read('Flight.Departure');
+
+        if (!$departureFlight) {
+            $this->Flash->error('Please select a departure flight first.');
+            return $this->redirect(['action' => 'index']); 
+        }
+
+        // Setup search params based on Departure Flight selections but INVERTED
+        $originAirportId = $departureFlight['dest_airport_id']; 
+        $destAirportId = $departureFlight['origin_airport_id'];
+        $departureDate = $departureFlight['return_date']; 
+        
+        // Mock query params for view compatibility
+        $this->request = $this->request->withQueryParams([
+            'origin_airport_id' => $originAirportId,
+            'dest_airport_id' => $destAirportId,
+            'departure' => $departureDate,
+            'passengers_adult' => $departureFlight['passengers_adult'],
+            'passengers_child' => $departureFlight['passengers_child'],
+            'passengers_infant' => $departureFlight['passengers_infant'],
+            'flight_class' => $departureFlight['flight_class'],
+            'journey_type' => 'Round Trip',
+            'return' => '', 
+        ]);
+        
+        $airportsTable = $this->fetchTable('Airports');
+        $airports = $airportsTable->find('list', [
+            'keyField' => 'id',
+            'valueField' => function ($airport) {
+                return $airport->city . ' (' . $airport->airport_code . ')';
+            }
+        ])->all()->toArray();
+        
+        $originAirport = $airportsTable->get($originAirportId);
+        $destAirport = $airportsTable->get($destAirportId);
+
+        $searchResults = $this->_generateFlights($originAirport, $destAirport, $departureDate);
+        
+        $this->set(compact('searchResults', 'airports', 'departureFlight'));
+    }
+    
+    /**
+     * Select Return Flight method
+     */
+    public function selectReturn()
+    {
+        $this->request->allowMethod(['post']);
+        
+        $flightData = $this->request->getData();
+        
+        // Write to Session
+        $session = $this->request->getSession();
+        $session->write('Flight.Return', $flightData);
+        
+        // Redirect to Booking
+        return $this->redirect(['controller' => 'Bookings', 'action' => 'add']);
+    }
+
+    /**
+     * Generate flights based on real-time factors
+     */
+    protected function _generateFlights($originAirport, $destAirport, $date)
+    {
+        // Mock Coordinates for Malaysian Airports (Lat, Lon)
+        $coords = [
+            'KUL' => [2.7433, 101.6981], // KLIA
+            'PEN' => [5.2925, 100.2745], // Penang
+            'BKI' => [5.9372, 116.0512], // Kota Kinabalu
+            'KCH' => [1.4851, 110.3430], // Kuching
+            'LGK' => [6.3297, 99.7344],  // Langkawi
+            'JHB' => [1.6368, 103.6697], // Johor Bahru
+            'MYY' => [4.3218, 113.9877], // Miri
+            'TGG' => [5.3826, 103.1026], // Kuala Terengganu
+        ];
+
+        $origCode = $originAirport->airport_code;
+        $destCode = $destAirport->airport_code;
+        
+        $coord1 = $coords[$origCode] ?? [3.1390, 101.6869]; // Default KL
+        $coord2 = $coords[$destCode] ?? [3.1390, 101.6869];
+
+        $distanceKm = $this->_calculateDistance($coord1[0], $coord1[1], $coord2[0], $coord2[1]);
+        
+        // If distance is very small (same city?), set min 100km
+        if ($distanceKm < 50) $distanceKm = 100;
+
+        // --- Calculate Logic ---
+        // Speed: ~750 km/h avg
+        // Taxi/Landing overhead: 30-40 mins
+        $flightDurationHours = ($distanceKm / 750) + 0.5; 
+        $durationMinutes = (int)($flightDurationHours * 60);
+        
+        // Price Base: RM 0.15 - 0.25 per km depending on route type
+        $isEastWest = ($origCode === 'KUL' && in_array($destCode, ['BKI', 'KCH', 'MYY'])) || 
+                      (in_array($origCode, ['BKI', 'KCH', 'MYY']) && $destCode === 'KUL');
+                      
+        $ratePerKm = $isEastWest ? 0.12 : 0.20; // Cheaper rate for longer east-west routes usually
+        $baseFare = $distanceKm * $ratePerKm;
+        
+        // Add Taxes and Surcharges
+        $taxes = 45; 
+        $minPrice = $baseFare + $taxes;
+        $maxPrice = $minPrice * 2.5; // Last minute / high demand range
+
+        // --- Generation ---
+        $allAirlines = [
+            ['name' => 'AirAsia', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/AirAsia_New_Logo.svg/1200px-AirAsia_New_Logo.svg.png', 'premium' => 1.0],
+            ['name' => 'Batik Air Malaysia', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Batik_Air_logo.svg/2560px-Batik_Air_logo.svg.png', 'premium' => 1.1],
+            ['name' => 'Malaysia Airlines', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Malaysia_Airlines_Logo.svg/1200px-Malaysia_Airlines_Logo.svg.png', 'premium' => 1.5],
+            ['name' => 'Firefly', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Firefly_logo.svg/1280px-Firefly_logo.svg.png', 'premium' => 1.2],
+        ];
+
+        // Filters
+        $selectedAirlines = $this->request->getQuery('airlines', []);
+        $selectedTime = $this->request->getQuery('time', '');
+        $flightClass = $this->request->getQuery('flight_class', 'Economy');
+        
+        $seedString = $origCode . $destCode . $date . json_encode($selectedAirlines) . $selectedTime; 
+        $seed = crc32($seedString);
+        srand($seed);
+
+        $results = [];
+        $numFlights = rand(5, 8);
+
+        for ($i = 0; $i < $numFlights; $i++) {
+            $airline = $allAirlines[array_rand($allAirlines)];
+            
+            // Skip if filtered out
+            if (!empty($selectedAirlines) && !in_array($airline['name'], $selectedAirlines)) {
+                 continue;
+            }
+
+            // Time Generation
+            $minHour = 6; $maxHour = 22;
+            if ($selectedTime === 'early') { $minHour = 0; $maxHour = 5; }
+            elseif ($selectedTime === 'morning') { $minHour = 6; $maxHour = 11; }
+            elseif ($selectedTime === 'afternoon') { $minHour = 12; $maxHour = 17; }
+            elseif ($selectedTime === 'night') { $minHour = 18; $maxHour = 23; }
+
+            $hour = rand($minHour, $maxHour);
+            $minute = rand(0, 11) * 5; // steps of 5 mins
+            $departureTime = new \Cake\I18n\DateTime($date . " $hour:$minute:00");
+            
+            // Price Calculation
+            $price = rand((int)$minPrice, (int)$maxPrice);
+            $price *= $airline['premium']; // Airline premium
+            
+            if ($flightClass === 'Business') $price *= 2.5;
+            elseif ($flightClass === 'First Class') $price *= 4.0;
+            
+            // Add some randomness to duration
+            $actualDuration = $durationMinutes + rand(-10, 15);
+
+            $flight = $this->Flights->newEmptyEntity();
+            $flight->departure_time = $departureTime;
+            $flight->base_price = $price;
+            $flight->origin_airport = $originAirport;
+            $flight->dest_airport = $destAirport;
+            $flight->airline_name = $airline['name'];
+            $flight->airline_logo = $airline['logo'];
+            $flight->duration_text = floor($actualDuration/60) . 'h ' . ($actualDuration%60) . 'm';
+            $flight->arrival_time = (clone $departureTime)->modify("+$actualDuration minutes");
+            $flight->duration_minutes = $actualDuration;
+            
+            $results[] = $flight;
+        }
+        
+        // Sorting
+        $sort = $this->request->getQuery('sort', 'recommended');
+        usort($results, function($a, $b) use ($sort) {
+            switch ($sort) {
+                case 'cheapest': return $a->base_price <=> $b->base_price;
+                case 'fastest': return $a->duration_minutes <=> $b->duration_minutes;
+                default: return $a->base_price <=> $b->base_price;
+            }
+        });
+
+        return $results;
+    }
+
+    /**
+     * Calculate distance between two coordinates using Haversine formula
+     */
+    protected function _calculateDistance($lat1, $lon1, $lat2, $lon2) {
+        $earthRadius = 6371; // km
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+        
+        $a = sin($dLat/2) * sin($dLat/2) +
+             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+             sin($dLon/2) * sin($dLon/2);
+             
+        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+        
+        return $earthRadius * $c;
     }
 }
