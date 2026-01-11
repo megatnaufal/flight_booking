@@ -5,27 +5,39 @@
  * @var \Cake\Collection\CollectionInterface|string[] $users
  */
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Html->link(__('List Passengers'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-        </div>
-    </aside>
-    <div class="column column-80">
-        <div class="passengers form content">
-            <?= $this->Form->create($passenger) ?>
-            <fieldset>
-                <legend><?= __('Add Passenger') ?></legend>
-                <?php
-                    echo $this->Form->control('user_id', ['options' => $users, 'empty' => true]);
-                    echo $this->Form->control('full_name');
-                    echo $this->Form->control('passport_number');
-                    echo $this->Form->control('phone_number');
-                ?>
-            </fieldset>
-            <?= $this->Form->button(__('Submit')) ?>
-            <?= $this->Form->end() ?>
+<?= $this->element('admin_theme') ?>
+
+<main class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>NEW PASSENGER</h2>
+        <?= $this->Html->link(__('<i class="bi bi-arrow-left"></i> Back to List'), ['action' => 'index'], ['class' => 'btn btn-outline-secondary text-white', 'escape' => false]) ?>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="dashboard-card">
+                <?= $this->Form->create($passenger) ?>
+                <fieldset class="mb-4">
+                    <legend class="text-muted mb-4">Passenger Information</legend>
+                    <div class="mb-3">
+                        <?= $this->Form->control('user_id', ['options' => $users, 'empty' => true, 'class' => 'form-select', 'label' => ['class' => 'form-label']]) ?>
+                    </div>
+                    <div class="mb-3">
+                        <?= $this->Form->control('full_name', ['class' => 'form-control', 'label' => ['class' => 'form-label']]) ?>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <?= $this->Form->control('passport_number', ['class' => 'form-control', 'label' => ['class' => 'form-label']]) ?>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <?= $this->Form->control('phone_number', ['class' => 'form-control', 'label' => ['class' => 'form-label']]) ?>
+                        </div>
+                    </div>
+                </fieldset>
+                <?= $this->Form->button(__('Save Passenger'), ['class' => 'btn-create']) ?>
+                <?= $this->Form->end() ?>
+            </div>
         </div>
     </div>
+</main>
 </div>

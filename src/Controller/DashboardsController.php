@@ -39,7 +39,7 @@ class DashboardsController extends AppController
         $bookings = $this->fetchTable('Bookings')->find()
             ->contain(['Passengers', 'Flights'])
             ->limit(10)
-            ->order(['Bookings.id' => 'DESC']) // Show newest first
+            ->order(['Bookings.id' => 'ASC']) // Show oldest first
             ->all();
 
         // 4. Fetch Recent Flights
@@ -47,7 +47,7 @@ class DashboardsController extends AppController
         $flights = $this->fetchTable('Flights')->find()
             ->contain(['OriginAirports', 'DestAirports'])
             ->limit(10)
-            ->order(['Flights.id' => 'DESC'])
+            ->order(['Flights.id' => 'ASC'])
             ->all();
 
         // 5. Fetch Recent Passengers
@@ -55,13 +55,13 @@ class DashboardsController extends AppController
         $passengers = $this->fetchTable('Passengers')->find()
             ->contain(['Users'])
             ->limit(10)
-            ->order(['Passengers.id' => 'DESC'])
+            ->order(['Passengers.id' => 'ASC'])
             ->all();
 
         // 6. Fetch Recent Users
         $users = $this->fetchTable('Users')->find()
             ->limit(10)
-            ->order(['Users.id' => 'DESC'])
+            ->order(['Users.id' => 'ASC'])
             ->all();
 
         // 7. Pass all variables to the View

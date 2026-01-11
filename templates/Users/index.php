@@ -4,56 +4,67 @@
  * @var iterable<\App\Model\Entity\User> $users
  */
 ?>
-<div class="users index content">
-    <?= $this->Html->link(__('New User'), ['action' => 'add'], ['class' => 'button float-right']) ?>
-    <h3><?= __('Users') ?></h3>
-    <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th><?= $this->Paginator->sort('id') ?></th>
-                    <th><?= $this->Paginator->sort('username') ?></th>
-                    <th><?= $this->Paginator->sort('email') ?></th>
-                    <th><?= $this->Paginator->sort('role') ?></th>
-                    <th><?= $this->Paginator->sort('created') ?></th>
-                    <th><?= $this->Paginator->sort('modified') ?></th>
-                    <th class="actions"><?= __('Actions') ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($users as $user): ?>
-                <tr>
-                    <td><?= $this->Number->format($user->id) ?></td>
-                    <td><?= h($user->username) ?></td>
-                    <td><?= h($user->email) ?></td>
-                    <td><?= h($user->role) ?></td>
-                    <td><?= h($user->created) ?></td>
-                    <td><?= h($user->modified) ?></td>
-                    <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $user->id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->id]) ?>
-                        <?= $this->Form->postLink(
-                            __('Delete'),
-                            ['action' => 'delete', $user->id],
-                            [
-                                'method' => 'delete',
-                                'confirm' => __('Are you sure you want to delete # {0}?', $user->id),
-                            ]
-                        ) ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+<?= $this->element('admin_theme') ?>
+
+<main class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>SYSTEM USERS</h2>
+        <div>
+            <?= $this->Html->link(__('<i class="bi bi-shield-lock"></i> New Admin'), ['action' => 'addAdmin'], ['class' => 'btn-create me-2', 'escape' => false]) ?>
+            <?= $this->Html->link(__('<i class="bi bi-plus-lg"></i> New User'), ['action' => 'add'], ['class' => 'btn-create', 'escape' => false]) ?>
+        </div>
     </div>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(__('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')) ?></p>
+
+    <div class="dashboard-card">
+        <div class="table-responsive">
+            <table class="table-flyhigh">
+                <thead>
+                    <tr>
+                        <th><?= $this->Paginator->sort('id') ?></th>
+                        <th><?= $this->Paginator->sort('username') ?></th>
+                        <th><?= $this->Paginator->sort('email') ?></th>
+                        <th><?= $this->Paginator->sort('role') ?></th>
+                        <th><?= $this->Paginator->sort('created') ?></th>
+                        <th><?= $this->Paginator->sort('modified') ?></th>
+                        <th class="actions"><?= __('Actions') ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($users as $user): ?>
+                    <tr>
+                        <td class="fw-bold text-muted"><?= $this->Number->format($user->id) ?></td>
+                        <td style="font-weight: bold;"><i class="bi bi-person-circle me-2" style="color:#666;"></i><?= h($user->username) ?></td>
+                        <td><?= h($user->email) ?></td>
+                        <td><span class="status-badge <?= strtolower($user->role) == 'admin' ? 'role-admin' : 'role-user' ?>"><?= h($user->role) ?></span></td>
+                        <td style="font-size: 0.85rem; color: #666;"><?= h($user->created) ?></td>
+                        <td style="font-size: 0.85rem; color: #666;"><?= h($user->modified) ?></td>
+                        <td class="actions">
+                            <?= $this->Html->link(__('View'), ['action' => 'view', $user->id], ['class' => 'text-white me-2 text-decoration-none']) ?>
+                            <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>
+                            <?= $this->Form->postLink(
+                                __('Delete'),
+                                ['action' => 'delete', $user->id],
+                                [
+                                    'confirm' => __('Are you sure you want to delete # {0}?', $user->id),
+                                    'class' => 'text-danger text-decoration-none'
+                                ]
+                            ) ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="paginator">
+            <ul class="pagination">
+                <?= $this->Paginator->first('<< ' . __('first')) ?>
+                <?= $this->Paginator->prev('< ' . __('previous')) ?>
+                <?= $this->Paginator->numbers() ?>
+                <?= $this->Paginator->next(__('next') . ' >') ?>
+                <?= $this->Paginator->last(__('last') . ' >>') ?>
+            </ul>
+            <p class="text-muted small mt-2"><?= $this->Paginator->counter(__('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')) ?></p>
+        </div>
     </div>
+</main>
 </div>

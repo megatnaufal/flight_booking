@@ -387,7 +387,10 @@ $users = $users ?? [];
         <div id="users" class="page-section">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 style="margin: 0;">SYSTEM USERS</h2>
-                <?= $this->Html->link(__('<i class="bi bi-plus-lg"></i> New User'), ['controller' => 'Users', 'action' => 'add'], ['class' => 'btn-create', 'escape' => false]) ?>
+                <div>
+                    <?= $this->Html->link(__('<i class="bi bi-shield-lock"></i> New Admin'), ['controller' => 'Users', 'action' => 'addAdmin'], ['class' => 'btn-create me-2', 'escape' => false]) ?>
+                    <?= $this->Html->link(__('<i class="bi bi-plus-lg"></i> New User'), ['controller' => 'Users', 'action' => 'add'], ['class' => 'btn-create', 'escape' => false]) ?>
+                </div>
             </div>
             <div class="dashboard-card">
                 <div class="table-responsive">
