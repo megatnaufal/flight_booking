@@ -174,11 +174,11 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 d-flex align-items-center gap-3">
-                    <a href="<?= $this->Url->build('/home') ?>" class="text-decoration-none me-3">
+                    <a href="<?= $this->Url->build('/') ?>" class="text-decoration-none me-3">
                         <img src="<?= $this->Url->build('/img/flyhigh-logo.png') ?>" alt="FlyHigh Logo" class="logo-img" style="height: 50px;">
                     </a>
                     <nav class="d-none d-md-flex">
-                        <a href="#" class="nav-link-custom">Flight</a>
+                        <a href="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" class="nav-link-custom">Flight</a>
                         <a href="#" class="nav-link-custom">Hotel</a>
                         <a href="#" class="nav-link-custom">Promo</a>
                         <a href="#" class="nav-link-custom">Orders</a>

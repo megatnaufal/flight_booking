@@ -3,6 +3,10 @@
    ======================================== */
 
 /* Theme Colors */
+:root {
+    color-scheme: light;
+}
+
 .purple-theme {
     color: #7C3AED;
 }
@@ -146,9 +150,14 @@
     color: #1f2937;
 }
 
+.form-check-input {
+    background-color: #fff !important;
+    border-color: #d1d5db !important;
+}
+
 .form-check-input:checked {
-    background-color: #7C3AED;
-    border-color: #7C3AED;
+    background-color: #7C3AED !important;
+    border-color: #7C3AED !important;
 }
 
 .form-check-input:focus {
@@ -167,6 +176,8 @@
     cursor: pointer;
     transition: all 0.2s;
     border-radius: 10px;
+    background-color: #fff !important;
+    color: #1f2937 !important;
 }
 
 .sort-tabs .card.active {
@@ -327,8 +338,15 @@
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 10px 14px;
-    background: #fff;
+    background: #fff !important;
     transition: all 0.2s ease;
+}
+
+.input-box input,
+.input-box select,
+.form-control {
+    background-color: transparent !important;
+    color: #1f2937 !important;
 }
 
 .input-box:focus-within {
