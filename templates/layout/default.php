@@ -93,7 +93,67 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         .badge-new { background-color: #f1c40f; color: #000; font-size: 0.6rem; padding: 1px 4px; border-radius: 4px; vertical-align: top; margin-left: 2px; }
         
         /* Language/User Links */
-        .user-nav-link { color: white; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 5px; }
+        .user-nav-link {
+            color: white;
+            font-size: 0.8rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Auth / Settings Modals shared styles */
+        .form-control-dark, .form-select.form-control-dark {
+            background: #121212;
+            border: 1px solid #333;
+            color: #ecf0f1;
+        }
+        .form-control-dark:focus,
+        .form-select.form-control-dark:focus {
+            background: #1a1a1a;
+            border-color: #FFD300;
+            color: #ecf0f1;
+            box-shadow: 0 0 10px rgba(255, 211, 0, 0.2);
+        }
+        .form-control-dark::placeholder {
+            color: #666;
+        }
+        .text-gold {
+            color: #FFD300;
+        }
+        .btn-gold {
+            background: linear-gradient(180deg, #FFD300 0%, #c9a600 100%);
+            color: #0a0a0a;
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-gold:hover {
+            box-shadow: 0 0 20px rgba(255, 211, 0, 0.5);
+            transform: translateY(-2px);
+            color: #0a0a0a;
+        }
+        .nav-tabs .nav-link {
+            color: #999;
+        }
+        .nav-tabs .nav-link.active {
+            color: #FFD300 !important;
+            background: transparent !important;
+            border-bottom: 2px solid #FFD300 !important;
+        }
+        .form-check-input:checked {
+            background-color: #FFD300;
+            border-color: #FFD300;
+        }
+
+        /* Optional: high contrast mode */
+        html.high-contrast body {
+            background-color: #000;
+            color: #fff;
+        }
+        html.high-contrast a {
+            color: #FFD300;
+        }
     </style>
 </head>
 <body>
@@ -140,7 +200,20 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                                     <div class="fw-bold text-gold"><?= h($identity->full_name ?: 'User') ?></div>
                                     <div class="small text-white text-truncate" style="max-width: 180px;"><?= h($identity->email) ?></div>
                                 </li>
-                                <li><a class="dropdown-item text-white my-1" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'settings']) ?>"><i class="bi bi-gear me-2"></i> Settings</a></li>
+                                <li>
+                                    <a class="dropdown-item text-white my-1" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'settings']) ?>">
+                                        <i class="bi bi-person-gear me-2"></i> Profile
+                                    </a>
+                                </li>
+                                <!-- Open Settings modal from here -->
+                                <li>
+                                    <a class="dropdown-item text-white my-1"
+                                       href="#"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#settingsModal">
+                                        <i class="bi bi-gear me-2"></i> Settings
+                                    </a>
+                                </li>
                                 <li><a class="dropdown-item text-white my-1" href="#"><i class="bi bi-ticket-perforated me-2"></i> My Bookings</a></li>
                                 <li><hr class="dropdown-divider border-secondary"></li>
                                 <li><a class="dropdown-item text-danger my-1" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'logout']) ?>"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
@@ -250,50 +323,145 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         </div>
     </div>
 
-    <style>
-        .form-control-dark {
-            background: #121212;
-            border: 1px solid #333;
-            color: #ecf0f1;
-        }
-        .form-control-dark:focus {
-            background: #1a1a1a;
-            border-color: #FFD300;
-            color: #ecf0f1;
-            box-shadow: 0 0 10px rgba(255, 211, 0, 0.2);
-        }
-        .form-control-dark::placeholder {
-            color: #666;
-        }
-        .text-gold {
-            color: #FFD300;
-        }
-        .btn-gold {
-            background: linear-gradient(180deg, #FFD300 0%, #c9a600 100%);
-            color: #0a0a0a;
-            border: none;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        .btn-gold:hover {
-            box-shadow: 0 0 20px rgba(255, 211, 0, 0.5);
-            transform: translateY(-2px);
-            color: #0a0a0a;
-        }
-        .nav-tabs .nav-link {
-            color: #999;
-        }
-        .nav-tabs .nav-link.active {
-            color: #FFD300 !important;
-            background: transparent !important;
-            border-bottom: 2px solid #FFD300 !important;
-        }
-        .form-check-input:checked {
-            background-color: #FFD300;
-            border-color: #FFD300;
-        }
-    </style>
+    <!-- Settings Modal (language, currency, accessibility) -->
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: #111; border: 1px solid #333;">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title text-gold fw-bold" id="settingsModalLabel">
+                        <i class="bi bi-gear me-2"></i>Account Settings
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- You can change URL to your real save action -->
+                    <?= $this->Form->create(null, [
+                        'url' => ['controller' => 'Users', 'action' => 'updateSettings'],
+                        'class' => 'settings-form'
+                    ]) ?>
+
+                        <!-- Language -->
+                        <div class="mb-3">
+                            <label class="form-label text-gold small">Language</label>
+                            <select name="language" class="form-select form-control-dark">
+                                <option value="en">English</option>
+                                <option value="ms">Bahasa Malaysia</option>
+                            </select>
+                        </div>
+
+                        <!-- Currency -->
+                        <div class="mb-3">
+                            <label class="form-label text-gold small">Currency</label>
+                            <select name="currency" class="form-select form-control-dark">
+                                <option value="MYR">MYR – Malaysian Ringgit</option>
+                            </select>
+                        </div>
+
+                        <!-- Accessibility / Theme -->
+                        <div class="mb-3">
+                            <label class="form-label text-gold small">Display & accessibility</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="1" id="darkModeToggle">
+                                <label class="form-check-label text-white small" for="darkModeToggle">
+                                    Enable dark mode
+                                </label>
+                            </div>
+                            <div class="form-check mt-1">
+                                <input class="form-check-input" type="checkbox" value="1" id="highContrastToggle">
+                                <label class="form-check-label text-white small" for="highContrastToggle">
+                                    High contrast mode
+                                </label>
+                            </div>
+                            <div class="mt-2">
+                                <label class="form-label text-gold small">Font size</label>
+                                <select name="font_size" class="form-select form-control-dark" id="fontSizeSelect">
+                                    <option value="normal">Normal</option>
+                                    <option value="large">Large</option>
+                                    <option value="xlarge">Extra large</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-gold">Save settings</button>
+                        </div>
+
+                    <?= $this->Form->end() ?>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Simple front-end theme + accessibility toggles -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const html = document.documentElement;
+            const darkToggle = document.getElementById('darkModeToggle');
+            const contrastToggle = document.getElementById('highContrastToggle');
+            const fontSizeSelect = document.getElementById('fontSizeSelect');
+
+            // Initialize from localStorage if available
+            const storedTheme = localStorage.getItem('flyhigh-theme');
+            const storedContrast = localStorage.getItem('flyhigh-contrast');
+            const storedFontSize = localStorage.getItem('flyhigh-fontsize');
+
+            if (storedTheme === 'light') {
+                html.setAttribute('data-bs-theme', 'light');
+                if (darkToggle) darkToggle.checked = false;
+            } else {
+                html.setAttribute('data-bs-theme', 'dark');
+                if (darkToggle) darkToggle.checked = true;
+            }
+
+            if (storedContrast === 'high') {
+                html.classList.add('high-contrast');
+                if (contrastToggle) contrastToggle.checked = true;
+            }
+
+            if (storedFontSize && fontSizeSelect) {
+                fontSizeSelect.value = storedFontSize;
+                applyFontSize(storedFontSize);
+            }
+
+            if (darkToggle) {
+                darkToggle.addEventListener('change', function () {
+                    const theme = this.checked ? 'dark' : 'light';
+                    html.setAttribute('data-bs-theme', theme);
+                    localStorage.setItem('flyhigh-theme', theme);
+                });
+            }
+
+            if (contrastToggle) {
+                contrastToggle.addEventListener('change', function () {
+                    if (this.checked) {
+                        html.classList.add('high-contrast');
+                        localStorage.setItem('flyhigh-contrast', 'high');
+                    } else {
+                        html.classList.remove('high-contrast');
+                        localStorage.setItem('flyhigh-contrast', 'normal');
+                    }
+                });
+            }
+
+            if (fontSizeSelect) {
+                fontSizeSelect.addEventListener('change', function () {
+                    applyFontSize(this.value);
+                    localStorage.setItem('flyhigh-fontsize', this.value);
+                });
+            }
+
+            function applyFontSize(size) {
+                if (size === 'large') {
+                    document.body.style.fontSize = '17px';
+                } else if (size === 'xlarge') {
+                    document.body.style.fontSize = '19px';
+                } else {
+                    document.body.style.fontSize = '15px';
+                }
+            }
+        });
+    </script>
 </body>
 </html>
