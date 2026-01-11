@@ -85,10 +85,10 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 
         /* Main Navigation */
         .top-header { 
-            background-color: #000000; 
+            background-color: #4C1D95; 
             padding: 0; 
-            border-bottom: 1px solid #333;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border-bottom: 1px solid #6D28D9;
+            box-shadow: 0 2px 10px rgba(76, 29, 149, 0.3);
         }
         
         .logo-img {
@@ -256,12 +256,6 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                                 <span class="d-none d-lg-inline ms-1">Help</span>
                             </a>
                         </div>
-
-                        <!-- Cart -->
-                        <a href="#" class="user-nav-link position-relative" title="Shopping Cart">
-                            <i class="bi bi-cart3 fs-5"></i>
-                            <span class="cart-badge">0</span>
-                        </a>
 
                         <!-- User Account -->
                         <?php 
