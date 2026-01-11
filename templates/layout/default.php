@@ -83,9 +83,6 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             font-weight: 600;
         }
 
-        /* Top Promo Banner */
-        .promo-banner { background-color: #000000; color: white; font-size: 0.75rem; padding: 6px 0; border-bottom: 1px solid #333; }
-        
         /* Main Navigation */
         .top-header { 
             background-color: #000000; 
@@ -213,20 +210,13 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     </style>
 </head>
 <body>
-    <div class="promo-banner text-center">
-        <div class="container position-relative">
-            Save big! MYR 300 OFF use code <strong>ADVENTURECALLS</strong> ! - download the app & register now!
-            <button type="button" class="btn-close btn-close-white position-absolute end-0 top-50 translate-middle-y small" style="font-size: 0.5rem;" aria-label="Close"></button>
-        </div>
-    </div>
-
     <header class="top-header">
         <div class="container">
-            <div class="row align-items-center py-2">
+            <div class="row align-items-center py-4">
                 <!-- Logo Section -->
                 <div class="col-auto">
                     <a href="<?= $this->Url->build('/') ?>" class="d-flex align-items-center text-decoration-none">
-                        <img src="<?= $this->Url->build('/img/flyhigh-logo.png') ?>" alt="FlyHigh" style="height: 50px;" class="logo-img">
+                        <img src="<?= $this->Url->build('/img/flyhigh-logo.png') ?>" alt="FlyHigh" style="height: 70px;" class="logo-img">
                     </a>
                 </div>
 
