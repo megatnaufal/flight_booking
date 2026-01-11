@@ -148,7 +148,7 @@ class UsersController extends AppController
             if ($loggedInUser->role === 'admin') {
                 return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
             }
-            return $this->redirect('/home');
+            return $this->redirect('/');
         }
         
         if ($this->request->is('post')) {
@@ -170,12 +170,23 @@ class UsersController extends AppController
                 if ($user->role === 'admin') {
                     return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
                 }
-                return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'home']);
+                return $this->redirect('/');
             }
             
             $this->Flash->error(__('Invalid email or password.'));
-            return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'home']);
+            return $this->redirect('/');
         }
+    }
+
+    /**
+     * Guest method
+     *
+     * @return \Cake\Http\Response|null|void Redirects to home
+     */
+    public function guest()
+    {
+        $this->request->getSession()->write('Guest', true);
+        return $this->redirect('/');
     }
 
     /**

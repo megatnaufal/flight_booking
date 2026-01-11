@@ -230,7 +230,7 @@ $this->disableAutoLayout();
 
         <div class="divider"><span>or</span></div>
         <div class="d-grid">
-            <a href="<?= $this->Url->build('/home') ?>" class="btn btn-outline-modern">
+            <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'guest']) ?>" class="btn btn-outline-modern">
                 <i class="bi bi-person me-2"></i>Continue as Guest
             </a>
         </div>

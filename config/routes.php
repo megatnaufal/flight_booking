@@ -55,11 +55,8 @@ return function (RouteBuilder $routes): void {
          * its action called 'display', and we pass a param to select the view file
          * to use (in this case, templates/Pages/home.php)...
          */
-        $builder->connect('/', ['controller' => 'Users', 'action' => 'login']);
+        $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
         
-        // Home page route
-        $builder->connect('/home', ['controller' => 'Pages', 'action' => 'display', 'home']);
-
         // Login shortcut route
         $builder->connect('/login', ['controller' => 'Users', 'action' => 'login']);
         // Register shortcut route
