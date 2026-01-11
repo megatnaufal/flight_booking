@@ -40,15 +40,31 @@
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label small text-muted">Card Number</label>
-                                        <input type="text" class="form-control" placeholder="0000 0000 0000 0000">
+                                        <input type="text" name="card_number" class="form-control" placeholder="0000 0000 0000 0000" 
+                                            required
+                                            pattern="[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4}"
+                                            maxlength="19"
+                                            title="Please enter 16 digits"
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\d{4})(?=\d)/g, '$1 ').substring(0, 19)">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label small text-muted">Valid Until</label>
-                                        <input type="text" class="form-control" placeholder="MM/YY">
+                                        <input type="text" name="valid_until" class="form-control" placeholder="MM/YY"
+                                            required
+                                            pattern="[0-9]{2}/[0-9]{2}"
+                                            maxlength="5"
+                                            title="Please enter in MM/YY format"
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^(\d{2})(\d)/, '$1/$2').substring(0, 5)">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label small text-muted">CVV</label>
-                                        <input type="text" class="form-control" placeholder="123">
+                                        <input type="text" name="cvv" class="form-control" placeholder="123"
+                                            required
+                                            pattern="[0-9]{3}"
+                                            maxlength="3"
+                                            minlength="3"
+                                            title="Please enter exactly 3 digits"
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label small text-muted">Card Holder Name</label>
