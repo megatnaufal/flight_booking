@@ -11,179 +11,233 @@ $this->disableAutoLayout();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login - FlyHigh</title>
     <?= $this->Html->meta('icon') ?>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
         body {
-            background-color: #0a0a0a;
-            background-image: 
-                linear-gradient(rgba(10, 10, 10, 0.95), rgba(10, 10, 10, 0.95)),
-                url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-            min-height: 100vh;
-            font-family: 'Oswald', sans-serif;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, rgba(76, 29, 149, 0.95) 0%, rgba(109, 40, 217, 0.9) 100%),
+                        url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .login-card {
-            background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
-            border: 1px solid #222;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+        .login-container {
+            display: flex;
+            width: 900px;
+            max-width: 95vw;
+            height: auto;
+            max-height: 90vh;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.4);
         }
-        .btn-batman {
-            background: linear-gradient(180deg, #FFD300 0%, #c9a600 100%);
-            color: #0a0a0a;
+        .hero-side {
+            flex: 1;
+            background: linear-gradient(135deg, #4C1D95 0%, #7C3AED 100%);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-side::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .hero-side::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -20%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+        }
+        .hero-content { position: relative; z-index: 1; }
+        .hero-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .hero-icon i { font-size: 1.5rem; color: white; }
+        .hero-title { font-size: 1.75rem; font-weight: 700; color: white; margin-bottom: 0.75rem; line-height: 1.3; }
+        .hero-text { font-size: 0.9rem; color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 1.5rem; }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: rgba(255,255,255,0.9);
+            font-size: 0.85rem;
+            margin-bottom: 0.6rem;
+        }
+        .feature-item i { color: #a5f3fc; font-size: 0.9rem; }
+        .login-side {
+            flex: 1;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .login-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+        }
+        .login-logo img { height: 40px; }
+        .login-logo span { font-size: 1.25rem; font-weight: 700; color: #4C1D95; }
+        .login-title { font-size: 1.35rem; font-weight: 700; color: #1f2937; margin-bottom: 0.25rem; }
+        .login-subtitle { font-size: 0.875rem; color: #6b7280; margin-bottom: 1.25rem; }
+        .form-label { font-weight: 500; font-size: 0.8rem; color: #374151; margin-bottom: 0.35rem; }
+        .form-control-modern {
+            background: #f9fafb;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px 12px 10px 38px;
+            font-size: 0.9rem;
+        }
+        .form-control-modern:focus {
+            background: #fff;
+            border-color: #7C3AED;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+        .input-wrapper { position: relative; }
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+        .btn-primary-modern {
+            background: linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%);
             border: none;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 700;
-            transition: all 0.3s;
+            border-radius: 8px;
+            padding: 11px;
+            font-weight: 600;
+            font-size: 0.95rem;
         }
-        .btn-batman:hover {
-            box-shadow: 0 0 25px rgba(255, 211, 0, 0.6);
-            transform: translateY(-2px);
-            color: #0a0a0a;
+        .btn-primary-modern:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
         }
-        .btn-guest {
+        .btn-outline-modern {
             background: transparent;
-            border: 2px solid #FFD300;
-            color: #FFD300;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px;
             font-weight: 500;
-            transition: all 0.3s;
+            font-size: 0.9rem;
+            color: #374151;
         }
-        .btn-guest:hover {
-            background: rgba(255, 211, 0, 0.1);
-            box-shadow: 0 0 20px rgba(255, 211, 0, 0.3);
-            color: #FFD300;
+        .btn-outline-modern:hover {
+            border-color: #7C3AED;
+            color: #7C3AED;
         }
-        .form-control-dark {
-            background: #121212;
-            border: 1px solid #333;
-            color: #ecf0f1;
-            border-radius: 4px;
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
         }
-        .form-control-dark:focus {
-            background: #1a1a1a;
-            border-color: #FFD300;
-            color: #ecf0f1;
-            box-shadow: 0 0 10px rgba(255, 211, 0, 0.2);
-        }
-        .form-control-dark::placeholder {
-            color: #666;
-        }
-        .text-gold { color: #FFD300; }
-        .scanline {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.1) 50%);
-            background-size: 100% 4px;
-            z-index: 10;
-            opacity: 0.3;
-        }
-        .bat-logo {
-            width: 80px;
-            height: 48px;
-            background: #FFD300;
-            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 56'%3E%3Cpath d='M50 8C35 8 20 18 15 25C15 25 10 20 5 18C5 18 5 35 15 45C22 52 35 52 50 52C65 52 78 52 85 45C95 35 95 18 95 18C90 20 85 25 85 25C80 18 65 8 50 8Z'/%3E%3C/svg%3E");
-            -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 56'%3E%3Cpath d='M50 8C35 8 20 18 15 25C15 25 10 20 5 18C5 18 5 35 15 45C22 52 35 52 50 52C65 52 78 52 85 45C95 35 95 18 95 18C90 20 85 25 85 25C80 18 65 8 50 8Z'/%3E%3C/svg%3E");
-            mask-repeat: no-repeat;
-            -webkit-mask-repeat: no-repeat;
-            mask-size: contain;
-            -webkit-mask-size: contain;
-            filter: drop-shadow(0 0 15px rgba(255, 211, 0, 0.5));
-            animation: pulse 3s infinite;
-        }
-        @keyframes pulse {
-            0% { filter: drop-shadow(0 0 15px rgba(255, 211, 0, 0.5)); }
-            50% { filter: drop-shadow(0 0 30px rgba(255, 211, 0, 0.8)); }
-            100% { filter: drop-shadow(0 0 15px rgba(255, 211, 0, 0.5)); }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e5e7eb; }
+        .divider span { padding: 0 0.75rem; color: #9ca3af; font-size: 0.8rem; }
+        .register-text { text-align: center; font-size: 0.85rem; color: #6b7280; margin-top: 1rem; }
+        .register-text a { color: #7C3AED; font-weight: 600; text-decoration: none; }
+        @media (max-width: 768px) {
+            .hero-side { display: none; }
+            .login-container { width: 100%; max-width: 400px; border-radius: 16px; }
         }
     </style>
 </head>
 <body>
-<div class="scanline"></div>
 
-<div class="container">
-<div class="row justify-content-center align-items-center" style="min-height: 100vh;">
-    <div class="col-md-5 col-lg-4">
-        <div class="login-card rounded-4 overflow-hidden">
-            <!-- Header with Bat Logo -->
-            <div class="text-center py-4" style="border-bottom: 1px solid #222;">
-                <img src="<?= $this->Url->build('/img/flyhigh-logo.png') ?>" alt="FlyHigh Logo" style="height: 120px; margin-bottom: 1rem; background: transparent; object-fit: contain;">
-                <h3 class="text-gold fw-bold mb-0 text-uppercase" style="letter-spacing: 4px;">FlyHigh</h3>
-                <small class="text-secondary text-uppercase" style="letter-spacing: 2px;">Access Terminal</small>
-            </div>
-            
-            <div class="p-5">
-                <h5 class="text-gold text-center mb-4 text-uppercase" style="letter-spacing: 2px;">Identify Yourself</h5>
-                
-                <?= $this->Form->create(null, ['class' => 'needs-validation']) ?>
-                
-                <!-- Email -->
-                <div class="mb-3">
-                    <label class="form-label text-gold small text-uppercase" style="letter-spacing: 1px;">Email</label>
-                    <?= $this->Form->control('email', [
-                        'label' => false,
-                        'required' => true,
-                        'class' => 'form-control form-control-lg form-control-dark',
-                        'placeholder' => 'agent@gotham.com',
-                        'templates' => [
-                            'inputContainer' => '{{content}}'
-                        ]
-                    ]) ?>
-                </div>
-
-                <!-- Password -->
-                <div class="mb-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <label class="form-label text-gold small text-uppercase" style="letter-spacing: 1px;">Password</label>
-                        <a href="#" class="text-decoration-none small text-secondary">Forgot?</a>
-                    </div>
-                    <?= $this->Form->control('password', [
-                        'label' => false,
-                        'required' => true,
-                        'class' => 'form-control form-control-lg form-control-dark',
-                        'placeholder' => '••••••••',
-                        'templates' => [
-                            'inputContainer' => '{{content}}'
-                        ]
-                    ]) ?>
-                </div>
-
-                <!-- Sign In Button -->
-                <div class="d-grid gap-2 mb-3">
-                    <?= $this->Form->button(__('Access System'), [
-                        'class' => 'btn btn-lg btn-batman'
-                    ]) ?>
-                </div>
-                <?= $this->Form->end() ?>
-
-                <div class="text-center my-3 text-secondary text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Or</div>
-
-                <!-- Guest Button -->
-                <div class="d-grid gap-2">
-                    <a href="<?= $this->Url->build('/') ?>" class="btn btn-lg btn-guest">
-                        <i class="bi bi-person me-2"></i>Continue as Guest
-                    </a>
-                </div>
-
-            </div>
-            
-            <div class="text-center py-3" style="border-top: 1px solid #222; background: rgba(0,0,0,0.3);">
-                <span class="text-secondary small">New operative?</span>
-                <?= $this->Html->link('Register', ['action' => 'add'], ['class' => 'text-gold text-decoration-none ms-1 fw-bold']) ?>
-            </div>
-        </div>
-        
-        <div class="text-center mt-4">
-            <small class="text-secondary">&copy; <?= date('Y') ?> FlyHigh. Gotham Division.</small>
+<div class="login-container">
+    <!-- Left Hero -->
+    <div class="hero-side">
+        <div class="hero-content">
+            <div class="hero-icon"><i class="bi bi-airplane"></i></div>
+            <h2 class="hero-title">Discover the World with FlyHigh</h2>
+            <p class="hero-text">Book flights to 500+ destinations with best prices and instant confirmations.</p>
+            <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>Best price guarantee</span></div>
+            <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>24/7 customer support</span></div>
+            <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>Secure instant booking</span></div>
+            <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>Earn rewards every trip</span></div>
         </div>
     </div>
-</div>
+
+    <!-- Right Login -->
+    <div class="login-side">
+        <div class="login-logo">
+            <img src="<?= $this->Url->build('/img/flyhigh-logo.png') ?>" alt="FlyHigh">
+            <span>FlyHigh</span>
+        </div>
+        <h2 class="login-title">Welcome back</h2>
+        <p class="login-subtitle">Enter your credentials to continue</p>
+
+        <?= $this->Form->create(null) ?>
+        <div class="mb-2">
+            <label class="form-label">Email Address</label>
+            <div class="input-wrapper">
+                <i class="bi bi-envelope input-icon"></i>
+                <?= $this->Form->control('email', [
+                    'label' => false, 'required' => true,
+                    'class' => 'form-control form-control-modern',
+                    'placeholder' => 'you@example.com',
+                    'templates' => ['inputContainer' => '{{content}}']
+                ]) ?>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="d-flex justify-content-between">
+                <label class="form-label">Password</label>
+                <a href="#" class="small text-decoration-none" style="color: #7C3AED; font-size: 0.8rem;">Forgot?</a>
+            </div>
+            <div class="input-wrapper">
+                <i class="bi bi-lock input-icon"></i>
+                <?= $this->Form->control('password', [
+                    'label' => false, 'required' => true,
+                    'class' => 'form-control form-control-modern',
+                    'placeholder' => '••••••••',
+                    'templates' => ['inputContainer' => '{{content}}']
+                ]) ?>
+            </div>
+        </div>
+        <div class="d-grid mb-2">
+            <?= $this->Form->button(__('Sign In'), ['class' => 'btn btn-primary btn-primary-modern']) ?>
+        </div>
+        <?= $this->Form->end() ?>
+
+        <div class="divider"><span>or</span></div>
+        <div class="d-grid">
+            <a href="<?= $this->Url->build('/home') ?>" class="btn btn-outline-modern">
+                <i class="bi bi-person me-2"></i>Continue as Guest
+            </a>
+        </div>
+        <div class="register-text">
+            Don't have an account? <?= $this->Html->link('Sign up', ['action' => 'add']) ?>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

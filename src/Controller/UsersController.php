@@ -55,7 +55,7 @@ class UsersController extends AppController
                     return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
                 }
                 
-                return $this->redirect('/');
+                return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'home']);
             }
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
@@ -117,6 +117,16 @@ class UsersController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $user = $this->Users->get($id);
+        
+        // Prevent deleting the last admin
+        if ($user->role === 'admin') {
+            $adminCount = $this->Users->find()->where(['role' => 'admin'])->count();
+            if ($adminCount <= 1) {
+                $this->Flash->error(__('Cannot delete the last admin user. There must always be at least one admin.'));
+                return $this->redirect(['action' => 'index']);
+            }
+        }
+        
         if ($this->Users->delete($user)) {
             $this->Flash->success(__('The user has been deleted.'));
         } else {
@@ -132,6 +142,15 @@ class UsersController extends AppController
      */
     public function login()
     {
+        // Check if user is already logged in
+        $loggedInUser = $this->request->getSession()->read('Auth');
+        if ($loggedInUser) {
+            if ($loggedInUser->role === 'admin') {
+                return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
+            }
+            return $this->redirect('/home');
+        }
+        
         if ($this->request->is('post')) {
             $email = $this->request->getData('email');
             $password = $this->request->getData('password');
@@ -140,10 +159,10 @@ class UsersController extends AppController
             $user = $this->Users->findByEmail($email)->first();
 
             if ($user) {
-                // In a real app, verify password: 
-                // if ((new \Cake\Auth\DefaultPasswordHasher())->check($password, $user->password)) ...
+                // Development mode - allow login if user exists
+                // In production, uncomment password verification below
+                // $passwordValid = password_verify($password, $user->password) || $password === $user->password;
                 
-                // For now, allow login if user exists (Development Mode)
                 $this->request->getSession()->write('Auth', $user);
                 
                 $this->Flash->success(__('Welcome back, ' . ($user->full_name ?: $user->email)));
@@ -151,10 +170,11 @@ class UsersController extends AppController
                 if ($user->role === 'admin') {
                     return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
                 }
-                return $this->redirect('/');
+                return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'home']);
             }
             
             $this->Flash->error(__('Invalid email or password.'));
+            return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'home']);
         }
     }
 
