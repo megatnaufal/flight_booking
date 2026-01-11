@@ -30,7 +30,7 @@
                     <?php foreach ($flights as $flight): ?>
                     <tr>
                         <td class="fw-bold text-muted"><?= $this->Number->format($flight->id) ?></td>
-                        <td style="color: var(--gotham-accent); font-weight: bold;"><i class="bi bi-airplane-fill me-2"></i><?= h($flight->flight_number) ?></td>
+                        <td class="fw-bold text-primary"><i class="bi bi-airplane-fill me-2"></i><?= h($flight->flight_number) ?></td>
                         <td><?= $flight->hasValue('origin_airport') ? h($flight->origin_airport->airport_code) : '-' ?></td>
                         <td><?= $flight->hasValue('dest_airport') ? h($flight->dest_airport->airport_code) : '-' ?></td>
                         <td><?= h($flight->departure_time) ?></td>

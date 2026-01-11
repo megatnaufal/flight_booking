@@ -31,7 +31,7 @@
                     <tr>
                         <td class="fw-bold text-muted"><?= $this->Number->format($booking->id) ?></td>
                         <td><?= $booking->hasValue('passenger') ? $this->Html->link($booking->passenger->full_name, ['controller' => 'Passengers', 'action' => 'view', $booking->passenger->id], ['class' => 'text-decoration-none text-white']) : '' ?></td>
-                        <td><?= $booking->hasValue('flight') ? $this->Html->link($booking->flight->flight_number, ['controller' => 'Flights', 'action' => 'view', $booking->flight->id], ['class' => 'text-decoration-none', 'style' => 'color: var(--gotham-accent);']) : '' ?></td>
+                        <td><?= $booking->hasValue('flight') ? $this->Html->link($booking->flight->flight_number, ['controller' => 'Flights', 'action' => 'view', $booking->flight->id], ['class' => 'text-decoration-none text-primary']) : '' ?></td>
                         <td><?= h($booking->booking_date) ?></td>
                         <td><?= h($booking->seat_number) ?></td>
                         <td><span class="status-badge <?= strtolower($booking->ticket_status ?? '') == 'paid' ? 'status-paid' : 'status-unpaid' ?>"><?= h($booking->ticket_status) ?></span></td>

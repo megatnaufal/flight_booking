@@ -205,6 +205,52 @@
     justify-content: center;
 }
 
+/* Autocomplete and Dropdown High Contrast Fix */
+.ui-autocomplete,
+.ui-menu,
+.ui-widget-content,
+.dropdown-menu {
+    background-color: #fff !important;
+    color: #1f2937 !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.ui-menu-item .ui-menu-item-wrapper:hover,
+.ui-state-active,
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #F5F3FF !important;
+    /* Light purple bg */
+    color: #7C3AED !important;
+    /* Purple text */
+    border: none !important;
+}
+
+/* Improve Text Visibility */
+.text-muted,
+.small,
+.form-text,
+label,
+label.small {
+    color: #000000 !important;
+    /* Pure Black for max contrast */
+}
+
+::placeholder {
+    color: #444444 !important;
+    /* Very Dark Grey */
+    opacity: 1 !important;
+}
+
+/* Ensure Input Text is distinct */
+input,
+select,
+textarea {
+    color: #000000 !important;
+    font-weight: 600;
+}
+
 /* Flight Card */
 .flight-result-card {
     border: 1px solid #e5e7eb;
@@ -342,11 +388,22 @@
     transition: all 0.2s ease;
 }
 
+/* Force global white background for cards */
+.card {
+    background-color: #fff !important;
+    color: #1f2937 !important;
+}
+
 .input-box input,
-.input-box select,
-.form-control {
+.input-box select {
     background-color: transparent !important;
     color: #1f2937 !important;
+}
+
+.form-control {
+    background-color: #fff !important;
+    color: #1f2937 !important;
+    border-color: #d1d5db !important;
 }
 
 .input-box:focus-within {
