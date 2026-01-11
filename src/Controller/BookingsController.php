@@ -45,21 +45,355 @@ class BookingsController extends AppController
      */
     public function add()
     {
-        $booking = $this->Bookings->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $booking = $this->Bookings->patchEntity($booking, $this->request->getData());
-            if ($this->Bookings->save($booking)) {
-                $this->Flash->success(__('The booking has been saved.'));
+        $session = $this->request->getSession();
+        $departureFlightData = $session->read('Flight.Departure');
+        $returnFlightData = $session->read('Flight.Return');
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The booking could not be saved. Please, try again.'));
+        if (!$departureFlightData) {
+            $this->Flash->error('Your session has expired or no flights were selected.');
+            return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'home']);
         }
-        $passengers = $this->Bookings->Passengers->find('list', limit: 200)->all();
-        $flights = $this->Bookings->Flights->find('list', limit: 200)->all();
-        $this->set(compact('booking', 'passengers', 'flights'));
+        
+        // Fetch Airport details
+        $airportsTable = $this->fetchTable('Airports');
+        
+        // Enrich Departure Data
+        if (!empty($departureFlightData['origin_airport_id'])) {
+            $origin = $airportsTable->get($departureFlightData['origin_airport_id']);
+            $departureFlightData['origin_airport_code'] = $origin->airport_code;
+            $departureFlightData['origin_city'] = $origin->city;
+        }
+        if (!empty($departureFlightData['dest_airport_id'])) {
+            $dest = $airportsTable->get($departureFlightData['dest_airport_id']);
+            $departureFlightData['dest_airport_code'] = $dest->airport_code;
+            $departureFlightData['dest_city'] = $dest->city;
+        }
+        
+        // Enrich Return Data
+        if ($returnFlightData) {
+            if (!empty($returnFlightData['origin_airport_id'])) {
+                $origin = $airportsTable->get($returnFlightData['origin_airport_id']);
+                $returnFlightData['origin_airport_code'] = $origin->airport_code;
+                $returnFlightData['origin_city'] = $origin->city;
+            }
+            if (!empty($returnFlightData['dest_airport_id'])) {
+                $dest = $airportsTable->get($returnFlightData['dest_airport_id']);
+                $returnFlightData['dest_airport_code'] = $dest->airport_code;
+                $returnFlightData['dest_city'] = $dest->city;
+            }
+        }
+
+        $booking = $this->Bookings->newEmptyEntity();
+        
+        // Handle Form Submission (Checkout)
+        if ($this->request->is('post')) {
+            $data = $this->request->getData();
+            
+            // 1. Recreate and Save Flight from Session Data
+            $flightsTable = $this->fetchTable('Flights');
+            $flight = $flightsTable->newEmptyEntity();
+            
+            // Generate Mock Flight Number matching airline
+            $airline = $departureFlightData['airline_name'] ?? 'Airline';
+            $code = 'FL';
+            if (strpos($airline, 'AirAsia') !== false) $code = 'AK';
+            elseif (strpos($airline, 'Malaysia') !== false) $code = 'MH';
+            elseif (strpos($airline, 'Batik') !== false) $code = 'OD';
+            elseif (strpos($airline, 'Firefly') !== false) $code = 'FY';
+            
+            $flightNumber = $code . rand(100, 9999);
+            
+            // Map Session Data to Entity
+            // Note: date objects in session might be strings or objects depending on serialization.
+            // FlightController stores them as DateTime objects, but Session read might give strings?
+            // CakePHP marshal should handle strings if valid format.
+            $flight = $flightsTable->patchEntity($flight, [
+                'flight_number' => $flightNumber,
+                'origin_airport_id' => $departureFlightData['origin_airport_id'],
+                'dest_airport_id' => $departureFlightData['dest_airport_id'],
+                'departure_time' => $departureFlightData['departure_time'],
+                'arrival_time' => $departureFlightData['arrival_time'],
+                'base_price' => $departureFlightData['base_price'],
+                'airline_name' => $airline,
+            ]);
+
+            if (!$flightsTable->save($flight)) {
+                 $this->Flash->error('System Error: Could not save flight details. ' . json_encode($flight->getErrors()));
+                 return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'home']);
+            }
+            
+            // Save Booking Logic
+            $passengersTable = $this->fetchTable('Passengers');
+            $leadPassengerId = null;
+
+            // Extract All Passengers Data to process
+            $allPassengersData = [];
+            if (!empty($data['passengers']['adult'])) {
+                foreach ($data['passengers']['adult'] as $idx => $p) {
+                    $p['type'] = 'Adult';
+                    $allPassengersData[] = $p; 
+                }
+            }
+            if (!empty($data['passengers']['child'])) {
+                foreach ($data['passengers']['child'] as $idx => $p) {
+                    $p['type'] = 'Child';
+                    $allPassengersData[] = $p;
+                }
+            }
+            if (!empty($data['passengers']['infant'])) {
+                foreach ($data['passengers']['infant'] as $idx => $p) {
+                    $p['type'] = 'Infant';
+                    $allPassengersData[] = $p;
+                }
+            }
+            
+            // Save Lead Passenger (First Adult)
+            $leadPax = null;
+            if (!empty($allPassengersData)) {
+                $leadData = $allPassengersData[0];
+                $leadPax = $passengersTable->newEmptyEntity();
+                $leadPax = $passengersTable->patchEntity($leadPax, [
+                    'full_name' => trim(($leadData['first_name'] ?? '') . ' ' . ($leadData['last_name'] ?? '')),
+                    'phone_number' => $leadData['phone_number'] ?? '',
+                    'email' => $leadData['email'] ?? '',
+                    'dob' => $leadData['dob'] ?? null,
+                    'type' => $leadData['type'] ?? 'Adult',
+                ]);
+                if ($passengersTable->save($leadPax)) {
+                    $leadPassengerId = $leadPax->id;
+                } else {
+                    $this->Flash->error('System Error: Could not save lead passenger details. ' . json_encode($leadPax->getErrors()));
+                    return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'home']);
+                }
+            }
+
+            // Create Booking
+            $booking = $this->Bookings->newEmptyEntity();
+            $booking->passenger_id = $leadPassengerId;
+            $booking->flight_id = $flight->id; 
+            $booking->booking_date = date('Y-m-d');
+            $booking->ticket_status = 'Pending Payment';
+            
+            if ($this->Bookings->save($booking)) {
+                
+                // 1. Update Lead Passenger with Booking ID
+                if ($leadPassengerId) {
+                    $leadPax = $passengersTable->get($leadPassengerId);
+                    $leadPax->booking_id = $booking->id;
+                    $passengersTable->save($leadPax);
+                }
+
+                // 2. Save Remaining Passengers
+                array_shift($allPassengersData); // Remove lead
+                
+                foreach ($allPassengersData as $pData) {
+                    $pax = $passengersTable->newEmptyEntity();
+                    $pax = $passengersTable->patchEntity($pax, [
+                        'full_name' => trim(($pData['first_name'] ?? '') . ' ' . ($pData['last_name'] ?? '')),
+                        'phone_number' => $pData['phone_number'] ?? '',
+                        'email' => $pData['email'] ?? '',
+                        'dob' => $pData['dob'] ?? null,
+                        'type' => $pData['type'] ?? '',
+                        'booking_id' => $booking->id
+                    ]);
+                    $passengersTable->save($pax);
+                }
+                
+                // 3. Update Session Passenger List for Payment View
+                $passengerList = [];
+                if (!empty($data['passengers']['adult'])) {
+                   foreach ($data['passengers']['adult'] as $p) {
+                       $passengerList[] = ['name' => ($p['first_name'] ?? '') . ' ' . ($p['last_name'] ?? ''), 'type' => 'Adult'];
+                   }
+                }
+                if (!empty($data['passengers']['child'])) {
+                   foreach ($data['passengers']['child'] as $p) {
+                       $passengerList[] = ['name' => ($p['first_name'] ?? '') . ' ' . ($p['last_name'] ?? ''), 'type' => 'Child'];
+                   }
+                }
+                if (!empty($data['passengers']['infant'])) {
+                   foreach ($data['passengers']['infant'] as $p) {
+                       $passengerList[] = ['name' => ($p['first_name'] ?? '') . ' ' . ($p['last_name'] ?? ''), 'type' => 'Infant'];
+                   }
+                }
+                $session->write('Flight.PassengerList', $passengerList);
+                
+                // Handle Return Flight (if exists)
+                if ($returnFlightData) {
+                    $returnFlight = $flightsTable->newEmptyEntity();
+                    
+                    // Generate Mock Flight Number for Return
+                    $airlineRet = $returnFlightData['airline_name'] ?? 'Airline';
+                    $codeRet = 'FL';
+                    if (strpos($airlineRet, 'AirAsia') !== false) $codeRet = 'AK';
+                    elseif (strpos($airlineRet, 'Malaysia') !== false) $codeRet = 'MH';
+                    elseif (strpos($airlineRet, 'Batik') !== false) $codeRet = 'OD';
+                    elseif (strpos($airlineRet, 'Firefly') !== false) $codeRet = 'FY';
+                    $flightNumberRet = $codeRet . rand(100, 9999);
+                    
+                    $returnFlight = $flightsTable->patchEntity($returnFlight, [
+                        'flight_number' => $flightNumberRet,
+                        'origin_airport_id' => $returnFlightData['origin_airport_id'],
+                        'dest_airport_id' => $returnFlightData['dest_airport_id'],
+                        'departure_time' => $returnFlightData['departure_time'],
+                        'arrival_time' => $returnFlightData['arrival_time'],
+                        'base_price' => $returnFlightData['base_price'],
+                        'airline_name' => $airlineRet,
+                    ]);
+                    $flightsTable->save($returnFlight);
+                    
+                    $returnBooking = $this->Bookings->newEmptyEntity();
+                    $returnBooking->passenger_id = $leadPassengerId;
+                    $returnBooking->flight_id = $returnFlight->id;
+                    $returnBooking->booking_date = date('Y-m-d');
+                    $returnBooking->ticket_status = 'Pending Payment';
+                    $this->Bookings->save($returnBooking);
+                    
+                    $session->write('Flight.ReturnBookingId', $returnBooking->id);
+                }
+
+                return $this->redirect(['action' => 'payment', $booking->id]);
+            }
+            $this->Flash->error(__('The booking could not be saved. Error: ' . json_encode($booking->getErrors())));
+        }
+
+        // Calculate Totals
+        $paxAdult = (int)($departureFlightData['passengers_adult'] ?? 1);
+        $paxChild = (int)($departureFlightData['passengers_child'] ?? 0);
+        $paxInfant = (int)($departureFlightData['passengers_infant'] ?? 0);
+        $totalPax = $paxAdult + $paxChild + $paxInfant;
+        
+        $basePerAdult = (float)($departureFlightData['base_price'] ?? 0) + (float)($returnFlightData['base_price'] ?? 0);
+        $basePerChild = $basePerAdult;
+        $basePerInfant = $basePerAdult * 0.5;
+        
+        $taxesPerPax = 45.00;
+        $totalTaxes = $taxesPerPax * $totalPax;
+
+        $totalPrice = ($basePerAdult * $paxAdult) + ($basePerChild * $paxChild) + ($basePerInfant * $paxInfant) + $totalTaxes;
+        
+        $this->set(compact('booking', 'departureFlightData', 'returnFlightData', 'paxAdult', 'paxChild', 'paxInfant', 'totalPax', 'totalPrice', 'totalTaxes', 'basePerAdult', 'basePerChild', 'basePerInfant'));
     }
 
+    public function payment($id = null)
+    {
+        $booking = $this->Bookings->get($id, [
+            'contain' => ['Passengers']
+        ]);
+        $session = $this->request->getSession();
+        $departureFlightData = $session->read('Flight.Departure');
+        $returnFlightData = $session->read('Flight.Return');
+        
+        if (!$departureFlightData) {
+            return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'home']);
+        }
+        
+        // Ensure Airport Codes are present (Reuse logic from add, or extract to private method. I'll duplicate for safety/speed)
+        $airportsTable = $this->fetchTable('Airports');
+        if (!empty($departureFlightData['origin_airport_id'])) {
+            $origin = $airportsTable->get($departureFlightData['origin_airport_id']);
+            $departureFlightData['origin_airport_code'] = $origin->airport_code;
+        }
+        if (!empty($departureFlightData['dest_airport_id'])) {
+            $dest = $airportsTable->get($departureFlightData['dest_airport_id']);
+            $departureFlightData['dest_airport_code'] = $dest->airport_code;
+        }
+         if ($returnFlightData) {
+            if (!empty($returnFlightData['origin_airport_id'])) {
+                $origin = $airportsTable->get($returnFlightData['origin_airport_id']);
+                $returnFlightData['origin_airport_code'] = $origin->airport_code;
+            }
+            if (!empty($returnFlightData['dest_airport_id'])) {
+                $dest = $airportsTable->get($returnFlightData['dest_airport_id']);
+                $returnFlightData['dest_airport_code'] = $dest->airport_code;
+            }
+        }
+
+        // Calculate Totals again for Payment View
+        $paxAdult = (int)($departureFlightData['passengers_adult'] ?? 1);
+        $paxChild = (int)($departureFlightData['passengers_child'] ?? 0);
+        $paxInfant = (int)($departureFlightData['passengers_infant'] ?? 0);
+        $totalPax = $paxAdult + $paxChild + $paxInfant;
+        
+        $passengerList = $session->read('Flight.PassengerList') ?? [];
+        if (empty($passengerList) && $booking->has('passenger')) {
+             // Fallback if session missing but DB has lead
+             $passengerList[] = ['name' => $booking->passenger->full_name, 'type' => 'Adult 1'];
+        }
+
+        $basePerAdult = (float)($departureFlightData['base_price'] ?? 0) + (float)($returnFlightData['base_price'] ?? 0);
+        $basePerChild = $basePerAdult;
+        $basePerInfant = $basePerAdult * 0.5;
+        $taxesPerPax = 45.00;
+        $totalTaxes = $taxesPerPax * $totalPax;
+        $totalPrice = ($basePerAdult * $paxAdult) + ($basePerChild * $paxChild) + ($basePerInfant * $paxInfant) + $totalTaxes;
+
+        $this->set(compact('booking', 'totalPrice', 'departureFlightData', 'returnFlightData', 'paxAdult', 'passengerList'));
+    }
+
+    public function complete($id = null)
+    {
+        $this->request->allowMethod(['post']);
+        $booking = $this->Bookings->get($id);
+        $session = $this->request->getSession();
+        
+        // Mark as Paid
+        $booking->ticket_status = 'Confirmed';
+        
+        // Save Payment Method
+        $method = $this->request->getData('payment_method');
+        if ($method === 'Internet Banking') {
+            $bankName = $this->request->getData('bank_name');
+            if ($bankName) {
+                // Formatting Bank Name for better display: Maybank2u -> Maybank2u, Public Bank -> Public Bank
+                // The keys in array were 'Maybank2u' etc which are readable.
+                $method .= " ($bankName)";
+            }
+        }
+        $booking->payment_method = $method;
+        
+        if ($this->Bookings->save($booking)) {
+            
+            // Confirm Return Booking if exists
+            $returnBookingId = $session->read('Flight.ReturnBookingId');
+            if ($returnBookingId) {
+                $returnBooking = $this->Bookings->get($returnBookingId);
+                $returnBooking->ticket_status = 'Confirmed';
+                $this->Bookings->save($returnBooking);
+            }
+            
+            // Clear session flight data
+            $session->delete('Flight');
+            
+            $this->Flash->success(__('Payment successful! Your booking is confirmed. Airpaz Code: ' . $booking->id));
+            
+            $redirectUrl = ['action' => 'confirmation', $booking->id];
+            if ($returnBookingId) {
+                $redirectUrl['?']['return_id'] = $returnBookingId;
+            }
+            
+            return $this->redirect($redirectUrl);
+        }
+        $this->Flash->error(__('Payment failed. Please try again.'));
+        return $this->redirect(['action' => 'payment', $id]);
+    }
+    
+    public function confirmation($id = null)
+    {
+        $booking = $this->Bookings->get($id, [
+            'contain' => ['Passengers', 'Flights' => ['OriginAirports', 'DestAirports']]
+        ]);
+        
+        $returnBookingId = $this->request->getQuery('return_id');
+        $returnBooking = null;
+        if ($returnBookingId) {
+            $returnBooking = $this->Bookings->get($returnBookingId, [
+                'contain' => ['Flights' => ['OriginAirports', 'DestAirports']]
+            ]);
+        }
+        
+        $this->set(compact('booking', 'returnBooking'));
+    }
     /**
      * Edit method
      *

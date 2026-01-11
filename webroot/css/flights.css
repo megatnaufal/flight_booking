@@ -277,31 +277,5 @@
 .btn-search-red:hover {
     background-color: #c91c23;
     color: white;
-}
-
-/* Footer Styling */
-.footer-section {
-    background-color: #ffffff;
-    padding-top: 50px;
-    border-top: 1px solid #eee;
-    margin-top: 60px;
-}
-
-.footer-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-.footer-link {
-    font-size: 0.875rem;
-    color: #666;
-    text-decoration: none;
-    display: block;
-    margin-bottom: 8px;
-}
-
-.footer-link:hover {
     color: #e62129;
 }

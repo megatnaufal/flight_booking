@@ -186,7 +186,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                     </nav>
                 </div>
 
-                <div class="col-lg-6 d-flex justify-content-end align-items-center gap-4">
+                <!-- Right Side Actions -->
+                <div class="col-auto ms-auto">
                     <div class="d-flex align-items-center gap-3">
                         <a href="#" class="user-nav-link"><i class="bi bi-translate"></i> MYR</a>
                         <a href="#" class="user-nav-link">Help</a>
@@ -240,10 +241,50 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                             <i class="bi bi-person-circle"></i> Sign In / Register
                         </a>
                     <?php endif; ?>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="btn btn-link text-white d-lg-none p-0 ms-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+                        <i class="bi bi-list fs-3"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </header>
+
+    <!-- Mobile Menu Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" style="background: #0a0a0a; color: white;">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="offcanvas-title text-gold">Menu</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav class="d-flex flex-column gap-2">
+                <a href="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" class="nav-link-mobile">
+                    <i class="bi bi-airplane me-2"></i> Flights
+                </a>
+                <a href="#" class="nav-link-mobile">
+                    <i class="bi bi-building me-2"></i> Hotels
+                </a>
+                <a href="#" class="nav-link-mobile">
+                    <i class="bi bi-tag me-2"></i> Promos
+                </a>
+                <a href="#" class="nav-link-mobile">
+                    <i class="bi bi-receipt me-2"></i> My Orders
+                </a>
+                <a href="#" class="nav-link-mobile">
+                    <i class="bi bi-star me-2"></i> Deals <span class="badge-new ms-2">NEW</span>
+                </a>
+                <hr class="border-secondary">
+                <a href="#" class="nav-link-mobile">
+                    <i class="bi bi-currency-exchange me-2"></i> Currency (MYR)
+                </a>
+                <a href="#" class="nav-link-mobile">
+                    <i class="bi bi-question-circle me-2"></i> Help Center
+                </a>
+            </nav>
+        </div>
+    </div>
+
 
     <main class="main">
         <div class="container-fluid p-0">

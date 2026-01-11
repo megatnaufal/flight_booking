@@ -347,7 +347,30 @@ $this->Html->css('flights', ['block' => true]);
                             <div class="flight-price-label">Start from</div>
                             <div class="flight-price-main">RM <?= number_format($flight->base_price, 2) ?></div>
                             <div class="flight-price-total mb-2">Total RM <?= number_format($flight->base_price * 1.1, 2) ?> / Pax</div>
-                            <button class="btn btn-red-theme px-4 py-2 rounded">Select</button>
+                            
+                            <form action="<?= $this->Url->build(['action' => 'selectDeparture']) ?>" method="post">
+                                <input type="hidden" name="_csrfToken" value="<?= $this->request->getAttribute('csrfToken') ?>">
+                                
+                                <!-- Search Context -->
+                                <input type="hidden" name="journey_type" value="<?= h($this->request->getQuery('journey_type', 'Round Trip')) ?>">
+                                <input type="hidden" name="passengers_adult" value="<?= h($this->request->getQuery('passengers_adult', 1)) ?>">
+                                <input type="hidden" name="passengers_child" value="<?= h($this->request->getQuery('passengers_child', 0)) ?>">
+                                <input type="hidden" name="passengers_infant" value="<?= h($this->request->getQuery('passengers_infant', 0)) ?>">
+                                <input type="hidden" name="flight_class" value="<?= h($this->request->getQuery('flight_class', 'Economy')) ?>">
+                                <input type="hidden" name="return_date" value="<?= h($this->request->getQuery('return', '')) ?>">
+                                
+                                <!-- Flight Details -->
+                                <input type="hidden" name="origin_airport_id" value="<?= h($flight->origin_airport->id) ?>">
+                                <input type="hidden" name="dest_airport_id" value="<?= h($flight->dest_airport->id) ?>">
+                                <input type="hidden" name="airline_name" value="<?= h($flight->airline_name) ?>">
+                                <input type="hidden" name="airline_logo" value="<?= h($flight->airline_logo) ?>">
+                                <input type="hidden" name="departure_time" value="<?= $flight->departure_time->format('Y-m-d H:i:s') ?>">
+                                <input type="hidden" name="arrival_time" value="<?= $flight->arrival_time->format('Y-m-d H:i:s') ?>">
+                                <input type="hidden" name="duration_text" value="<?= h($flight->duration_text) ?>">
+                                <input type="hidden" name="base_price" value="<?= h($flight->base_price) ?>">
+                                
+                                <button type="submit" class="btn btn-red-theme px-4 py-2 rounded">Select</button>
+                            </form>
                         </div>
                     </div>
                 </div>
