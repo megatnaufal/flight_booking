@@ -195,7 +195,17 @@ $this->Html->css('flights', ['block' => true]);
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-muted small">Mobile Number*</label>
-                                <?= $this->Form->text("passengers.adult.$i.phone_number", ['class' => 'form-control', 'placeholder' => '+60', 'required' => true]) ?>
+                                <?= $this->Form->text("passengers.adult.$i.phone_number", [
+                                    'class' => 'form-control', 
+                                    'placeholder' => '0123456789', 
+                                    'required' => true,
+                                    'pattern' => '[0-9]{10}',
+                                    'maxlength' => '10',
+                                    'minlength' => '10',
+                                    'title' => 'Please enter exactly 10 digits',
+                                    'oninput' => "this.value = this.value.replace(/[^0-9]/g, '')"
+                                ]) ?>
+                                <div class="form-text small text-muted"><i class="bi bi-info-circle"></i> (10 digits only, e.g. 0123456789)</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-muted small">Email Address*</label>
