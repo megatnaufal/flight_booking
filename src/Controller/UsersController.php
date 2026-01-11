@@ -63,6 +63,28 @@ class UsersController extends AppController
     }
 
     /**
+     * Add Admin method
+     *
+     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
+     */
+    public function addAdmin()
+    {
+        $user = $this->Users->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            // Force role to 'admin'
+            $user->role = 'admin';
+            if ($this->Users->save($user)) {
+                $this->Flash->success(__('The admin user has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The admin user could not be saved. Please, try again.'));
+        }
+        $this->set(compact('user'));
+    }
+
+    /**
      * Edit method
      *
      * @param string|null $id User id.
