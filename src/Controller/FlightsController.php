@@ -270,10 +270,10 @@ class FlightsController extends AppController
 
         // --- Generation ---
         $allAirlines = [
-            ['name' => 'AirAsia', 'logo' => '/img/airlines/airasia.png', 'premium' => 1.0],
-            ['name' => 'Batik Air Malaysia', 'logo' => '/img/airlines/batik-air.png', 'premium' => 1.1],
-            ['name' => 'Malaysia Airlines', 'logo' => '/img/airlines/malaysia-airlines.png', 'premium' => 1.5],
-            ['name' => 'Firefly', 'logo' => '/img/airlines/firefly.png', 'premium' => 1.2],
+            ['name' => 'AirAsia', 'logo' => 'https://logos-world.net/wp-content/uploads/2021/02/AirAsia-Logo.png', 'premium' => 1.0],
+            ['name' => 'Batik Air Malaysia', 'logo' => 'https://airhex.com/images/airline-logos/batik-air.png', 'premium' => 1.1],
+            ['name' => 'Malaysia Airlines', 'logo' => 'https://logos-world.net/wp-content/uploads/2023/01/Malaysia-Airlines-Logo.png', 'premium' => 1.5],
+            ['name' => 'Firefly', 'logo' => 'https://airhex.com/images/airline-logos/firefly.png', 'premium' => 1.2],
         ];
 
         // Filters
