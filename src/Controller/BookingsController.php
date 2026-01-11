@@ -18,7 +18,8 @@ class BookingsController extends AppController
     public function index()
     {
         $query = $this->Bookings->find()
-            ->contain(['Passengers', 'Flights']);
+            ->contain(['Passengers', 'Flights'])
+            ->order(['Bookings.id' => 'ASC']);
         $bookings = $this->paginate($query);
 
         $this->set(compact('bookings'));

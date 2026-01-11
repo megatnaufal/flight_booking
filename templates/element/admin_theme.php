@@ -106,6 +106,8 @@ $controller = $this->request->getParam('controller');
     /* TABLE STYLES */
     .table-flyhigh { width: 100%; border-collapse: collapse; color: var(--gotham-muted); }
     .table-flyhigh th { text-align: left; padding: 15px; border-bottom: 2px solid var(--gotham-border); color: var(--gotham-accent); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+    .table-flyhigh th a { color: var(--gotham-accent); text-decoration: none; }
+    .table-flyhigh th a:hover { color: #fff; }
     .table-flyhigh td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; vertical-align: middle; }
     .table-flyhigh tr:hover td { color: var(--gotham-text); background: rgba(255,255,255,0.02); }
     

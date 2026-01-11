@@ -18,7 +18,8 @@ class PassengersController extends AppController
     public function index()
     {
         $query = $this->Passengers->find()
-            ->contain(['Users']);
+            ->contain(['Users'])
+            ->order(['Passengers.id' => 'ASC']);
         $passengers = $this->paginate($query);
 
         $this->set(compact('passengers'));

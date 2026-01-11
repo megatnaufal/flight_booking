@@ -18,7 +18,8 @@ class FlightsController extends AppController
     public function index()
     {
         $query = $this->Flights->find()
-            ->contain(['OriginAirports', 'DestAirports']);
+            ->contain(['OriginAirports', 'DestAirports'])
+            ->order(['Flights.id' => 'ASC']);
         $flights = $this->paginate($query);
 
         $this->set(compact('flights'));
