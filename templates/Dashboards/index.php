@@ -24,16 +24,17 @@ $users = $users ?? [];
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Rajdhani:wght@500;600;700&display=swap');
 
     :root {
-        /* BATMAN GOTHAM THEME */
-        --gotham-bg: #050505;          /* Deep Black */
-        --gotham-card: #121212;        /* Dark Grey Card */
-        --gotham-accent: #f1c40f;      /* Gold Accent */
-        --gotham-text: #ecf0f1;        /* Off-White Text */
-        --gotham-muted: #95a5a6;       /* Muted Grey Text */
-        --gotham-border: #2c3e50;      /* Dark Blue-Grey Border */
+        /* REFINED PURPLE THEME */
+        --gotham-bg: #FAFAFA;          /* Light Background */
+        --gotham-card: #FFFFFF;        /* White Card */
+        --gotham-accent: #7C3AED;      /* Purple Accent */
+        --gotham-text: #2D3748;        /* Dark Text */
+        --gotham-muted: #718096;       /* Muted Grey Text */
+        --gotham-border: #E5E5E5;      /* Light Border */
         
         --sidebar-collapsed: 70px;
         --sidebar-expanded: 260px;
@@ -41,7 +42,7 @@ $users = $users ?? [];
 
     body { 
         background-color: var(--gotham-bg); 
-        font-family: 'Rajdhani', sans-serif; 
+        font-family: 'Inter', sans-serif; 
         color: var(--gotham-text);
         margin: 0; 
         overflow-x: hidden; 
@@ -50,8 +51,8 @@ $users = $users ?? [];
     /* COLLAPSIBLE SIDEBAR */
     .sidebar {
         width: var(--sidebar-collapsed);
-        background-color: #000000;
-        border-right: 1px solid var(--gotham-border);
+        background-color: #4C1D95; /* Deep Purple */
+        border-right: none;
         color: white;
         height: 100vh;
         position: fixed;
@@ -63,7 +64,7 @@ $users = $users ?? [];
     }
     .sidebar:hover { width: var(--sidebar-expanded); box-shadow: 10px 0 30px rgba(0,0,0,0.8); }
 
-    .nav-header { padding: 25px; font-weight: 700; opacity: 0; transition: 0.2s; font-family: 'Oswald'; font-size: 1.2rem; letter-spacing: 1px; color: var(--gotham-accent); }
+    .nav-header { padding: 25px; font-weight: 700; opacity: 0; transition: 0.2s; font-family: 'Inter', sans-serif; font-size: 1.2rem; letter-spacing: 1px; color: #fff; }
     .sidebar:hover .nav-header { opacity: 1; }
 
     .nav-item {
@@ -79,9 +80,9 @@ $users = $users ?? [];
     .nav-item span { margin-left: 15px; opacity: 0; transition: 0.2s; }
     .sidebar:hover .nav-item span { opacity: 1; }
     .nav-item:hover, .nav-item.active { 
-        background: rgba(241, 196, 15, 0.15); 
-        color: var(--gotham-accent); 
-        border-left-color: var(--gotham-accent); 
+        background: rgba(255, 255, 255, 0.1); 
+        color: #fff; 
+        border-left-color: #fff; 
     }
 
     /* MAIN CONTENT */
@@ -92,57 +93,61 @@ $users = $users ?? [];
         display: flex; flex-direction: column; min-height: 100vh; 
     }
     
+    /* Dashboard Specific Styles */
     .page-section { display: none; flex-grow: 1; }
-    .page-section.active { display: block; animation: fadeIn 0.5s ease-out; }
+    .page-section.active { display: block; animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* DASHBOARD CARDS */
     .dashboard-card { 
-        background: var(--gotham-card); 
-        border: 1px solid var(--gotham-border); 
-        border-radius: 8px; 
-        padding: 25px; 
-        margin-bottom: 20px; 
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
-        transition: all 0.3s ease;
+        background: var(--admin-card); 
+        border: 1px solid var(--admin-border); 
+        border-radius: 16px; 
+        padding: 24px; 
+        margin-bottom: 24px; 
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); 
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .dashboard-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        border-color: var(--gotham-accent);
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        border-color: #C4B5FD; /* Light purple border on hover */
     }
 
-    .stat-number { font-family: 'Oswald', sans-serif; font-size: 2.2rem; margin: 0; line-height: 1; color: var(--gotham-text); }
+    .stat-number { font-family: 'Inter', sans-serif; font-size: 2.25rem; font-weight: 800; margin: 0; line-height: 1; color: var(--admin-text); letter-spacing: -0.03em; }
     
     .action-icon { 
-        width: 45px; height: 45px; 
-        background: rgba(255,255,255,0.05); 
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 10px; 
+        width: 48px; height: 48px; 
+        background: #F3E8FF; 
+        border: 1px solid #E9D5FF;
+        border-radius: 12px; 
         display: flex; align-items: center; justify-content: center; 
-        color: var(--gotham-accent); 
+        color: var(--admin-accent); 
+        font-size: 1.25rem;
         transition: all 0.3s ease;
     }
 
-    /* QUICK ACTION HOVER EFFECT */
     .quick-action-item {
         display: flex; 
         align-items: center; 
-        gap: 15px; 
+        gap: 16px; 
         text-decoration: none; 
-        color: var(--gotham-text);
-        padding: 10px;
-        border-radius: 8px;
-        transition: background 0.2s;
+        color: var(--admin-text);
+        padding: 12px;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
     }
     .quick-action-item:hover {
-        background: rgba(255,255,255,0.03);
+        background: #F9FAFB;
+        border-color: #E5E7EB;
+        transform: translateX(4px);
     }
     .quick-action-item:hover .action-icon {
-        background: var(--gotham-accent);
-        color: #000;
-        transform: scale(1.1);
-        box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
+        background: var(--admin-accent);
+        color: #fff;
+        transform: scale(1.05) rotate(5deg);
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        border-color: var(--admin-accent);
     }
     
     /* TABLE STYLES */
@@ -160,7 +165,7 @@ $users = $users ?? [];
 
     .btn-create { 
         background: var(--gotham-accent); 
-        color: #000; 
+        color: #fff; 
         border-radius: 50px; 
         padding: 10px 25px; 
         text-decoration: none; 
@@ -168,15 +173,15 @@ $users = $users ?? [];
         display: inline-flex; align-items: center; gap: 8px; 
         transition: 0.2s; 
     }
-    .btn-create:hover { background: #fff; color: #000; box-shadow: 0 0 10px var(--gotham-accent); }
+    .btn-create:hover { background: #6D28D9; color: #fff; box-shadow: 0 0 10px var(--gotham-accent); }
 
     /* FOOTER */
-    .footer-section { background-color: #000000; padding-top: 50px; border-top: 1px solid var(--gotham-border); margin-top: auto; width: 100%; }
+    .footer-section { background-color: #ffffff; padding-top: 50px; border-top: 1px solid var(--gotham-border); margin-top: auto; width: 100%; }
     .footer-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 20px; color: var(--gotham-accent); text-transform: uppercase; }
     .footer-link { font-size: 0.85rem; color: var(--gotham-muted); text-decoration: none; display: block; margin-bottom: 8px; }
     .footer-link:hover { color: var(--gotham-accent); }
     
-    h2, h5, h6 { color: var(--gotham-text); font-family: 'Oswald'; letter-spacing: 1px; }
+    h2, h5, h6 { color: var(--gotham-text); font-family: 'Inter', sans-serif; letter-spacing: 0; }
     .text-dark { color: var(--gotham-text) !important; }
     .text-muted { color: var(--gotham-muted) !important; }
 </style>
@@ -282,7 +287,7 @@ $users = $users ?? [];
                                     <td><?= h($booking->booking_date) ?></td>
                                     <td><span class="status-badge <?= strtolower($booking->ticket_status ?? '') == 'paid' ? 'status-paid' : 'status-unpaid' ?>"><?= h($booking->ticket_status) ?></span></td>
                                     <td class="actions">
-                                        <?= $this->Html->link(__('View'), ['controller' => 'Bookings', 'action' => 'view', $booking->id], ['class' => 'text-white me-2 text-decoration-none']) ?>
+                                        <?= $this->Html->link(__('View'), ['controller' => 'Bookings', 'action' => 'view', $booking->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
                                         <?= $this->Html->link(__('Edit'), ['controller' => 'Bookings', 'action' => 'edit', $booking->id], ['class' => 'text-muted text-decoration-none']) ?>
                                     </td>
                                 </tr>
@@ -321,7 +326,7 @@ $users = $users ?? [];
                                     <td><?= h($flight->departure_time) ?></td>
                                     <td>MYR <?= $flight->base_price === null ? '0.00' : $this->Number->format($flight->base_price) ?></td>
                                     <td class="actions">
-                                        <?= $this->Html->link(__('View'), ['controller' => 'Flights', 'action' => 'view', $flight->id], ['class' => 'text-white me-2 text-decoration-none']) ?>
+                                        <?= $this->Html->link(__('View'), ['controller' => 'Flights', 'action' => 'view', $flight->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
                                         <?= $this->Html->link(__('Edit'), ['controller' => 'Flights', 'action' => 'edit', $flight->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>
                                         <?= $this->Form->postLink(__('Delete'), ['controller' => 'Flights', 'action' => 'delete', $flight->id], ['confirm' => __('Delete flight {0}?', $flight->flight_number), 'class' => 'text-danger text-decoration-none']) ?>
                                     </td>
@@ -366,7 +371,7 @@ $users = $users ?? [];
                                     <td><span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 2px;"><?= h($passenger->passport_number) ?></span></td>
                                     <td><?= h($passenger->phone_number) ?></td>
                                     <td class="actions">
-                                        <?= $this->Html->link(__('View'), ['controller' => 'Passengers', 'action' => 'view', $passenger->id], ['class' => 'text-white me-2 text-decoration-none']) ?>
+                                        <?= $this->Html->link(__('View'), ['controller' => 'Passengers', 'action' => 'view', $passenger->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
                                         <?= $this->Html->link(__('Edit'), ['controller' => 'Passengers', 'action' => 'edit', $passenger->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>
                                         <?= $this->Form->postLink(__('Delete'), ['controller' => 'Passengers', 'action' => 'delete', $passenger->id], ['confirm' => __('Delete {0}?', $passenger->full_name), 'class' => 'text-danger text-decoration-none']) ?>
                                     </td>
@@ -408,7 +413,7 @@ $users = $users ?? [];
                                     <td><span class="status-badge <?= strtolower($user->role) == 'admin' ? 'role-admin' : 'role-user' ?>"><?= h($user->role) ?></span></td>
                                     <td style="font-size: 0.85rem; color: #666;"><?= h($user->created) ?></td>
                                     <td class="actions">
-                                        <?= $this->Html->link(__('View'), ['controller' => 'Users', 'action' => 'view', $user->id], ['class' => 'text-white me-2 text-decoration-none']) ?>
+                                        <?= $this->Html->link(__('View'), ['controller' => 'Users', 'action' => 'view', $user->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
                                         <?= $this->Html->link(__('Edit'), ['controller' => 'Users', 'action' => 'edit', $user->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>
                                         <?= $this->Form->postLink(__('Delete'), ['controller' => 'Users', 'action' => 'delete', $user->id], ['confirm' => __('Delete user {0}?', $user->username), 'class' => 'text-danger text-decoration-none']) ?>
                                     </td>

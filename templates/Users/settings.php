@@ -7,9 +7,9 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <div class="card bg-dark border-secondary shadow-lg">
-                <div class="card-header border-secondary p-4">
-                    <h3 class="card-title text-gold mb-0">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-0 p-4">
+                    <h3 class="card-title text-primary mb-0 fw-bold">
                         <i class="bi bi-person-gear me-2"></i> Edit Profile
                     </h3>
                 </div>
@@ -17,26 +17,26 @@
                     <?= $this->Form->create($user, ['class' => 'profile-form']) ?>
                         
                         <div class="mb-4 text-center">
-                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-secondary bg-black mb-3" style="width: 100px; height: 100px;">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light mb-3" style="width: 100px; height: 100px;">
                                 <i class="bi bi-person-fill text-secondary" style="font-size: 3rem;"></i>
                             </div>
-                            <h5 class="text-white"><?= h($user->email) ?></h5>
+                            <h5 class="text-dark fw-bold"><?= h($user->email) ?></h5>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label text-gold small">Username</label>
+                            <label class="form-label text-dark fw-bold small">Username</label>
                             <?= $this->Form->control('username', [
                                 'label' => false,
-                                'class' => 'form-control form-control-dark',
+                                'class' => 'form-control',
                                 'required' => true
                             ]) ?>
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label text-gold small">Change Password</label>
+                            <label class="form-label text-dark fw-bold small">Change Password</label>
                             <?= $this->Form->control('password', [
                                 'label' => false,
-                                'class' => 'form-control form-control-dark',
+                                'class' => 'form-control',
                                 'required' => false,
                                 'value' => '',
                                 'placeholder' => 'Leave blank to keep current password'
@@ -59,30 +59,23 @@
 </div>
 
 <style>
-    .form-control-dark {
-        background: #121212;
-        border: 1px solid #333;
-        color: #ecf0f1;
-    }
-    .form-control-dark:focus {
-        background: #1a1a1a;
+    .form-control:focus {
         border-color: #7C3AED;
-        color: #ecf0f1;
-        box-shadow: 0 0 10px rgba(124, 58, 237, 0.2);
+        box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
     }
+    .text-primary { color: #7C3AED !important; }
+    
     .btn-gold {
-        background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);
+        background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%);
         color: #ffffff;
         border: none;
         font-weight: 600;
         transition: all 0.3s;
+        border-radius: 8px;
     }
     .btn-gold:hover {
-        box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+        box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
         transform: translateY(-2px);
         color: #ffffff;
-    }
-    .text-gold {
-        color: #7C3AED;
     }
 </style>

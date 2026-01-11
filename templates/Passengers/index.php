@@ -34,7 +34,7 @@
                         <td><span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 2px;"><?= h($passenger->passport_number) ?></span></td>
                         <td><?= h($passenger->phone_number) ?></td>
                         <td class="actions">
-                            <?= $this->Html->link(__('View'), ['action' => 'view', $passenger->id], ['class' => 'text-white me-2 text-decoration-none']) ?>
+                            <?= $this->Html->link(__('View'), ['action' => 'view', $passenger->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
                             <?= $this->Html->link(__('Edit'), ['action' => 'edit', $passenger->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>
                             <?= $this->Form->postLink(
                                 __('Delete'),

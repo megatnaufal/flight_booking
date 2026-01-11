@@ -39,7 +39,7 @@
                         <td style="font-size: 0.85rem; color: #666;"><?= h($user->created) ?></td>
                         <td style="font-size: 0.85rem; color: #666;"><?= h($user->modified) ?></td>
                         <td class="actions">
-                            <?= $this->Html->link(__('View'), ['action' => 'view', $user->id], ['class' => 'text-white me-2 text-decoration-none']) ?>
+                            <?= $this->Html->link(__('View'), ['action' => 'view', $user->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
                             <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>
                             <?= $this->Form->postLink(
                                 __('Delete'),

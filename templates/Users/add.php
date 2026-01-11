@@ -9,7 +9,7 @@
 <main class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>NEW USER</h2>
-        <?= $this->Html->link(__('<i class="bi bi-arrow-left"></i> Back to List'), ['action' => 'index'], ['class' => 'btn btn-outline-secondary text-white', 'escape' => false]) ?>
+        <?= $this->Html->link(__('<i class="bi bi-arrow-left"></i> Back to List'), ['action' => 'index'], ['class' => 'btn btn-outline-secondary', 'escape' => false]) ?>
     </div>
 
     <div class="row">

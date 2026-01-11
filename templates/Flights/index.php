@@ -36,7 +36,7 @@
                         <td><?= h($flight->departure_time) ?></td>
                         <td>MYR <?= $flight->base_price === null ? '' : $this->Number->format($flight->base_price) ?></td>
                         <td class="actions">
-                            <?= $this->Html->link(__('View'), ['action' => 'view', $flight->id], ['class' => 'text-white me-2 text-decoration-none']) ?>
+                            <?= $this->Html->link(__('View'), ['action' => 'view', $flight->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
                             <?= $this->Html->link(__('Edit'), ['action' => 'edit', $flight->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>
                             <?= $this->Form->postLink(
                                 __('Delete'),

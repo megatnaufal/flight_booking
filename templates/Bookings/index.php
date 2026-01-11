@@ -36,7 +36,7 @@
                         <td><?= h($booking->seat_number) ?></td>
                         <td><span class="status-badge <?= strtolower($booking->ticket_status ?? '') == 'paid' ? 'status-paid' : 'status-unpaid' ?>"><?= h($booking->ticket_status) ?></span></td>
                         <td class="actions">
-                            <?= $this->Html->link(__('View'), ['action' => 'view', $booking->id], ['class' => 'text-white me-2 text-decoration-none']) ?>
+                            <?= $this->Html->link(__('View'), ['action' => 'view', $booking->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
                             <?= $this->Html->link(__('Edit'), ['action' => 'edit', $booking->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>
                             <?= $this->Form->postLink(
                                 __('Delete'),
