@@ -141,10 +141,87 @@ class UsersController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects to login
      */
+    /**
+     * Settings method (Profile)
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function settings()
+    {
+        // Try getting identity from attribute, fallback to session
+        $identity = $this->request->getAttribute('identity');
+        $userSession = $this->request->getSession()->read('Auth');
+        
+        $id = null;
+        if ($identity) {
+            $id = $identity->getIdentifier();
+        } elseif ($userSession) {
+            $id = $userSession->id;
+        }
+
+        if (!$id) {
+            $this->Flash->error(__('Please log in to access settings.'));
+            return $this->redirect(['action' => 'login']);
+        }
+
+        $user = $this->Users->get($id);
+        
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            if ($this->Users->save($user)) {
+                // Update session with new data
+                $this->request->getSession()->write('Auth', $user);
+                $this->Flash->success(__('Profile updated successfully.'));
+                return $this->redirect(['action' => 'settings']);
+            }
+            $this->Flash->error(__('Could not update profile. Please try again.'));
+        }
+        
+        $this->set(compact('user'));
+    }
+
+    /**
+     * Logout method
+     *
+     * @return \Cake\Http\Response|null|void Redirects to login
+     */
     public function logout()
     {
         $this->request->getSession()->delete('Auth');
         $this->Flash->success(__('You have been logged out.'));
         return $this->redirect(['action' => 'login']);
+    }
+
+    /**
+     * Update Settings method
+     *
+     * @return \Cake\Http\Response|null|void Redirects to referer
+     */
+    public function updateSettings()
+    {
+        if ($this->request->is('post')) {
+            $session = $this->request->getSession();
+            $data = $this->request->getData();
+            
+            // Save settings to Session
+            // Structure: App.settings.dark_mode, etc.
+            if (!empty($data['language'])) {
+                $session->write('App.settings.language', $data['language']);
+            }
+            if (!empty($data['currency'])) {
+                $session->write('App.settings.currency', $data['currency']);
+            }
+            if (!empty($data['font_size'])) {
+                $session->write('App.settings.font_size', $data['font_size']);
+            }
+            
+            // Checkbox for dark_mode (sent as '1' if checked, missing if unchecked)
+            $isDarkMode = !empty($data['dark_mode']);
+            $session->write('App.settings.dark_mode', $isDarkMode);
+
+            $this->Flash->success(__('Settings saved successfully.'));
+        }
+
+        return $this->redirect($this->referer());
     }
 }

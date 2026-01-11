@@ -196,9 +196,18 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                                 <i class="bi bi-person-circle"></i> <?= h($identity->full_name ?: $identity->email) ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow" style="background: #1a1a1a; border-color: #333; min-width: 200px;">
-                                <li class="px-3 py-2 border-bottom border-secondary">
-                                    <div class="fw-bold text-gold"><?= h($identity->full_name ?: 'User') ?></div>
-                                    <div class="small text-white text-truncate" style="max-width: 180px;"><?= h($identity->email) ?></div>
+                                <li class="px-3 py-3 border-bottom border-secondary">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <!-- Profile Picture Placeholder -->
+                                        <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center border border-secondary" style="width: 48px; height: 48px;">
+                                            <i class="bi bi-person-fill text-secondary" style="font-size: 1.5rem;"></i>
+                                        </div>
+                                        <!-- User Info -->
+                                        <div class="overflow-hidden">
+                                            <div class="fw-bold text-white text-truncate"><?= h($identity->username ?? $identity->email) ?></div>
+                                            <div class="small text-secondary text-truncate"><?= h($identity->email) ?></div>
+                                        </div>
+                                    </div>
                                 </li>
                                 <li>
                                     <a class="dropdown-item text-white my-1" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'settings']) ?>">
@@ -361,15 +370,9 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                         <div class="mb-3">
                             <label class="form-label text-gold small">Display & accessibility</label>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="1" id="darkModeToggle">
-                                <label class="form-check-label text-white small" for="darkModeToggle">
-                                    Enable dark mode
-                                </label>
-                            </div>
-                            <div class="form-check mt-1">
                                 <input class="form-check-input" type="checkbox" value="1" id="highContrastToggle">
-                                <label class="form-check-label text-white small" for="highContrastToggle">
-                                    High contrast mode
+                                <label class="form-check-label text-white small" for="Enable dark mode">
+                                    Enable dark mode
                                 </label>
                             </div>
                             <div class="mt-2">
@@ -460,6 +463,21 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                 } else {
                     document.body.style.fontSize = '15px';
                 }
+            }
+
+            // Auto-dismiss flash messages after 3 seconds
+            const flashMessages = document.querySelectorAll('.message, .alert, .alert-success, .alert-danger, .alert-warning, .alert-info');
+            if (flashMessages.length > 0) {
+                setTimeout(function() {
+                    flashMessages.forEach(function(msg) {
+                        // Bootstrap fade out effect
+                        msg.style.transition = 'opacity 0.5s ease';
+                        msg.style.opacity = '0';
+                        setTimeout(function() {
+                            msg.remove();
+                        }, 500);
+                    });
+                }, 3000);
             }
         });
     </script>
