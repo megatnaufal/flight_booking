@@ -516,10 +516,11 @@ $users = $users ?? [];
 
     const pieData = useMockData ? [12, 8, 5] : [realStats.bookings, realStats.flights, realStats.users]; 
     
-    // Set Global Defaults for Gotham Theme
-    Chart.defaults.color = '#7f8c8d'; 
-    Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
-    Chart.defaults.font.family = "'Rajdhani', sans-serif";
+    // Set Global Defaults for REFINED PURPLE Theme (Light)
+    Chart.defaults.color = '#374151'; // Dark Grey for text
+    Chart.defaults.borderColor = '#E5E7EB'; // Light Grey for borders
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.font.weight = 500;
 
     // 3. Render Revenue Line Chart
     const ctxLine = document.getElementById('revenueLineChart');
@@ -531,14 +532,14 @@ $users = $users ?? [];
                 datasets: [{
                     label: 'Monthly Revenue',
                     data: realRevenueData,
-                    borderColor: '#f1c40f', // Gotham Gold
-                    backgroundColor: 'rgba(241, 196, 15, 0.1)',
+                    borderColor: '#7C3AED', // Purple
+                    backgroundColor: 'rgba(124, 58, 237, 0.1)',
                     borderWidth: 2,
                     fill: true, 
                     tension: 0.4, 
                     pointRadius: 4, 
-                    pointBackgroundColor: '#f1c40f',
-                    pointBorderColor: '#000'
+                    pointBackgroundColor: '#7C3AED',
+                    pointBorderColor: '#fff'
                 }]
             },
             options: { 
@@ -546,7 +547,7 @@ $users = $users ?? [];
                 maintainAspectRatio: false, 
                 plugins: { legend: { display: false } },
                 scales: {
-                    y: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                    y: { grid: { color: '#E5E7EB' } },
                     x: { grid: { display: false } }
                 }
             }
@@ -563,8 +564,8 @@ $users = $users ?? [];
                 datasets: [{
                     // Use the safe data we prepared above
                     data: pieData, 
-                    backgroundColor: ['#f1c40f', '#e74c3c', '#3498db'], // Gold, Red, Blue
-                    borderColor: '#121212', // Matches card background for "cutout" look
+                    backgroundColor: ['#7C3AED', '#EC4899', '#3B82F6'], // Purple, Pink, Blue
+                    borderColor: '#ffffff', // White border for clean separation
                     borderWidth: 5,
                     hoverOffset: 10
                 }]
@@ -577,7 +578,7 @@ $users = $users ?? [];
                         position: 'right', 
                         labels: { 
                             usePointStyle: true, 
-                            color: '#ecf0f1',
+                            color: '#374151',
                             padding: 20,
                             font: { size: 12 }
                         } 

@@ -9,11 +9,11 @@ $this->disableAutoLayout();
 <html>
 <head>
     <title>Monthly Report - FlyHigh</title>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Rajdhani:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Rajdhani', sans-serif; color: #000; padding: 40px; }
-        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
-        .logo { font-size: 2rem; font-family: 'Oswald', sans-serif; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; }
+        body { font-family: 'Inter', sans-serif; color: #1F2937; padding: 40px; }
+        .header { text-align: center; border-bottom: 2px solid #E5E7EB; padding-bottom: 20px; margin-bottom: 30px; }
+        .logo { font-size: 2rem; font-family: 'Inter', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; color: #4C1D95; }
         .sub-header { color: #666; font-size: 0.9rem; }
         
         .stats-grid { display: flex; justify-content: space-between; margin-bottom: 40px; }
@@ -35,8 +35,8 @@ $this->disableAutoLayout();
 </head>
 <body>
     <div class="no-print" style="text-align: right; margin-bottom: 20px;">
-        <button onclick="window.print()" style="padding: 10px 20px; background: #000; color: #fff; cursor: pointer; border: none; font-weight: bold;">DOWNLOAD PDF / PRINT</button>
-        <a href="<?= $this->Url->build(['controller' => 'Dashboards', 'action' => 'index']) ?>" style="margin-left: 10px; text-decoration: none; color: #000;">Back to Dashboard</a>
+        <button onclick="window.print()" style="padding: 10px 24px; background: #7C3AED; color: #fff; cursor: pointer; border: none; font-weight: 600; border-radius: 8px; font-family: 'Inter', sans-serif;">DOWNLOAD PDF / PRINT</button>
+        <a href="<?= $this->Url->build(['controller' => 'Dashboards', 'action' => 'index']) ?>" style="margin-left: 15px; text-decoration: none; color: #6B7280; font-family: 'Inter', sans-serif; font-weight: 500;">Back to Dashboard</a>
     </div>
 
     <div class="header">
@@ -78,10 +78,22 @@ $this->disableAutoLayout();
             <?php foreach ($bookings as $booking): ?>
             <tr>
                 <td>#<?= $booking->id ?></td>
-                <td><?= h($booking->has('passenger') ? $booking->passenger->first_name . ' ' . $booking->passenger->last_name : '-') ?></td>
-                <td><?= h($booking->has('flight') ? $booking->flight->airline_name : '-') ?></td>
+                <td>
+                    <?php if ($booking->passenger): ?>
+                        <?= h($booking->passenger->first_name . ' ' . $booking->passenger->last_name) ?>
+                    <?php else: ?>
+                        <span style="color: #999;">-</span>
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <?php if ($booking->flight): ?>
+                        <?= h($booking->flight->airline_name) ?>
+                    <?php else: ?>
+                        <span style="color: #999;">-</span>
+                    <?php endif; ?>
+                </td>
                 <td><?= h($booking->booking_date) ?></td>
-                <td><?= h($booking->status) ?></td>
+                <td><?= h($booking->ticket_status) ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
