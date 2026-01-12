@@ -394,6 +394,51 @@ class BookingsController extends AppController
         
         $this->set(compact('booking', 'returnBooking'));
     }
+
+    /**
+     * Download Receipt method
+     * Generates a printable receipt for the booking
+     *
+     * @param string|null $id Booking id.
+     * @return \Cake\Http\Response|null|void Renders receipt view
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function downloadReceipt($id = null)
+    {
+        $booking = $this->Bookings->get($id, [
+            'contain' => [
+                'Passengers', 
+                'Flights' => ['OriginAirports', 'DestAirports']
+            ]
+        ]);
+        
+        // Use lead passenger from booking (the relationship is Booking belongsTo Passenger)
+        $passengers = [];
+        if ($booking->passenger) {
+            $passengers[] = $booking->passenger;
+        }
+        
+        // Check for return booking
+        $returnBookingId = $this->request->getQuery('return_id');
+        $returnBooking = null;
+        if ($returnBookingId) {
+            $returnBooking = $this->Bookings->get($returnBookingId, [
+                'contain' => ['Flights' => ['OriginAirports', 'DestAirports']]
+            ]);
+        }
+        
+        // Calculate total price (departure + return if exists)
+        $departurePrice = (float)($booking->flight->base_price ?? 0);
+        $returnPrice = $returnBooking ? (float)($returnBooking->flight->base_price ?? 0) : 0;
+        $taxPerPax = 45.00;
+        $totalPassengers = max(count($passengers), 1);
+        $totalPrice = (($departurePrice + $returnPrice) * $totalPassengers) + ($taxPerPax * $totalPassengers);
+        
+        $this->set(compact('booking', 'returnBooking', 'passengers', 'totalPrice', 'departurePrice', 'returnPrice'));
+        
+        // Use ajax layout for clean print output
+        $this->viewBuilder()->setLayout('ajax');
+    }
     /**
      * Edit method
      *

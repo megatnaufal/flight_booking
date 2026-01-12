@@ -103,6 +103,17 @@
                     </div>
                     
                     <div class="d-grid gap-2">
+                         <?php 
+                         $receiptUrl = ['action' => 'downloadReceipt', $booking->id];
+                         if (isset($returnBooking) && $returnBooking) {
+                             $receiptUrl['?'] = ['return_id' => $returnBooking->id];
+                         }
+                         ?>
+                         <?= $this->Html->link(
+                             '<i class="bi bi-download me-2"></i>Download Receipt', 
+                             $receiptUrl, 
+                             ['class' => 'btn btn-outline-primary py-3 fw-bold', 'escape' => false]
+                         ) ?>
                          <?= $this->Html->link('Back to Home', ['controller' => 'Pages', 'action' => 'display', 'home'], ['class' => 'btn btn-primary py-3 fw-bold']) ?>
                     </div>
                 </div>
