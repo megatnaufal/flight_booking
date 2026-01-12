@@ -417,12 +417,12 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             const storedContrast = localStorage.getItem('flyhigh-contrast');
             const storedFontSize = localStorage.getItem('flyhigh-fontsize');
 
-            if (storedTheme === 'light') {
-                html.setAttribute('data-bs-theme', 'light');
-                if (darkToggle) darkToggle.checked = false;
-            } else {
+            if (storedTheme === 'dark') {
                 html.setAttribute('data-bs-theme', 'dark');
                 if (darkToggle) darkToggle.checked = true;
+            } else {
+                html.setAttribute('data-bs-theme', 'light');
+                if (darkToggle) darkToggle.checked = false;
             }
 
             if (storedContrast === 'high') {
