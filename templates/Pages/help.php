@@ -39,7 +39,7 @@ $this->assign('title', 'Help Center');
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="section-heading d-flex align-items-center justify-content-between mb-3">
-                <h3 class="fw-bold mb-0" style="color:#e53935;">Flight Questions</h3>
+                <h3 class="fw-bold mb-0" style="color:#4C1D95;">Flight Questions</h3>
                 <span class="text-muted small">4 questions • updated regularly</span>
             </div>
             <p class="text-muted small mb-4">
@@ -156,10 +156,10 @@ $this->assign('title', 'Help Center');
         color: #111;
     }
 
-    /* Red hero (no dark mode) */
+    /* Purple hero (matching FlyHigh theme) */
     .help-hero {
-        background: #e53935;
-        border-bottom: 1px solid #d32f2f;
+        background: linear-gradient(135deg, #4C1D95 0%, #7C3AED 100%);
+        border-bottom: 1px solid #5B21B6;
         color: #fff;
     }
 
@@ -188,7 +188,7 @@ $this->assign('title', 'Help Center');
     }
     .topic-pill:hover {
         border-color: #ffffff;
-        color: #e53935;
+        color: #4C1D95;
         background: #ffffff;
     }
 
@@ -207,8 +207,8 @@ $this->assign('title', 'Help Center');
         filter: none;
     }
     .accordion-button:not(.collapsed) {
-        color: #e53935;
-        background-color: #fff3f3;
+        color: #4C1D95;
+        background-color: #f5f3ff;
         box-shadow: none;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;

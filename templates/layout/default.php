@@ -189,7 +189,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                 <div class="col-lg-6 d-flex justify-content-end align-items-center gap-4">
                     <div class="d-flex align-items-center gap-3">
                         <a href="#" class="user-nav-link"><i class="bi bi-translate"></i> MYR</a>
-                        <a href="#" class="user-nav-link">Help</a>
+                        <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'help']) ?>" class="user-nav-link">Help</a>
                     </div>
                     <?php 
                      $identity = $this->request->getAttribute('identity');
