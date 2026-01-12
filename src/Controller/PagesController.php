@@ -78,6 +78,16 @@ class PagesController extends AppController
             $this->set(compact('recommendations', 'airports'));
         }
 
+        if ($page === 'about') {
+            $flightsCount = $this->fetchTable('Flights')->find()->count();
+            $bookingsCount = $this->fetchTable('Bookings')->find()->count();
+            $airportsCount = $this->fetchTable('Airports')->find()->count();
+            
+            // Format for display (e.g. 10k+, 2M+ logic could go here, or just raw numbers)
+            // For now passing raw counts
+            $this->set(compact('flightsCount', 'bookingsCount', 'airportsCount'));
+        }
+
         $this->set(compact('page', 'subpage'));
 
         try {
