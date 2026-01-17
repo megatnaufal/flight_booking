@@ -26,13 +26,37 @@ class ReportsController extends AppController
             ->limit(50) // Limit to last 50 for the repost
             ->all();
 
-        $totalRevenue = 125.40; // Static mock, or calculate: $this->fetchTable('Bookings')->find()->sumOf('amount');
+        // Calculate Monthly Revenue (Same logic as Dashboard)
+        $monthlyRevenue = (function() {
+            $bookings = $this->fetchTable('Bookings')->find()
+                ->contain(['Flights'])
+                ->where([
+                    'Bookings.booking_date >=' => date('Y-m-01'),
+                    'Bookings.booking_date <=' => date('Y-m-t'),
+                    'OR' => [
+                        ['Bookings.ticket_status' => 'Confirmed'],
+                        ['Bookings.ticket_status' => 'Paid']
+                    ]
+                ])
+                ->all();
+            
+            $total = 0;
+            foreach ($bookings as $booking) {
+                if ($booking->flight && $booking->flight->base_price) {
+                    $total += $booking->flight->base_price;
+                }
+            }
+            return $total;
+        })();
+
+        // Calculate other stats dynamically
         $totalFlights = $this->fetchTable('Flights')->find()->count();
         $totalPassengers = $this->fetchTable('Passengers')->find()->count();
         $totalUsers = $this->fetchTable('Users')->find()->count();
+        $totalBookingsCount = $this->fetchTable('Bookings')->find()->count(); // Total all-time bookings
 
         $generatedDate = date('d M Y, H:i A');
 
-        $this->set(compact('bookings', 'totalRevenue', 'totalFlights', 'totalPassengers', 'totalUsers', 'generatedDate'));
+        $this->set(compact('bookings', 'monthlyRevenue', 'totalFlights', 'totalPassengers', 'totalUsers', 'generatedDate', 'totalBookingsCount'));
     }
 }

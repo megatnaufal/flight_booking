@@ -4,32 +4,35 @@
  * @var \App\Model\Entity\Airport $airport
  */
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Form->postLink(
-                __('Delete'),
-                ['action' => 'delete', $airport->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $airport->id), 'class' => 'side-nav-item']
-            ) ?>
-            <?= $this->Html->link(__('List Airports'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
+<?= $this->element('admin_theme') ?>
+<div class="main-content">
+    <div class="dashboard-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-uppercase border-start border-4 border-primary ps-3 mb-0" style="border-color: var(--gotham-accent) !important;">Edit Airport (ID: <?= $visualId ?>)</h2>
+            <?= $this->Html->link(__('<i class="bi bi-arrow-left"></i> Back to List'), ['action' => 'index'], ['class' => 'btn btn-outline-secondary', 'escape' => false]) ?>
         </div>
-    </aside>
-    <div class="column column-80">
-        <div class="airports form content">
-            <?= $this->Form->create($airport) ?>
-            <fieldset>
-                <legend><?= __('Edit Airport') ?></legend>
-                <?php
-                    echo $this->Form->control('airport_code');
-                    echo $this->Form->control('airport_name');
-                    echo $this->Form->control('city');
-                    echo $this->Form->control('country');
-                ?>
-            </fieldset>
-            <?= $this->Form->button(__('Submit')) ?>
-            <?= $this->Form->end() ?>
+        <?= $this->Form->create($airport) ?>
+        <div class="row g-3">
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">Airport Code</label>
+                <?= $this->Form->control('airport_code', ['class' => 'form-control', 'label' => false]) ?>
+             </div>
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">Airport Name</label>
+                <?= $this->Form->control('airport_name', ['class' => 'form-control', 'label' => false]) ?>
+             </div>
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">City</label>
+                <?= $this->Form->control('city', ['class' => 'form-control', 'label' => false]) ?>
+             </div>
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">Country</label>
+                <?= $this->Form->control('country', ['class' => 'form-control', 'label' => false]) ?>
+             </div>
+             <div class="col-12 mt-4 text-end">
+                 <?= $this->Form->button(__('Update Airport'), ['class' => 'btn-create']) ?>
+             </div>
         </div>
+        <?= $this->Form->end() ?>
     </div>
 </div>

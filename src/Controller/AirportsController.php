@@ -33,7 +33,26 @@ class AirportsController extends AppController
     public function view($id = null)
     {
         $airport = $this->Airports->get($id, contain: []);
-        $this->set(compact('airport'));
+        $visualId = $this->Airports->find()->where(['id <=' => $id])->count();
+        $this->set(compact('airport', 'visualId'));
+    }
+
+    // ...
+
+    public function edit($id = null)
+    {
+        $airport = $this->Airports->get($id, contain: []);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $airport = $this->Airports->patchEntity($airport, $this->request->getData());
+            if ($this->Airports->save($airport)) {
+                $this->Flash->success(__('The airport has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The airport could not be saved. Please, try again.'));
+        }
+        $visualId = $this->Airports->find()->where(['id <=' => $id])->count();
+        $this->set(compact('airport', 'visualId'));
     }
 
     /**
@@ -63,20 +82,7 @@ class AirportsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
-    {
-        $airport = $this->Airports->get($id, contain: []);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $airport = $this->Airports->patchEntity($airport, $this->request->getData());
-            if ($this->Airports->save($airport)) {
-                $this->Flash->success(__('The airport has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The airport could not be saved. Please, try again.'));
-        }
-        $this->set(compact('airport'));
-    }
 
     /**
      * Delete method

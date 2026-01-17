@@ -4,32 +4,36 @@
  * @var \App\Model\Entity\User $user
  */
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Form->postLink(
-                __('Delete'),
-                ['action' => 'delete', $user->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $user->id), 'class' => 'side-nav-item']
-            ) ?>
-            <?= $this->Html->link(__('List Users'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
+<?= $this->element('admin_theme') ?>
+<div class="main-content">
+    <div class="dashboard-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-uppercase border-start border-4 border-primary ps-3 mb-0" style="border-color: var(--gotham-accent) !important;">Edit User (ID: <?= $visualId ?>)</h2>
+            <?= $this->Html->link(__('<i class="bi bi-arrow-left"></i> Back to List'), ['action' => 'index'], ['class' => 'btn btn-outline-secondary', 'escape' => false]) ?>
         </div>
-    </aside>
-    <div class="column column-80">
-        <div class="users form content">
-            <?= $this->Form->create($user) ?>
-            <fieldset>
-                <legend><?= __('Edit User') ?></legend>
-                <?php
-                    echo $this->Form->control('username');
-                    echo $this->Form->control('password');
-                    echo $this->Form->control('email');
-                    echo $this->Form->control('role');
-                ?>
-            </fieldset>
-            <?= $this->Form->button(__('Submit')) ?>
-            <?= $this->Form->end() ?>
+        <?= $this->Form->create($user) ?>
+        <div class="row g-3">
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">Username</label>
+                <?= $this->Form->control('username', ['class' => 'form-control', 'label' => false]) ?>
+             </div>
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">Password</label>
+                <?= $this->Form->control('password', ['class' => 'form-control', 'label' => false, 'value' => '']) ?>
+                <div class="form-text small text-muted">Leave blank if not changing password</div>
+             </div>
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">Email</label>
+                <?= $this->Form->control('email', ['class' => 'form-control', 'label' => false]) ?>
+             </div>
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">Role</label>
+                <?= $this->Form->control('role', ['options' => ['admin' => 'Admin', 'user' => 'User'], 'class' => 'form-select', 'label' => false]) ?>
+             </div>
+             <div class="col-12 mt-4 text-end">
+                 <?= $this->Form->button(__('Update User'), ['class' => 'btn-create']) ?>
+             </div>
         </div>
+        <?= $this->Form->end() ?>
     </div>
 </div>

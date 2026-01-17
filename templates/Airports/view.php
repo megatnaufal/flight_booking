@@ -4,41 +4,38 @@
  * @var \App\Model\Entity\Airport $airport
  */
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Html->link(__('Edit Airport'), ['action' => 'edit', $airport->id], ['class' => 'side-nav-item']) ?>
-            <?= $this->Form->postLink(__('Delete Airport'), ['action' => 'delete', $airport->id], ['confirm' => __('Are you sure you want to delete # {0}?', $airport->id), 'class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('List Airports'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('New Airport'), ['action' => 'add'], ['class' => 'side-nav-item']) ?>
+<?= $this->element('admin_theme') ?>
+<div class="main-content">
+    <div class="dashboard-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-uppercase border-start border-4 border-primary ps-3 mb-0" style="border-color: var(--gotham-accent) !important;">View Airport</h2>
+            <div>
+                <?= $this->Html->link(__('Edit'), ['action' => 'edit', $airport->id], ['class' => 'btn btn-outline-primary me-2']) ?>
+                <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $airport->id], ['confirm' => __('Are you sure you want to delete # {0}?', $airport->id), 'class' => 'btn btn-outline-danger me-2']) ?>
+                <?= $this->Html->link(__('<i class="bi bi-arrow-left"></i> Back to List'), ['action' => 'index'], ['class' => 'btn btn-outline-secondary', 'escape' => false]) ?>
+            </div>
         </div>
-    </aside>
-    <div class="column column-80">
-        <div class="airports view content">
-            <h3><?= h($airport->airport_code) ?></h3>
-            <table>
-                <tr>
-                    <th><?= __('Airport Code') ?></th>
-                    <td><?= h($airport->airport_code) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Airport Name') ?></th>
-                    <td><?= h($airport->airport_name) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('City') ?></th>
-                    <td><?= h($airport->city) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Country') ?></th>
-                    <td><?= h($airport->country) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Id') ?></th>
-                    <td><?= $this->Number->format($airport->id) ?></td>
-                </tr>
-            </table>
-        </div>
+        <table class="table table-bordered">
+            <tr>
+                <th><?= __('ID') ?></th>
+                <td><?= h($visualId) ?></td>
+            </tr>
+            <tr>
+                <th><?= __('Airport Code') ?></th>
+                <td><span class="badge bg-primary"><?= h($airport->airport_code) ?></span></td>
+            </tr>
+            <tr>
+                <th><?= __('Airport Name') ?></th>
+                <td><?= h($airport->airport_name) ?></td>
+            </tr>
+            <tr>
+                <th><?= __('City') ?></th>
+                <td><?= h($airport->city) ?></td>
+            </tr>
+            <tr>
+                <th><?= __('Country') ?></th>
+                <td><?= h($airport->country) ?></td>
+            </tr>
+        </table>
     </div>
 </div>

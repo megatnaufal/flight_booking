@@ -10,8 +10,10 @@ $this->disableAutoLayout();
 <head>
     <title>Monthly Report - FlyHigh</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Include html2pdf library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; color: #1F2937; padding: 40px; }
+        body { font-family: 'Inter', sans-serif; color: #1F2937; padding: 40px; background: #fff; }
         .header { text-align: center; border-bottom: 2px solid #E5E7EB; padding-bottom: 20px; margin-bottom: 30px; }
         .logo { font-size: 2rem; font-family: 'Inter', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; color: #4C1D95; }
         .sub-header { color: #666; font-size: 0.9rem; }
@@ -35,80 +37,89 @@ $this->disableAutoLayout();
 </head>
 <body>
     <div class="no-print" style="text-align: right; margin-bottom: 20px;">
-        <button onclick="window.print()" style="padding: 10px 24px; background: #7C3AED; color: #fff; cursor: pointer; border: none; font-weight: 600; border-radius: 8px; font-family: 'Inter', sans-serif;">DOWNLOAD PDF / PRINT</button>
+        <button onclick="downloadPDF()" style="padding: 10px 24px; background: #7C3AED; color: #fff; cursor: pointer; border: none; font-weight: 600; border-radius: 8px; font-family: 'Inter', sans-serif;">DOWNLOAD PDF</button>
         <a href="<?= $this->Url->build(['controller' => 'Dashboards', 'action' => 'index']) ?>" style="margin-left: 15px; text-decoration: none; color: #6B7280; font-family: 'Inter', sans-serif; font-weight: 500;">Back to Dashboard</a>
     </div>
 
-    <div class="header">
-        <div class="logo">FlyHigh System Report</div>
-        <div class="sub-header">Generated on: <?= $generatedDate ?></div>
-    </div>
+    <div id="report-content">
+        <div class="header">
+            <div class="logo">FlyHigh System Report</div>
+            <div class="sub-header">Generated on: <?= $generatedDate ?></div>
+        </div>
 
-    <div class="stats-grid">
-        <div class="stat-box">
-            <div class="stat-title">Total Revenue</div>
-            <div class="stat-value">MYR <?= number_format($totalRevenue, 2) ?></div>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-title">Monthly Revenue</div>
+                <div class="stat-value">MYR <?= number_format($monthlyRevenue, 2) ?></div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-title">Total Flights</div>
+                <div class="stat-value"><?= number_format($totalFlights) ?></div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-title">Total Bookings</div>
+                <div class="stat-value"><?= number_format($totalBookingsCount) ?></div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-title">System Users</div>
+                <div class="stat-value"><?= number_format($totalUsers) ?></div>
+            </div>
         </div>
-        <div class="stat-box">
-            <div class="stat-title">Total Flights</div>
-            <div class="stat-value"><?= number_format($totalFlights) ?></div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-title">Total Bookings</div>
-            <div class="stat-value"><?= number_format(count($bookings)) ?></div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-title">System Users</div>
-            <div class="stat-value"><?= number_format($totalUsers) ?></div>
-        </div>
-    </div>
 
-    <h3>Recent Bookings</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Passenger</th>
-                <th>Flight</th>
-                <th>Date</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($bookings as $booking): ?>
-            <tr>
-                <td>#<?= $booking->id ?></td>
-                <td>
-                    <?php if ($booking->passenger): ?>
-                        <?= h($booking->passenger->first_name . ' ' . $booking->passenger->last_name) ?>
-                    <?php else: ?>
-                        <span style="color: #999;">-</span>
-                    <?php endif; ?>
-                </td>
-                <td>
-                    <?php if ($booking->flight): ?>
-                        <?= h($booking->flight->airline_name) ?>
-                    <?php else: ?>
-                        <span style="color: #999;">-</span>
-                    <?php endif; ?>
-                </td>
-                <td><?= h($booking->booking_date) ?></td>
-                <td><?= h($booking->ticket_status) ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+        <h3>Recent Bookings</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Passenger</th>
+                    <th>Flight</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($bookings as $booking): ?>
+                <tr>
+                    <td>#<?= $booking->id ?></td>
+                    <td>
+                        <?php if ($booking->passenger): ?>
+                            <?= h($booking->passenger->first_name . ' ' . $booking->passenger->last_name) ?>
+                        <?php else: ?>
+                            <span style="color: #999;">-</span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if ($booking->flight): ?>
+                            <?= h($booking->flight->airline_name) ?> (<?= h($booking->flight->flight_number) ?>)
+                        <?php else: ?>
+                            <span style="color: #999;">-</span>
+                        <?php endif; ?>
+                    </td>
+                    <td><?= h($booking->booking_date) ?></td>
+                    <td><?= h($booking->ticket_status) ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
 
-    <div class="footer">
-        <p>CONFIDENTIAL REPORT</p>
-        <p>&copy; <?= date('Y') ?> FlyHigh System. All rights reserved.</p>
+        <div class="footer">
+            <p>CONFIDENTIAL REPORT</p>
+            <p>&copy; <?= date('Y') ?> FlyHigh System. All rights reserved.</p>
+        </div>
     </div>
 
     <script>
-        // Auto-trigger print on load
-        window.onload = function() {
-           // window.print(); 
-        };
+        function downloadPDF() {
+            const element = document.getElementById('report-content');
+            const opt = {
+                margin: 0.5,
+                filename: 'FlyHigh-Monthly-Report-<?= date('Y-m-d') ?>.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
     </script>
 </body>
 </html>

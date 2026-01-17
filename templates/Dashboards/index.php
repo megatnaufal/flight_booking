@@ -121,7 +121,7 @@ $users = $users ?? [];
         border: 1px solid #E9D5FF;
         border-radius: 12px; 
         display: flex; align-items: center; justify-content: center; 
-        color: var(--admin-accent); 
+        color: var(--gotham-accent); 
         font-size: 1.25rem;
         transition: all 0.3s ease;
     }
@@ -143,11 +143,11 @@ $users = $users ?? [];
         transform: translateX(4px);
     }
     .quick-action-item:hover .action-icon {
-        background: var(--admin-accent);
+        background: var(--gotham-accent);
         color: #fff;
         transform: scale(1.05) rotate(5deg);
         box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-        border-color: var(--admin-accent);
+        border-color: var(--gotham-accent);
     }
     
     /* TABLE STYLES */
@@ -157,11 +157,11 @@ $users = $users ?? [];
     .table-flyhigh tr:hover td { color: var(--gotham-text); background: rgba(255,255,255,0.02); }
     
     .status-badge { padding: 6px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
-    .status-paid { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid #2ecc71; }
-    .status-unpaid { background: rgba(241, 196, 15, 0.2); color: #f1c40f; border: 1px solid #f1c40f; }
+    .status-paid { background: #DCFCE7; color: #166534; border: 1px solid #BBF7D0; }
+    .status-unpaid { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
 
-    .role-admin { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; }
-    .role-user { background: rgba(255,255,255,0.1); color: #95a5a6; border: 1px solid #7f8c8d; }
+    .role-admin { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .role-user { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
 
     .btn-create { 
         background: var(--gotham-accent); 
@@ -184,6 +184,17 @@ $users = $users ?? [];
     h2, h5, h6 { color: var(--gotham-text); font-family: 'Inter', sans-serif; letter-spacing: 0; }
     .text-dark { color: var(--gotham-text) !important; }
     .text-muted { color: var(--gotham-muted) !important; }
+
+    .btn-manage-all {
+        color: black !important;
+        border-color: white !important;
+        transition: 0.2s;
+    }
+    .btn-manage-all:hover {
+        background: #E9D5FF !important; /* Light Purple 200 */
+        border-color: #E9D5FF !important;
+        color: black !important;
+    }
 </style>
 
 <div class="admin-wrapper">
@@ -191,6 +202,7 @@ $users = $users ?? [];
         <div class="nav-header">ADMIN PANEL</div>
         <a class="nav-item active" onclick="showSection('overview', this)"><i class="bi bi-grid-1x2"></i> <span>Overview</span></a>
         <a class="nav-item" onclick="showSection('bookings', this)"><i class="bi bi-journal-check"></i> <span>Bookings</span></a>
+        <a class="nav-item" onclick="showSection('airports', this)"><i class="bi bi-geo-alt"></i> <span>Airports</span></a>
         <a class="nav-item" onclick="showSection('flights', this)"><i class="bi bi-airplane"></i> <span>Flights</span></a>
         <a class="nav-item" onclick="showSection('passengers', this)"><i class="bi bi-people"></i> <span>Passengers</span></a>
         <a class="nav-item" onclick="showSection('users', this)"><i class="bi bi-person-gear"></i> <span>Users</span></a>
@@ -210,7 +222,7 @@ $users = $users ?? [];
                 <div class="col-md-3">
                     <div class="dashboard-card d-flex align-items-center gap-3">
                         <div class="action-icon"><i class="bi bi-currency-dollar"></i></div>
-                        <div><small class="text-muted fw-bold">TOTAL REVENUE</small><p class="stat-number">RM <?= number_format($stats['revenue'], 1) ?>K</p></div>
+                        <div><small class="text-muted fw-bold">MONTHLY REVENUE</small><p class="stat-number">RM <?= number_format($stats['revenue'], 2) ?></p></div>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -267,9 +279,8 @@ $users = $users ?? [];
         </div>
 
         <div id="bookings" class="page-section">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-center align-items-center mb-4">
                 <h2 style="margin: 0;">BOOKINGS MANAGEMENT</h2>
-                <?= $this->Html->link(__('<i class="bi bi-plus-lg"></i> New Booking'), ['controller' => 'Bookings', 'action' => 'add'], ['class' => 'btn-create', 'escape' => false]) ?>
             </div>
             <div class="dashboard-card">
                 <div class="table-responsive">
@@ -279,16 +290,25 @@ $users = $users ?? [];
                         </thead>
                         <tbody>
                             <?php if (!empty($bookings)): ?>
-                                <?php foreach ($bookings as $booking): ?>
+                                <?php foreach ($bookings as $key => $booking): ?>
                                 <tr>
-                                    <td class="fw-bold text-muted">#<?= $this->Number->format($booking->id) ?></td>
+                                    <td class="fw-bold text-muted">#<?= $key + 1 ?></td>
                                     <td><?= $booking->hasValue('passenger') ? h($booking->passenger->full_name) : 'N/A' ?></td>
                                     <td><i class="bi bi-airplane me-2" style="color:var(--gotham-accent)"></i><?= $booking->hasValue('flight') ? h($booking->flight->flight_number) : 'N/A' ?></td>
                                     <td><?= h($booking->booking_date) ?></td>
-                                    <td><span class="status-badge <?= strtolower($booking->ticket_status ?? '') == 'paid' ? 'status-paid' : 'status-unpaid' ?>"><?= h($booking->ticket_status) ?></span></td>
+                                    <td>
+                                        <?php 
+                                            $status = strtolower($booking->ticket_status ?? ''); 
+                                            $isPaid = ($status == 'confirmed' || $status == 'paid');
+                                        ?>
+                                        <span class="status-badge <?= $isPaid ? 'status-paid' : 'status-unpaid' ?>">
+                                            <?= $isPaid ? 'Paid' : 'Pending Payment' ?>
+                                        </span>
+                                    </td>
                                     <td class="actions">
                                         <?= $this->Html->link(__('View'), ['controller' => 'Bookings', 'action' => 'view', $booking->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
-                                        <?= $this->Html->link(__('Edit'), ['controller' => 'Bookings', 'action' => 'edit', $booking->id], ['class' => 'text-muted text-decoration-none']) ?>
+                                        <?= $this->Html->link(__('Edit'), ['controller' => 'Bookings', 'action' => 'edit', $booking->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>
+                                        <?= $this->Form->postLink(__('Delete'), ['controller' => 'Bookings', 'action' => 'delete', $booking->id], ['confirm' => __('Are you sure you want to delete # {0}?', $booking->id), 'class' => 'text-danger text-decoration-none']) ?>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -299,7 +319,45 @@ $users = $users ?? [];
                     </table>
                 </div>
                 <div class="mt-3 text-center">
-                    <?= $this->Html->link(__('Manage All Bookings'), ['controller' => 'Bookings', 'action' => 'index'], ['class' => 'btn btn-sm btn-outline-secondary', 'style' => 'color:white; border-color:white;']) ?>
+                    <?= $this->Html->link(__('Manage All Bookings'), ['controller' => 'Bookings', 'action' => 'index'], ['class' => 'btn btn-sm btn-outline-secondary btn-manage-all']) ?>
+                </div>
+            </div>
+        </div>
+
+        <div id="airports" class="page-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 style="margin: 0;">AIRPORT TERMINALS</h2>
+                <?= $this->Html->link(__('<i class="bi bi-plus-lg"></i> New Airport'), ['controller' => 'Airports', 'action' => 'add'], ['class' => 'btn-create', 'escape' => false]) ?>
+            </div>
+            <div class="dashboard-card">
+                <div class="table-responsive">
+                    <table class="table-flyhigh">
+                        <thead>
+                            <tr><th>ID</th><th>Code</th><th>Name</th><th>Location</th><th class="actions">Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($airports)): ?>
+                                <?php foreach ($airports as $key => $airport): ?>
+                                <tr>
+                                    <td class="fw-bold text-muted"><?= $key + 1 ?></td>
+                                    <td style="color: #0d6efd; font-weight: bold;"><i class="bi bi-geo-alt-fill me-2"></i><?= h($airport->airport_code) ?></td>
+                                    <td><?= h($airport->airport_name) ?></td>
+                                    <td><?= h($airport->city) ?>, <?= h($airport->country) ?></td>
+                                    <td class="actions">
+                                        <?= $this->Html->link(__('View'), ['controller' => 'Airports', 'action' => 'view', $airport->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
+                                        <?= $this->Html->link(__('Edit'), ['controller' => 'Airports', 'action' => 'edit', $airport->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>
+                                        <?= $this->Form->postLink(__('Delete'), ['controller' => 'Airports', 'action' => 'delete', $airport->id], ['confirm' => __('Delete airport {0}?', $airport->airport_code), 'class' => 'text-danger text-decoration-none']) ?>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr><td colspan="5" class="text-center p-5 text-muted">No airports found.</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3 text-center">
+                    <?= $this->Html->link(__('Manage All Airports'), ['controller' => 'Airports', 'action' => 'index'], ['class' => 'btn btn-sm btn-outline-secondary btn-manage-all']) ?>
                 </div>
             </div>
         </div>
@@ -317,10 +375,10 @@ $users = $users ?? [];
                         </thead>
                         <tbody>
                             <?php if (!empty($flights)): ?>
-                                <?php foreach ($flights as $flight): ?>
+                                <?php foreach ($flights as $key => $flight): ?>
                                 <tr>
-                                    <td class="fw-bold text-muted"><?= $this->Number->format($flight->id) ?></td>
-                                    <td style="color: var(--gotham-accent); font-weight: bold;"><i class="bi bi-airplane-fill me-2"></i><?= h($flight->flight_number) ?></td>
+                                    <td class="fw-bold text-muted"><?= $key + 1 ?></td>
+                                    <td style="color: #0d6efd; font-weight: bold;"><i class="bi bi-airplane-fill me-2"></i><?= h($flight->flight_number) ?></td>
                                     <td><?= $flight->hasValue('origin_airport') ? h($flight->origin_airport->airport_code) : '-' ?></td>
                                     <td><?= $flight->hasValue('dest_airport') ? h($flight->dest_airport->airport_code) : '-' ?></td>
                                     <td><?= h($flight->departure_time) ?></td>
@@ -339,7 +397,7 @@ $users = $users ?? [];
                     </table>
                 </div>
                 <div class="mt-3 text-center">
-                    <?= $this->Html->link(__('Manage All Flights'), ['controller' => 'Flights', 'action' => 'index'], ['class' => 'btn btn-sm btn-outline-secondary', 'style' => 'color:white; border-color:white;']) ?>
+                    <?= $this->Html->link(__('Manage All Flights'), ['controller' => 'Flights', 'action' => 'index'], ['class' => 'btn btn-sm btn-outline-secondary btn-manage-all']) ?>
                 </div>
             </div>
         </div>
@@ -357,12 +415,12 @@ $users = $users ?? [];
                         </thead>
                         <tbody>
                             <?php if (!empty($passengers)): ?>
-                                <?php foreach ($passengers as $passenger): ?>
+                                <?php foreach ($passengers as $key => $passenger): ?>
                                 <tr>
-                                    <td class="fw-bold text-muted"><?= $this->Number->format($passenger->id) ?></td>
+                                    <td class="fw-bold text-muted"><?= $key + 1 ?></td>
                                     <td>
                                         <?php if ($passenger->hasValue('user')): ?>
-                                            <?= $this->Html->link($passenger->user->username, ['controller' => 'Users', 'action' => 'view', $passenger->user->id], ['style' => 'text-decoration:none; color:var(--gotham-accent); font-weight:bold;']) ?>
+                                            <?= $this->Html->link($passenger->user->email, ['controller' => 'Users', 'action' => 'view', $passenger->user->id], ['style' => 'text-decoration:none; color:var(--gotham-accent); font-weight:bold;']) ?>
                                         <?php else: ?>
                                             <span class="text-muted">Guest</span>
                                         <?php endif; ?>
@@ -384,7 +442,7 @@ $users = $users ?? [];
                     </table>
                 </div>
                 <div class="mt-3 text-center">
-                    <?= $this->Html->link(__('Manage All Passengers'), ['controller' => 'Passengers', 'action' => 'index'], ['class' => 'btn btn-sm btn-outline-secondary', 'style' => 'color:white; border-color:white;']) ?>
+                    <?= $this->Html->link(__('Manage All Passengers'), ['controller' => 'Passengers', 'action' => 'index'], ['class' => 'btn btn-sm btn-outline-secondary btn-manage-all']) ?>
                 </div>
             </div>
         </div>
@@ -405,9 +463,9 @@ $users = $users ?? [];
                         </thead>
                         <tbody>
                             <?php if (!empty($users)): ?>
-                                <?php foreach ($users as $user): ?>
+                                <?php foreach ($users as $key => $user): ?>
                                 <tr>
-                                    <td class="fw-bold text-muted"><?= $this->Number->format($user->id) ?></td>
+                                    <td class="fw-bold text-muted"><?= $key + 1 ?></td>
                                     <td style="font-weight: bold;"><i class="bi bi-person-circle me-2" style="color:#666;"></i><?= h($user->username) ?></td>
                                     <td><?= h($user->email) ?></td>
                                     <td><span class="status-badge <?= strtolower($user->role) == 'admin' ? 'role-admin' : 'role-user' ?>"><?= h($user->role) ?></span></td>
@@ -426,7 +484,7 @@ $users = $users ?? [];
                     </table>
                 </div>
                 <div class="mt-3 text-center">
-                    <?= $this->Html->link(__('Manage All Users'), ['controller' => 'Users', 'action' => 'index'], ['class' => 'btn btn-sm btn-outline-secondary', 'style' => 'color:white; border-color:white;']) ?>
+                    <?= $this->Html->link(__('Manage All Users'), ['controller' => 'Users', 'action' => 'index'], ['class' => 'btn btn-sm btn-outline-secondary btn-manage-all']) ?>
                 </div>
             </div>
         </div>
@@ -493,8 +551,25 @@ $users = $users ?? [];
         document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
         document.getElementById(sectionId).classList.add('active');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        element.classList.add('active');
+        if (element) {
+             element.classList.add('active');
+        } else {
+             // Find nav item by onclick attribute matching sectionId
+             const navItem = document.querySelector(`.nav-item[onclick*="'${sectionId}'"]`);
+             if (navItem) navItem.classList.add('active');
+        }
     }
+
+    // Handle hash immediately to prevent flash of wrong content
+    (function() {
+        const hash = window.location.hash.substring(1); // remove #
+        if (hash) {
+            const validSections = ['overview', 'bookings', 'airports', 'flights', 'passengers', 'users'];
+            if (validSections.includes(hash)) {
+                showSection(hash, null);
+            }
+        }
+    })();
 
     // --- CHART CONFIGURATION ---
 

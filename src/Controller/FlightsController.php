@@ -34,8 +34,29 @@ class FlightsController extends AppController
      */
     public function view($id = null)
     {
-        $flight = $this->Flights->get($id, contain: ['OriginAirports', 'DestAirports', 'Bookings']);
-        $this->set(compact('flight'));
+        $flight = $this->Flights->get($id, contain: ['OriginAirports', 'DestAirports', 'Bookings.Passengers']);
+        $visualId = $this->Flights->find()->where(['id <=' => $id])->count();
+        $this->set(compact('flight', 'visualId'));
+    }
+
+    // ...
+
+    public function edit($id = null)
+    {
+        $flight = $this->Flights->get($id, contain: []);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $flight = $this->Flights->patchEntity($flight, $this->request->getData());
+            if ($this->Flights->save($flight)) {
+                $this->Flash->success(__('The flight has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The flight could not be saved. Please, try again.'));
+        }
+        $originAirports = $this->Flights->OriginAirports->find('list', limit: 200)->all();
+        $destAirports = $this->Flights->DestAirports->find('list', limit: 200)->all();
+        $visualId = $this->Flights->find()->where(['id <=' => $id])->count();
+        $this->set(compact('flight', 'originAirports', 'destAirports', 'visualId'));
     }
 
     /**
@@ -48,6 +69,9 @@ class FlightsController extends AppController
         $flight = $this->Flights->newEmptyEntity();
         if ($this->request->is('post')) {
             $flight = $this->Flights->patchEntity($flight, $this->request->getData());
+            if (empty($flight->flight_number)) {
+                $flight->flight_number = 'FL' . rand(1000, 9999);
+            }
             if ($this->Flights->save($flight)) {
                 $this->Flash->success(__('The flight has been saved.'));
 
@@ -67,22 +91,7 @@ class FlightsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
-    {
-        $flight = $this->Flights->get($id, contain: []);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $flight = $this->Flights->patchEntity($flight, $this->request->getData());
-            if ($this->Flights->save($flight)) {
-                $this->Flash->success(__('The flight has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The flight could not be saved. Please, try again.'));
-        }
-        $originAirports = $this->Flights->OriginAirports->find('list', limit: 200)->all();
-        $destAirports = $this->Flights->DestAirports->find('list', limit: 200)->all();
-        $this->set(compact('flight', 'originAirports', 'destAirports'));
-    }
 
     /**
      * Delete method

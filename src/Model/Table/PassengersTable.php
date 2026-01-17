@@ -49,6 +49,8 @@ class PassengersTable extends Table
         ]);
         $this->hasMany('Bookings', [
             'foreignKey' => 'passenger_id',
+            'dependent' => true,
+            'cascadeCallbacks' => true,
         ]);
     }
 

@@ -147,8 +147,10 @@ $controller = $this->request->getParam('controller');
         text-transform: uppercase; 
         letter-spacing: 0.05em; 
     }
-    .table-flyhigh th a { color: #6B7280; text-decoration: none; }
+    .table-flyhigh th a { color: #6B7280; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
     .table-flyhigh th a:hover { color: var(--admin-accent); }
+    .table-flyhigh th a.asc:after { content: " \2191"; /* Up Arrow */ } 
+    .table-flyhigh th a.desc:after { content: " \2193"; /* Down Arrow */ }
     .table-flyhigh td { padding: 16px 20px; border-bottom: 1px solid #F3F4F6; font-size: 0.9rem; vertical-align: middle; color: #1F2937; }
     .table-flyhigh tr:last-child td { border-bottom: none; }
     .table-flyhigh tr:hover td { background: #F9FAFB; }
@@ -158,8 +160,8 @@ $controller = $this->request->getParam('controller');
     .status-paid { background: #DCFCE7; color: #166534; border: 1px solid #BBF7D0; }
     .status-unpaid { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
 
-    .role-admin { background: #F3E8FF; color: #6B21A8; border: 1px solid #E9D5FF; }
-    .role-user { background: #F3F4F6; color: #374151; border: 1px solid #E5E7EB; }
+    .role-admin { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .role-user { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
 
     /* BUTTONS */
     .btn-create { 
@@ -216,6 +218,9 @@ $controller = $this->request->getParam('controller');
         </a>
         <a href="<?= $this->Url->build(['controller' => 'Bookings', 'action' => 'index']) ?>" class="nav-item <?= $controller == 'Bookings' ? 'active' : '' ?>">
             <i class="bi bi-journal-check"></i> <span>Bookings</span>
+        </a>
+        <a href="<?= $this->Url->build(['controller' => 'Airports', 'action' => 'index']) ?>" class="nav-item <?= $controller == 'Airports' ? 'active' : '' ?>">
+            <i class="bi bi-geo-alt"></i> <span>Airports</span>
         </a>
         <a href="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'index']) ?>" class="nav-item <?= $controller == 'Flights' ? 'active' : '' ?>">
             <i class="bi bi-airplane"></i> <span>Flights</span>

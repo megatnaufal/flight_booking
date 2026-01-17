@@ -34,8 +34,28 @@ class PassengersController extends AppController
      */
     public function view($id = null)
     {
-        $passenger = $this->Passengers->get($id, contain: ['Users', 'Bookings']);
-        $this->set(compact('passenger'));
+        $passenger = $this->Passengers->get($id, contain: ['Users', 'Bookings.Flights']);
+        $visualId = $this->Passengers->find()->where(['id <=' => $id])->count();
+        $this->set(compact('passenger', 'visualId'));
+    }
+
+    // ...
+
+    public function edit($id = null)
+    {
+        $passenger = $this->Passengers->get($id, contain: []);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $passenger = $this->Passengers->patchEntity($passenger, $this->request->getData());
+            if ($this->Passengers->save($passenger)) {
+                $this->Flash->success(__('The passenger has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The passenger could not be saved. Please, try again.'));
+        }
+        $users = $this->Passengers->Users->find('list', limit: 200)->all();
+        $visualId = $this->Passengers->find()->where(['id <=' => $id])->count();
+        $this->set(compact('passenger', 'users', 'visualId'));
     }
 
     /**
@@ -48,6 +68,9 @@ class PassengersController extends AppController
         $passenger = $this->Passengers->newEmptyEntity();
         if ($this->request->is('post')) {
             $passenger = $this->Passengers->patchEntity($passenger, $this->request->getData());
+            if (empty($passenger->passport_number)) {
+                $passenger->passport_number = 'P' . rand(10000000, 99999999);
+            }
             if ($this->Passengers->save($passenger)) {
                 $this->Flash->success(__('The passenger has been saved.'));
 
@@ -66,21 +89,7 @@ class PassengersController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
-    {
-        $passenger = $this->Passengers->get($id, contain: []);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $passenger = $this->Passengers->patchEntity($passenger, $this->request->getData());
-            if ($this->Passengers->save($passenger)) {
-                $this->Flash->success(__('The passenger has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The passenger could not be saved. Please, try again.'));
-        }
-        $users = $this->Passengers->Users->find('list', limit: 200)->all();
-        $this->set(compact('passenger', 'users'));
-    }
 
     /**
      * Delete method

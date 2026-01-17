@@ -6,33 +6,39 @@
  * @var string[]|\Cake\Collection\CollectionInterface $flights
  */
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Form->postLink(
-                __('Delete'),
-                ['action' => 'delete', $booking->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $booking->id), 'class' => 'side-nav-item']
-            ) ?>
-            <?= $this->Html->link(__('List Bookings'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
+<?= $this->element('admin_theme') ?>
+<div class="main-content">
+    <div class="dashboard-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-uppercase border-start border-4 border-primary ps-3 mb-0" style="border-color: var(--gotham-accent) !important;">Edit Booking (ID: <?= $visualId ?>)</h2>
+            <?= $this->Html->link(__('<i class="bi bi-arrow-left"></i> Back to List'), ['action' => 'index'], ['class' => 'btn btn-outline-secondary', 'escape' => false]) ?>
         </div>
-    </aside>
-    <div class="column column-80">
-        <div class="bookings form content">
-            <?= $this->Form->create($booking) ?>
-            <fieldset>
-                <legend><?= __('Edit Booking') ?></legend>
-                <?php
-                    echo $this->Form->control('passenger_id', ['options' => $passengers, 'empty' => true]);
-                    echo $this->Form->control('flight_id', ['options' => $flights, 'empty' => true]);
-                    echo $this->Form->control('booking_date', ['empty' => true]);
-                    echo $this->Form->control('seat_number');
-                    echo $this->Form->control('ticket_status');
-                ?>
-            </fieldset>
-            <?= $this->Form->button(__('Submit')) ?>
-            <?= $this->Form->end() ?>
+        <?= $this->Form->create($booking) ?>
+        <div class="row g-3">
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">Passenger</label>
+                <?= $this->Form->control('passenger_id', ['options' => $passengers, 'empty' => true, 'class' => 'form-select', 'label' => false]) ?>
+             </div>
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">Flight</label>
+                <?= $this->Form->control('flight_id', ['options' => $flights, 'empty' => true, 'class' => 'form-select', 'label' => false]) ?>
+             </div>
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">Booking Date</label>
+                <?= $this->Form->control('booking_date', ['empty' => true, 'class' => 'form-control', 'label' => false]) ?>
+             </div>
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">Seat Number</label>
+                <?= $this->Form->control('seat_number', ['class' => 'form-control', 'label' => false]) ?>
+             </div>
+             <div class="col-md-6">
+                 <label class="form-label text-muted small fw-bold">Status</label>
+                <?= $this->Form->control('ticket_status', ['options' => ['Pending Payment' => 'Pending Payment', 'Confirmed' => 'Confirmed', 'Cancelled' => 'Cancelled'], 'class' => 'form-select', 'label' => false]) ?>
+             </div>
+             <div class="col-12 mt-4 text-end">
+                 <?= $this->Form->button(__('Update Booking'), ['class' => 'btn-create']) ?>
+             </div>
         </div>
+        <?= $this->Form->end() ?>
     </div>
 </div>

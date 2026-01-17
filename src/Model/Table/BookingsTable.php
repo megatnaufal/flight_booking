@@ -53,7 +53,34 @@ class BookingsTable extends Table
         ]);
         $this->hasMany('Luggages', [
             'foreignKey' => 'booking_id',
+            'dependent' => true,
+            'cascadeCallbacks' => true,
         ]);
+        // Invalid association removed
+    }
+
+    public function afterDelete(\Cake\Event\EventInterface $event, \Cake\Datasource\EntityInterface $entity, \ArrayObject $options): void
+    {
+        $tableLocator = \Cake\ORM\TableRegistry::getTableLocator();
+
+        // 1. Delete the associated Flight
+        if (!empty($entity->flight_id)) {
+            $flightsTable = $tableLocator->get('Flights');
+            $flight = $flightsTable->find()->where(['id' => $entity->flight_id])->first();
+            if ($flight) {
+                // Prevent infinite recursion if flight deletes booking
+                $flightsTable->delete($flight, ['atomic' => false]);
+            }
+        }
+
+        // 2. Delete the associated Passenger
+        if (!empty($entity->passenger_id)) {
+            $passengersTable = $tableLocator->get('Passengers');
+            $passenger = $passengersTable->find()->where(['id' => $entity->passenger_id])->first();
+            if ($passenger) {
+                 $passengersTable->delete($passenger, ['atomic' => false]);
+            }
+        }
     }
 
     /**

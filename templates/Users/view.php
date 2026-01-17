@@ -4,45 +4,50 @@
  * @var \App\Model\Entity\User $user
  */
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Html->link(__('Edit User'), ['action' => 'edit', $user->id], ['class' => 'side-nav-item']) ?>
-            <?= $this->Form->postLink(__('Delete User'), ['action' => 'delete', $user->id], ['confirm' => __('Are you sure you want to delete # {0}?', $user->id), 'class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('List Users'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('New User'), ['action' => 'add'], ['class' => 'side-nav-item']) ?>
+<?= $this->element('admin_theme') ?>
+<div class="main-content">
+    <div class="dashboard-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-uppercase border-start border-4 border-primary ps-3 mb-0" style="border-color: var(--gotham-accent) !important;">View User</h2>
+            <div>
+                <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->id], ['class' => 'btn btn-outline-primary me-2']) ?>
+                <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $user->id], ['confirm' => __('Are you sure you want to delete # {0}?', $user->id), 'class' => 'btn btn-outline-danger me-2']) ?>
+                <?= $this->Html->link(__('<i class="bi bi-arrow-left"></i> Back to List'), ['action' => 'index'], ['class' => 'btn btn-outline-secondary', 'escape' => false]) ?>
+            </div>
         </div>
-    </aside>
-    <div class="column column-80">
-        <div class="users view content">
-            <h3><?= h($user->username) ?></h3>
-            <table>
-                <tr>
-                    <th><?= __('Username') ?></th>
-                    <td><?= h($user->username) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Email') ?></th>
-                    <td><?= h($user->email) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Role') ?></th>
-                    <td><?= h($user->role) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Id') ?></th>
-                    <td><?= $this->Number->format($user->id) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Created') ?></th>
-                    <td><?= h($user->created) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Modified') ?></th>
-                    <td><?= h($user->modified) ?></td>
-                </tr>
-            </table>
-        </div>
+        <table class="table table-bordered">
+            <tr>
+                <th><?= __('ID') ?></th>
+                <td><?= h($visualId) ?></td>
+            </tr>
+            <tr>
+                <th><?= __('Username') ?></th>
+                <td><?= h($user->username) ?></td>
+            </tr>
+            <tr>
+                <th><?= __('Email') ?></th>
+                <td><?= h($user->email) ?></td>
+            </tr>
+            <tr>
+                <th><?= __('Role') ?></th>
+                <td>
+                    <?php 
+                        $role = strtolower($user->role ?? ''); 
+                        $isAdmin = ($role == 'admin');
+                    ?>
+                    <span class="role-badge <?= $isAdmin ? 'role-admin' : 'role-user' ?>">
+                        <?= ucfirst($role) ?>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th><?= __('Created') ?></th>
+                <td><?= h($user->created) ?></td>
+            </tr>
+            <tr>
+                <th><?= __('Modified') ?></th>
+                <td><?= h($user->modified) ?></td>
+            </tr>
+        </table>
     </div>
 </div>

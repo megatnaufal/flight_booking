@@ -35,7 +35,28 @@ class BookingsController extends AppController
     public function view($id = null)
     {
         $booking = $this->Bookings->get($id, contain: ['Passengers', 'Flights', 'Luggages']);
-        $this->set(compact('booking'));
+        $visualId = $this->Bookings->find()->where(['id <=' => $id])->count();
+        $this->set(compact('booking', 'visualId'));
+    }
+
+    // ... (omitted methods)
+
+    public function edit($id = null)
+    {
+        $booking = $this->Bookings->get($id, contain: []);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $booking = $this->Bookings->patchEntity($booking, $this->request->getData());
+            if ($this->Bookings->save($booking)) {
+                $this->Flash->success(__('The booking has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The booking could not be saved. Please, try again.'));
+        }
+        $passengers = $this->Bookings->Passengers->find('list', limit: 200)->all();
+        $flights = $this->Bookings->Flights->find('list', limit: 200)->all();
+        $visualId = $this->Bookings->find()->where(['id <=' => $id])->count();
+        $this->set(compact('booking', 'passengers', 'flights', 'visualId'));
     }
 
     /**
@@ -50,8 +71,41 @@ class BookingsController extends AppController
         $returnFlightData = $session->read('Flight.Return');
 
         if (!$departureFlightData) {
-            $this->Flash->error('Your session has expired or no flights were selected.');
-            return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'home']);
+            // Manual Admin Booking Flow
+            $booking = $this->Bookings->newEmptyEntity();
+            if ($this->request->is('post')) {
+                $booking = $this->Bookings->patchEntity($booking, $this->request->getData());
+                if (!$booking->booking_date) {
+                    $booking->booking_date = date('Y-m-d');
+                }
+                if ($this->Bookings->save($booking)) {
+                    $this->Flash->success(__('The booking has been saved.'));
+                    return $this->redirect(['action' => 'index']);
+                }
+                $this->Flash->error(__('The booking could not be saved. Please, try again.'));
+            }
+            
+            $passengers = $this->Bookings->Passengers->find('list', ['keyField' => 'id', 'valueField' => 'full_name'])->all();
+            $flights = $this->Bookings->Flights->find('list', [
+                'keyField' => 'id', 
+                'valueField' => function ($e) { return $e->flight_number . ' (' . $e->departure_time . ')'; }
+            ])->all();
+            
+            $isManual = true;
+            // Set dummy variables to avoid view errors
+            $this->set(compact('booking', 'passengers', 'flights', 'isManual'));
+            $this->set('departureFlightData', null);
+            $this->set('returnFlightData', null);
+            $this->set('totalPax', 0);
+            $this->set('totalPrice', 0);
+            $this->set('totalTaxes', 0);
+            $this->set('paxAdult', 0);
+            $this->set('paxChild', 0);
+            $this->set('paxInfant', 0);
+            $this->set('basePerAdult', 0);
+            $this->set('basePerChild', 0);
+            $this->set('basePerInfant', 0);
+            return;
         }
         
         // Fetch Airport details
@@ -158,7 +212,11 @@ class BookingsController extends AppController
                     'email' => $leadData['email'] ?? '',
                     'dob' => $leadData['dob'] ?? null,
                     'type' => $leadData['type'] ?? 'Adult',
+                    'user_id' => $session->read('Auth')->id ?? null,
                 ]);
+                if (empty($leadPax->passport_number)) {
+                    $leadPax->passport_number = 'P' . rand(10000000, 99999999);
+                }
                 if ($passengersTable->save($leadPax)) {
                     $leadPassengerId = $leadPax->id;
                 } else {
@@ -173,6 +231,11 @@ class BookingsController extends AppController
             $booking->flight_id = $flight->id; 
             $booking->booking_date = date('Y-m-d');
             $booking->ticket_status = 'Pending Payment';
+            if (empty($booking->seat_number)) {
+                $rows = range(1, 30);
+                $cols = ['A', 'B', 'C', 'D', 'E', 'F'];
+                $booking->seat_number = $rows[array_rand($rows)] . $cols[array_rand($cols)];
+            }
             
             if ($this->Bookings->save($booking)) {
                 
@@ -194,8 +257,12 @@ class BookingsController extends AppController
                         'email' => $pData['email'] ?? '',
                         'dob' => $pData['dob'] ?? null,
                         'type' => $pData['type'] ?? '',
-                        'booking_id' => $booking->id
+                        'booking_id' => $booking->id,
+                        'user_id' => $session->read('Auth')->id ?? null,
                     ]);
+                    if (empty($pax->passport_number)) {
+                        $pax->passport_number = 'P' . rand(10000000, 99999999);
+                    }
                     $passengersTable->save($pax);
                 }
                 
@@ -247,6 +314,11 @@ class BookingsController extends AppController
                     $returnBooking->flight_id = $returnFlight->id;
                     $returnBooking->booking_date = date('Y-m-d');
                     $returnBooking->ticket_status = 'Pending Payment';
+                    if (empty($returnBooking->seat_number)) {
+                        $rows = range(1, 30);
+                        $cols = ['A', 'B', 'C', 'D', 'E', 'F'];
+                        $returnBooking->seat_number = $rows[array_rand($rows)] . $cols[array_rand($cols)];
+                    }
                     $this->Bookings->save($returnBooking);
                     
                     $session->write('Flight.ReturnBookingId', $returnBooking->id);
@@ -446,22 +518,7 @@ class BookingsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
-    {
-        $booking = $this->Bookings->get($id, contain: []);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $booking = $this->Bookings->patchEntity($booking, $this->request->getData());
-            if ($this->Bookings->save($booking)) {
-                $this->Flash->success(__('The booking has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The booking could not be saved. Please, try again.'));
-        }
-        $passengers = $this->Bookings->Passengers->find('list', limit: 200)->all();
-        $flights = $this->Bookings->Flights->find('list', limit: 200)->all();
-        $this->set(compact('booking', 'passengers', 'flights'));
-    }
 
     /**
      * Delete method

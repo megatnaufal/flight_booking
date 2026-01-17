@@ -20,7 +20,7 @@
                 <fieldset class="mb-4">
                     <legend class="text-muted mb-4">Passenger Information</legend>
                     <div class="mb-3">
-                        <?= $this->Form->control('user_id', ['options' => $users, 'empty' => true, 'class' => 'form-select', 'label' => ['class' => 'form-label']]) ?>
+                        <?= $this->Form->control('user_id', ['type' => 'text', 'class' => 'form-control', 'label' => ['class' => 'form-label']]) ?>
                     </div>
                     <div class="mb-3">
                         <?= $this->Form->control('full_name', ['class' => 'form-control', 'label' => ['class' => 'form-label']]) ?>

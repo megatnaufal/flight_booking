@@ -8,7 +8,10 @@
 
 <main class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>SYSTEM USERS</h2>
+        <div class="d-flex align-items-center gap-3">
+            <?= $this->Html->link(__('<i class="bi bi-arrow-left"></i> Back'), ['controller' => 'Dashboards', 'action' => 'index', '#' => 'users'], ['class' => 'btn btn-sm btn-outline-secondary', 'escape' => false]) ?>
+            <h2 class="m-0">SYSTEM USERS</h2>
+        </div>
         <div>
             <?= $this->Html->link(__('<i class="bi bi-shield-lock"></i> New Admin'), ['action' => 'addAdmin'], ['class' => 'btn-create me-2', 'escape' => false]) ?>
             <?= $this->Html->link(__('<i class="bi bi-plus-lg"></i> New User'), ['action' => 'add'], ['class' => 'btn-create', 'escape' => false]) ?>
@@ -30,9 +33,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($users as $user): ?>
+                    <?php 
+                    $page = $this->Paginator->current('Users') ?: 1;
+                    $limit = $this->Paginator->param('perPage') ?: 20;
+                    $counter = ($page - 1) * $limit;
+                    $direction = strtolower($this->Paginator->param('direction') ?? 'asc');
+                    $totalCount = $this->Paginator->param('count');
+                    ?>
+                    <?php foreach ($users as $key => $user): 
+                        $rowId = ($direction === 'desc') ? $totalCount - ($counter + $key) : $counter + $key + 1;
+                    ?>
                     <tr>
-                        <td class="fw-bold text-muted"><?= $this->Number->format($user->id) ?></td>
+                        <td class="fw-bold text-muted"><?= $rowId ?></td>
                         <td style="font-weight: bold;"><i class="bi bi-person-circle me-2" style="color:#666;"></i><?= h($user->username) ?></td>
                         <td><?= h($user->email) ?></td>
                         <td><span class="status-badge <?= strtolower($user->role) == 'admin' ? 'role-admin' : 'role-user' ?>"><?= h($user->role) ?></span></td>

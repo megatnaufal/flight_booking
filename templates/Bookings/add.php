@@ -10,6 +10,40 @@
  */
 $this->Html->css('flights', ['block' => true]);
 ?>
+<?php if (isset($isManual) && $isManual): ?>
+    <?= $this->element('admin_theme') ?>
+    <div class="main-content">
+        <div class="dashboard-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-uppercase border-start border-4 border-primary ps-3 mb-0" style="border-color: var(--gotham-accent) !important;">New Booking</h2>
+                <?= $this->Html->link(__('<i class="bi bi-arrow-left"></i> Back to List'), ['action' => 'index'], ['class' => 'btn btn-outline-secondary', 'escape' => false]) ?>
+            </div>
+            <?= $this->Form->create($booking) ?>
+            <div class="row g-3">
+                 <div class="col-md-6">
+                    <label class="form-label text-muted small fw-bold">Passenger</label>
+                    <?= $this->Form->control('passenger_id', ['options' => $passengers, 'class' => 'form-select', 'label' => false]) ?>
+                 </div>
+                 <div class="col-md-6">
+                     <label class="form-label text-muted small fw-bold">Flight</label>
+                    <?= $this->Form->control('flight_id', ['options' => $flights, 'class' => 'form-select', 'label' => false]) ?>
+                 </div>
+                 <div class="col-md-6">
+                     <label class="form-label text-muted small fw-bold">Booking Date</label>
+                    <?= $this->Form->control('booking_date', ['class' => 'form-control', 'label' => false]) ?>
+                 </div>
+                 <div class="col-md-6">
+                     <label class="form-label text-muted small fw-bold">Status</label>
+                    <?= $this->Form->control('ticket_status', ['options' => ['Pending Payment' => 'Pending Payment', 'Confirmed' => 'Confirmed', 'Cancelled' => 'Cancelled'], 'class' => 'form-select', 'label' => false]) ?>
+                 </div>
+                 <div class="col-12 mt-4 text-end">
+                     <?= $this->Form->button(__('Save Booking'), ['class' => 'btn-create']) ?>
+                 </div>
+            </div>
+            <?= $this->Form->end() ?>
+        </div>
+    </div>
+<?php else: ?>
 <div class="flight-search-header bg-white shadow-sm py-3 mb-4">
     <div class="container">
         <h4 class="mb-0 fw-bold text-dark">Trip Summary</h4>
@@ -315,3 +349,4 @@ $this->Html->css('flights', ['block' => true]);
     </div>
     <?= $this->Form->end() ?>
 </div>
+<?php endif; ?>

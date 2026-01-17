@@ -24,7 +24,28 @@ class DashboardsController extends AppController
         // 1. Fetch Key Statistics
         // We use fetchTable() to get counts from the respective tables
         $stats = [
-            'revenue' => 125.4, // This is static; replace with real calculation if needed: $this->fetchTable('Bookings')->find()->sumOf('amount')
+            // Calculate Monthly Revenue (Bookings this month with Confirmed/Paid status)
+            'revenue' => (function() {
+                $bookings = $this->fetchTable('Bookings')->find()
+                    ->contain(['Flights'])
+                    ->where([
+                        'Bookings.booking_date >=' => date('Y-m-01'),
+                        'Bookings.booking_date <=' => date('Y-m-t'),
+                        'OR' => [
+                            ['Bookings.ticket_status' => 'Confirmed'],
+                            ['Bookings.ticket_status' => 'Paid']
+                        ]
+                    ])
+                    ->all();
+                
+                $total = 0;
+                foreach ($bookings as $booking) {
+                    if ($booking->flight && $booking->flight->base_price) {
+                        $total += $booking->flight->base_price;
+                    }
+                }
+                return $total;
+            })(),
             'flights' => $this->fetchTable('Flights')->find()->count(),
             'bookings' => $this->fetchTable('Bookings')->find()->count(),
             'users' => $this->fetchTable('Users')->find()->count(),
@@ -64,8 +85,14 @@ class DashboardsController extends AppController
             ->order(['Users.id' => 'ASC'])
             ->all();
 
-        // 7. Pass all variables to the View
-        $this->set(compact('stats', 'revenueLabels', 'revenueData', 'bookings', 'flights', 'passengers', 'users'));
+        // 7. Fetch Recent Airports
+        $airports = $this->fetchTable('Airports')->find()
+            ->limit(10)
+            ->order(['Airports.id' => 'ASC'])
+            ->all();
+
+        // 8. Pass all variables to the View
+        $this->set(compact('stats', 'revenueLabels', 'revenueData', 'bookings', 'flights', 'passengers', 'users', 'airports'));
     }
 
     /**

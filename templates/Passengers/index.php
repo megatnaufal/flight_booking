@@ -8,7 +8,10 @@
 
 <main class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>PASSENGERS</h2>
+        <div class="d-flex align-items-center gap-3">
+            <?= $this->Html->link(__('<i class="bi bi-arrow-left"></i> Back'), ['controller' => 'Dashboards', 'action' => 'index', '#' => 'passengers'], ['class' => 'btn btn-sm btn-outline-secondary', 'escape' => false]) ?>
+            <h2 class="m-0">PASSENGERS</h2>
+        </div>
         <?= $this->Html->link(__('<i class="bi bi-plus-lg"></i> New Passenger'), ['action' => 'add'], ['class' => 'btn-create', 'escape' => false]) ?>
     </div>
 
@@ -26,10 +29,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($passengers as $passenger): ?>
+                    <?php 
+                    $page = $this->Paginator->current('Passengers') ?: 1;
+                    $limit = $this->Paginator->param('perPage') ?: 20;
+                    $counter = ($page - 1) * $limit;
+                    $direction = strtolower($this->Paginator->param('direction') ?? 'asc');
+                    $totalCount = $this->Paginator->param('count');
+                    ?>
+                    <?php foreach ($passengers as $key => $passenger): 
+                        $rowId = ($direction === 'desc') ? $totalCount - ($counter + $key) : $counter + $key + 1;
+                    ?>
                     <tr>
-                        <td class="fw-bold text-muted"><?= $this->Number->format($passenger->id) ?></td>
-                        <td><?= $passenger->hasValue('user') ? $this->Html->link($passenger->user->username, ['controller' => 'Users', 'action' => 'view', $passenger->user->id], ['class' => 'text-decoration-none text-white', 'style' => 'font-weight:bold;']) : '' ?></td>
+                        <td class="fw-bold text-muted"><?= $rowId ?></td>
+                        <td><?= $passenger->hasValue('user') ? $this->Html->link($passenger->user->username, ['controller' => 'Users', 'action' => 'view', $passenger->user->id], ['class' => 'text-decoration-none text-primary', 'style' => 'font-weight:bold;']) : '<span class="text-muted">Guest</span>' ?></td>
                         <td><?= h($passenger->full_name) ?></td>
                         <td><span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 2px;"><?= h($passenger->passport_number) ?></span></td>
                         <td><?= h($passenger->phone_number) ?></td>

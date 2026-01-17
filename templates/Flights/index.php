@@ -8,7 +8,10 @@
 
 <main class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>FLIGHT SCHEDULES</h2>
+        <div class="d-flex align-items-center gap-3">
+            <?= $this->Html->link(__('<i class="bi bi-arrow-left"></i> Back'), ['controller' => 'Dashboards', 'action' => 'index', '#' => 'flights'], ['class' => 'btn btn-sm btn-outline-secondary', 'escape' => false]) ?>
+            <h2 class="m-0">FLIGHT SCHEDULES</h2>
+        </div>
         <?= $this->Html->link(__('<i class="bi bi-plus-lg"></i> New Flight'), ['action' => 'add'], ['class' => 'btn-create', 'escape' => false]) ?>
     </div>
 
@@ -27,10 +30,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($flights as $flight): ?>
+                    <?php 
+                    $page = $this->Paginator->current('Flights') ?: 1;
+                    $limit = $this->Paginator->param('perPage') ?: 20;
+                    $counter = ($page - 1) * $limit;
+                    $direction = strtolower($this->Paginator->param('direction') ?? 'asc');
+                    $totalCount = $this->Paginator->param('count');
+                    ?>
+                    <?php foreach ($flights as $key => $flight): 
+                        $rowId = ($direction === 'desc') ? $totalCount - ($counter + $key) : $counter + $key + 1;
+                    ?>
                     <tr>
-                        <td class="fw-bold text-muted"><?= $this->Number->format($flight->id) ?></td>
-                        <td class="fw-bold text-primary"><i class="bi bi-airplane-fill me-2"></i><?= h($flight->flight_number) ?></td>
+                        <td class="fw-bold text-muted"><?= $rowId ?></td>
+                        <td class="fw-bold" style="color: #0d6efd;"><i class="bi bi-airplane-fill me-2"></i><?= h($flight->flight_number) ?></td>
                         <td><?= $flight->hasValue('origin_airport') ? h($flight->origin_airport->airport_code) : '-' ?></td>
                         <td><?= $flight->hasValue('dest_airport') ? h($flight->dest_airport->airport_code) : '-' ?></td>
                         <td><?= h($flight->departure_time) ?></td>
