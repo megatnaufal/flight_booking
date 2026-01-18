@@ -86,6 +86,11 @@ class BookingsTable extends Table
             ->maxLength('ticket_status', 50)
             ->allowEmptyString('ticket_status');
 
+        $validator
+            ->scalar('payment_method')
+            ->maxLength('payment_method', 255)
+            ->allowEmptyString('payment_method');
+
         return $validator;
     }
 

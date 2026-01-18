@@ -94,15 +94,17 @@
             padding-bottom: 8px;
             border-bottom: 1px solid #E5E7EB;
         }
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+        .info-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 10px;
         }
-        .info-item {
-            padding: 12px;
+        .info-table td {
             background: #F9FAFB;
             border-radius: 8px;
+            padding: 12px;
+            width: 33.333%;
+            vertical-align: top;
         }
         .info-label {
             font-size: 11px;
@@ -116,6 +118,7 @@
             font-weight: 600;
             color: #111;
         }
+
         .flight-card {
             background: #F9FAFB;
             border-radius: 10px;
@@ -245,189 +248,202 @@
     </style>
 </head>
 <body>
-    <!-- DEPARTURE RECEIPT -->
-    <div class="receipt">
-        <div class="header">
-            <div class="logo">Fly<span>High</span></div>
-            <div class="receipt-title">
-                <h1>Booking Receipt</h1>
-                <p>Generated: <?= date('d M Y, H:i') ?></p>
-            </div>
-        </div>
-
-        <div class="flight-type-badge badge-departure">✈ Departure Flight</div>
-
-        <div class="section">
-            <h3 class="section-title">Booking Details</h3>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Booking Reference</div>
-                    <div class="info-value">#<?= h($booking->id) ?></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Booking Date</div>
-                    <div class="info-value"><?= h($booking->booking_date?->format('d M Y') ?? 'N/A') ?></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Payment Method</div>
-                    <div class="info-value"><?= h($booking->payment_method ?? 'N/A') ?></div>
+    <div id="receipt-content">
+        <!-- DEPARTURE RECEIPT -->
+        <div class="receipt">
+            <div class="header">
+                <div class="logo">Fly<span>High</span></div>
+                <div class="receipt-title">
+                    <h1>Booking Receipt</h1>
+                    <p>Generated: <?= date('d M Y, H:i') ?></p>
                 </div>
             </div>
-        </div>
-
-        <div class="section">
-            <h3 class="section-title">Flight Information</h3>
-            <div class="flight-card">
-                <div class="flight-route">
-                    <div class="flight-city">
-                        <div class="city"><?= h($booking->flight->origin_airport?->city ?? 'N/A') ?></div>
-                        <div class="code"><?= h($booking->flight->origin_airport?->airport_code ?? '') ?></div>
-                        <div class="time"><?= h($booking->flight->departure_time?->format('D, d M Y')) ?><br><?= h($booking->flight->departure_time?->format('H:i')) ?></div>
-                    </div>
-                    <div class="flight-arrow">→</div>
-                    <div class="flight-city">
-                        <div class="city"><?= h($booking->flight->dest_airport?->city ?? 'N/A') ?></div>
-                        <div class="code"><?= h($booking->flight->dest_airport?->airport_code ?? '') ?></div>
-                        <div class="time"><?= h($booking->flight->arrival_time?->format('D, d M Y')) ?><br><?= h($booking->flight->arrival_time?->format('H:i')) ?></div>
-                    </div>
-                </div>
-                <div class="flight-number">
-                    <span>Flight <?= h($booking->flight->flight_number ?? 'N/A') ?></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h3 class="section-title">Passenger</h3>
-            <table class="passengers-table">
-                <thead>
+    
+            <div class="flight-type-badge badge-departure">✈ Departure Flight</div>
+    
+            <div class="section">
+                <h3 class="section-title">Booking Details</h3>
+                <table class="info-table">
                     <tr>
-                        <th>#</th>
-                        <th>Full Name</th>
-                        <th>Type</th>
-                        <th>Contact</th>
+                        <td>
+                            <div class="info-label">Booking Reference</div>
+                            <div class="info-value">#<?= h($booking->id) ?></div>
+                        </td>
+                        <td>
+                            <div class="info-label">Booking Date</div>
+                            <div class="info-value"><?= h($booking->booking_date?->format('d M Y') ?? 'N/A') ?></div>
+                        </td>
+                        <td>
+                            <div class="info-label">Payment Method</div>
+                            <div class="info-value"><?= h($booking->payment_method ?? 'N/A') ?></div>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($passengers as $index => $pax): ?>
-                    <tr>
-                        <td><?= $index + 1 ?></td>
-                        <td><strong><?= h($pax->full_name ?? 'N/A') ?></strong></td>
-                        <td><?= h($pax->type ?? 'Adult') ?></td>
-                        <td><?= h($pax->phone_number ?? '-') ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="section">
-            <div class="total-section">
-                <div class="total-label">Flight Price</div>
-                <div class="total-amount">RM <?= number_format($departurePrice ?? $booking->flight->base_price ?? 0, 2) ?></div>
+                </table>
+            </div>
+    
+            <div class="section">
+                <h3 class="section-title">Flight Information</h3>
+                <div class="flight-card">
+                    <div class="flight-route">
+                        <div class="flight-city">
+                            <div class="city"><?= h($booking->flight->origin_airport?->city ?? 'N/A') ?></div>
+                            <div class="code"><?= h($booking->flight->origin_airport?->airport_code ?? '') ?></div>
+                            <div class="time"><?= h($booking->flight->departure_time?->format('D, d M Y')) ?><br><?= h($booking->flight->departure_time?->format('H:i')) ?></div>
+                        </div>
+                        <div class="flight-arrow">→</div>
+                        <div class="flight-city">
+                            <div class="city"><?= h($booking->flight->dest_airport?->city ?? 'N/A') ?></div>
+                            <div class="code"><?= h($booking->flight->dest_airport?->airport_code ?? '') ?></div>
+                            <div class="time"><?= h($booking->flight->arrival_time?->format('D, d M Y')) ?><br><?= h($booking->flight->arrival_time?->format('H:i')) ?></div>
+                        </div>
+                    </div>
+                    <div class="flight-number">
+                        <span>Flight <?= h($booking->flight->flight_number ?? 'N/A') ?></span>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="section">
+                <h3 class="section-title">Passenger</h3>
+                <table class="passengers-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>Type</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($passengers as $index => $pax): ?>
+                        <tr>
+                            <td><?= $index + 1 ?></td>
+                            <td><strong><?= h($pax->full_name ?? 'N/A') ?></strong></td>
+                            <td><?= h($pax->type ?? 'Adult') ?></td>
+                            <td><?= h($pax->phone_number ?? '-') ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+    
+            <div class="section">
+                <div class="total-section">
+                    <div class="total-label">Flight Price</div>
+                    <div class="total-amount">RM <?= number_format($departurePrice ?? $booking->flight->base_price ?? 0, 2) ?></div>
+                </div>
+            </div>
+    
+            <div class="footer">
+                <p>Thank you for choosing FlyHigh!</p>
+                <p>This is a computer-generated receipt and does not require a signature.</p>
             </div>
         </div>
-
-        <div class="footer">
-            <p>Thank you for choosing FlyHigh!</p>
-            <p>This is a computer-generated receipt and does not require a signature.</p>
+    
+        <?php if ($returnBooking): ?>
+        <!-- RETURN RECEIPT -->
+        <div class="receipt">
+            <div class="header">
+                <div class="logo">Fly<span>High</span></div>
+                <div class="receipt-title">
+                    <h1>Booking Receipt</h1>
+                    <p>Generated: <?= date('d M Y, H:i') ?></p>
+                </div>
+            </div>
+    
+            <div class="flight-type-badge badge-return">✈ Return Flight</div>
+    
+            <div class="section">
+                <h3 class="section-title">Booking Details</h3>
+                <table class="info-table">
+                    <tr>
+                        <td>
+                            <div class="info-label">Booking Reference</div>
+                            <div class="info-value">#<?= h($returnBooking->id) ?></div>
+                        </td>
+                        <td>
+                            <div class="info-label">Booking Date</div>
+                            <div class="info-value"><?= h($returnBooking->booking_date?->format('d M Y') ?? 'N/A') ?></div>
+                        </td>
+                        <td>
+                            <div class="info-label">Payment Method</div>
+                            <div class="info-value"><?= h($returnBooking->payment_method ?? 'N/A') ?></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+    
+            <div class="section">
+                <h3 class="section-title">Flight Information</h3>
+                <div class="flight-card">
+                    <div class="flight-route">
+                        <div class="flight-city">
+                            <div class="city"><?= h($returnBooking->flight->origin_airport?->city ?? 'N/A') ?></div>
+                            <div class="code"><?= h($returnBooking->flight->origin_airport?->airport_code ?? '') ?></div>
+                            <div class="time"><?= h($returnBooking->flight->departure_time?->format('D, d M Y')) ?><br><?= h($returnBooking->flight->departure_time?->format('H:i')) ?></div>
+                        </div>
+                        <div class="flight-arrow">→</div>
+                        <div class="flight-city">
+                            <div class="city"><?= h($returnBooking->flight->dest_airport?->city ?? 'N/A') ?></div>
+                            <div class="code"><?= h($returnBooking->flight->dest_airport?->airport_code ?? '') ?></div>
+                            <div class="time"><?= h($returnBooking->flight->arrival_time?->format('D, d M Y')) ?><br><?= h($returnBooking->flight->arrival_time?->format('H:i')) ?></div>
+                        </div>
+                    </div>
+                    <div class="flight-number">
+                        <span>Flight <?= h($returnBooking->flight->flight_number ?? 'N/A') ?></span>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="section">
+                <h3 class="section-title">Passenger</h3>
+                <table class="passengers-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>Type</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($passengers as $index => $pax): ?>
+                        <tr>
+                            <td><?= $index + 1 ?></td>
+                            <td><strong><?= h($pax->full_name ?? 'N/A') ?></strong></td>
+                            <td><?= h($pax->type ?? 'Adult') ?></td>
+                            <td><?= h($pax->phone_number ?? '-') ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+    
+            <div class="section">
+                <div class="total-section">
+                    <div class="total-label">Flight Price</div>
+                    <div class="total-amount">RM <?= number_format($returnPrice ?? $returnBooking->flight->base_price ?? 0, 2) ?></div>
+                </div>
+            </div>
+    
+            <div class="footer">
+                <p>Thank you for choosing FlyHigh!</p>
+                <p>This is a computer-generated receipt and does not require a signature.</p>
+            </div>
         </div>
+        <?php endif; ?>
     </div>
 
-    <?php if ($returnBooking): ?>
-    <!-- RETURN RECEIPT -->
-    <div class="receipt">
-        <div class="header">
-            <div class="logo">Fly<span>High</span></div>
-            <div class="receipt-title">
-                <h1>Booking Receipt</h1>
-                <p>Generated: <?= date('d M Y, H:i') ?></p>
-            </div>
-        </div>
-
-        <div class="flight-type-badge badge-return">✈ Return Flight</div>
-
-        <div class="section">
-            <h3 class="section-title">Booking Details</h3>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Booking Reference</div>
-                    <div class="info-value">#<?= h($returnBooking->id) ?></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Booking Date</div>
-                    <div class="info-value"><?= h($returnBooking->booking_date?->format('d M Y') ?? 'N/A') ?></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Payment Method</div>
-                    <div class="info-value"><?= h($returnBooking->payment_method ?? 'N/A') ?></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h3 class="section-title">Flight Information</h3>
-            <div class="flight-card">
-                <div class="flight-route">
-                    <div class="flight-city">
-                        <div class="city"><?= h($returnBooking->flight->origin_airport?->city ?? 'N/A') ?></div>
-                        <div class="code"><?= h($returnBooking->flight->origin_airport?->airport_code ?? '') ?></div>
-                        <div class="time"><?= h($returnBooking->flight->departure_time?->format('D, d M Y')) ?><br><?= h($returnBooking->flight->departure_time?->format('H:i')) ?></div>
-                    </div>
-                    <div class="flight-arrow">→</div>
-                    <div class="flight-city">
-                        <div class="city"><?= h($returnBooking->flight->dest_airport?->city ?? 'N/A') ?></div>
-                        <div class="code"><?= h($returnBooking->flight->dest_airport?->airport_code ?? '') ?></div>
-                        <div class="time"><?= h($returnBooking->flight->arrival_time?->format('D, d M Y')) ?><br><?= h($returnBooking->flight->arrival_time?->format('H:i')) ?></div>
-                    </div>
-                </div>
-                <div class="flight-number">
-                    <span>Flight <?= h($returnBooking->flight->flight_number ?? 'N/A') ?></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h3 class="section-title">Passenger</h3>
-            <table class="passengers-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Full Name</th>
-                        <th>Type</th>
-                        <th>Contact</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($passengers as $index => $pax): ?>
-                    <tr>
-                        <td><?= $index + 1 ?></td>
-                        <td><strong><?= h($pax->full_name ?? 'N/A') ?></strong></td>
-                        <td><?= h($pax->type ?? 'Adult') ?></td>
-                        <td><?= h($pax->phone_number ?? '-') ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="section">
-            <div class="total-section">
-                <div class="total-label">Flight Price</div>
-                <div class="total-amount">RM <?= number_format($returnPrice ?? $returnBooking->flight->base_price ?? 0, 2) ?></div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>Thank you for choosing FlyHigh!</p>
-            <p>This is a computer-generated receipt and does not require a signature.</p>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <div style="text-align: center; margin-top: 20px;">
-        <button class="print-btn" onclick="window.print()">🖨️ Print Receipt<?= $returnBooking ? 's' : '' ?></button>
-        <?= $this->Html->link('🏠 Return to Home', ['controller' => 'Pages', 'action' => 'display', 'home'], ['class' => 'print-btn', 'style' => 'text-decoration: none; display: inline-block; background: #10B981;']) ?>
+    <!-- Controls -->
+    <div style="text-align: center; margin-top: 20px;" id="action-buttons">
+        <?php 
+        $pdfUrl = ['action' => 'generatePdf', $booking->id];
+        if ($returnBooking) {
+            $pdfUrl['?']['return_id'] = $returnBooking->id;
+        }
+        ?>
+        <?= $this->Html->link('Download Receipt PDF', $pdfUrl, ['class' => 'print-btn', 'style' => 'text-decoration: none; display: inline-block;']) ?>
+        <?= $this->Html->link('Return to Home', ['controller' => 'Pages', 'action' => 'display', 'home'], ['class' => 'print-btn', 'style' => 'text-decoration: none; display: inline-block; background: #10B981;']) ?>
     </div>
 </body>
 </html>

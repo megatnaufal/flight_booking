@@ -220,3 +220,36 @@
         color: white;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const collapseCard = document.getElementById('collapseCard');
+        const collapseBank = document.getElementById('collapseBank');
+        
+        // Function to toggle inputs
+        function toggleInputs(container, enable) {
+            const inputs = container.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.disabled = !enable;
+            });
+        }
+
+        // Initially check implementation
+        if (collapseBank && collapseBank.classList.contains('show')) {
+            if (collapseCard) toggleInputs(collapseCard, false);
+        }
+
+        // Listen for events
+        if (collapseBank) {
+            collapseBank.addEventListener('show.bs.collapse', function () {
+                if (collapseCard) toggleInputs(collapseCard, false);
+            });
+        }
+
+        if (collapseCard) {
+            collapseCard.addEventListener('show.bs.collapse', function () {
+                toggleInputs(collapseCard, true);
+            });
+        }
+    });
+</script>
