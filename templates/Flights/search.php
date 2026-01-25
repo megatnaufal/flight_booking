@@ -53,19 +53,19 @@ $this->Html->css('flights', ['block' => true]);
                 <div class="d-flex flex-wrap gap-4 mb-3 border-bottom pb-3 align-items-center">
                     <!-- Journey Type -->
                     <div class="dropdown">
-                        <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle border-end pe-3 custom-dropdown-toggle-white" type="button" id="journeyTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle custom-dropdown-toggle-white" type="button" id="journeyTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <?= h($this->request->getQuery('journey_type', 'Round Trip')) ?>
                         </button>
                         <ul class="dropdown-menu shadow border-0" aria-labelledby="journeyTypeDropdown">
-                            <li><a class="dropdown-item" href="#" onclick="selectJourney('One Way', this)">One Way</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="selectJourney('Round Trip', this)">Round Trip</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="selectJourney('One Way', this)">One Way</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="selectJourney('Round Trip', this)">Round Trip</a></li>
                         </ul>
                         <input type="hidden" name="journey_type" id="journeyTypeInput" value="<?= h($this->request->getQuery('journey_type', 'Round Trip')) ?>">
                     </div>
     
                     <!-- Passenger Count -->
                     <div class="dropdown">
-                        <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle border-end pe-3 custom-dropdown-toggle-white" type="button" id="passengerDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                        <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle custom-dropdown-toggle-white" type="button" id="passengerDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                             <span id="passengerLabel"><?= $totalPax ?> Passenger<?= $totalPax !== 1 ? 's' : '' ?></span>
                         </button>
                         <div class="dropdown-menu shadow border-0 p-3" aria-labelledby="passengerDropdown" style="min-width: 280px;">
@@ -120,10 +120,8 @@ $this->Html->css('flights', ['block' => true]);
                             <?= h($class) ?>
                         </button>
                         <ul class="dropdown-menu shadow border-0" aria-labelledby="classDropdown">
-                            <li><a class="dropdown-item" href="#" onclick="selectClass('Economy', this)">Economy</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="selectClass('Premium Economy', this)">Premium Economy</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="selectClass('Business', this)">Business</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="selectClass('First Class', this)">First Class</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="selectClass('Economy', this)">Economy</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="selectClass('Business', this)">Business</a></li>
                         </ul>
                         <input type="hidden" name="flight_class" id="classInput" value="<?= h($class) ?>">
                     </div>
@@ -154,13 +152,13 @@ $this->Html->css('flights', ['block' => true]);
                     <div class="col-md-2">
                         <div class="input-box">
                             <div class="label-mini">Departure</div>
-                            <input type="date" name="departure" id="departureDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= $this->request->getQuery('departure') ?: date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" required onchange="updateReturnMinDate()">
+                            <input type="date" name="departure" id="departureDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= $this->request->getQuery('departure') ?: date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" max="<?= date('Y-m-d', strtotime('+4 days')) ?>" required onchange="updateReturnMinDate()">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="input-box">
                             <div class="label-mini">Return</div>
-                            <input type="date" name="return" id="returnDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= $this->request->getQuery('return') ?: date('Y-m-d', strtotime('+1 day')) ?>" min="<?= date('Y-m-d') ?>" required>
+                            <input type="date" name="return" id="returnDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= $this->request->getQuery('return') ?: date('Y-m-d', strtotime('+1 day')) ?>" min="<?= date('Y-m-d') ?>" max="<?= date('Y-m-d', strtotime('+4 days')) ?>" required>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -512,11 +510,20 @@ $this->Html->css('flights', ['block' => true]);
     function updateReturnMinDate() {
         const depInput = document.getElementById('departureDateInput');
         const returnInput = document.getElementById('returnDateInput');
+        const maxDate = '<?= date('Y-m-d', strtotime('+4 days')) ?>';
+        
         if (depInput.value) {
             returnInput.min = depInput.value;
-            // If return date is before new min, clear it or set to min
+            // Keep max date within 5-day window
+            returnInput.max = maxDate;
+            
+            // If return date is before new min, set to min
             if(returnInput.value && returnInput.value < depInput.value) {
                 returnInput.value = depInput.value;
+            }
+            // If return date exceeds max, reset it
+            if(returnInput.value && returnInput.value > maxDate) {
+                returnInput.value = maxDate;
             }
         }
     }
