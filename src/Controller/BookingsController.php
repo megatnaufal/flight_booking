@@ -60,6 +60,40 @@ class BookingsController extends AppController
     }
 
     /**
+     * My Bookings method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function myBookings()
+    {
+        $userId = $this->request->getAttribute('identity')?->getIdentifier();
+        
+        // Fallback to session if attribute is missing
+        if (!$userId) {
+            $userId = $this->request->getSession()->read('Auth.id');
+        }
+        
+        if (!$userId) {
+            $this->Flash->error(__('You need to be logged in to view your bookings.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'login']);
+        }
+
+        $bookings = $this->Bookings->find()
+            ->contain([
+                'Flights' => ['OriginAirports', 'DestAirports'], 
+                'Passengers', // Lead passenger
+                'BookingPassengers' // All passengers
+            ])
+            ->matching('Passengers', function ($q) use ($userId) {
+                return $q->where(['Passengers.user_id' => $userId]);
+            })
+            ->order(['Bookings.booking_date' => 'DESC'])
+            ->all();
+
+        $this->set(compact('bookings'));
+    }
+
+    /**
      * Add method
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.

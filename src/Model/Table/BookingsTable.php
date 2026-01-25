@@ -56,7 +56,13 @@ class BookingsTable extends Table
             'dependent' => true,
             'cascadeCallbacks' => true,
         ]);
-        // Invalid association removed
+        
+        // Association for all passengers in the booking
+        $this->hasMany('BookingPassengers', [
+            'className' => 'Passengers',
+            'foreignKey' => 'booking_id',
+            'dependent' => true,
+        ]);
     }
 
     public function afterDelete(\Cake\Event\EventInterface $event, \Cake\Datasource\EntityInterface $entity, \ArrayObject $options): void
