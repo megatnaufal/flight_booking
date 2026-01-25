@@ -3,6 +3,7 @@
  * @var \App\View\AppView $this
  * @var array $recommendations
  */
+$this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
 ?>
 <style>
     /* Refined Purple Theme - 3 Colors */

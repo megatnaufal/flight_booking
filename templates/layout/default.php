@@ -22,7 +22,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= $this->fetch('title') ?></title>
-    <?= $this->Html->meta('icon') ?>
+    <?= $this->Html->meta('icon', 'img/flyhigh-logo.png') ?>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -175,7 +175,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             <div class="row align-items-center">
                 <div class="col-lg-6 d-flex align-items-center gap-3">
                     <a href="<?= $this->Url->build('/') ?>" class="text-decoration-none me-3">
-                        <img src="<?= $this->Url->build('/img/flyhigh-logo.png') ?>" alt="FlyHigh Logo" class="logo-img" style="height: 50px;">
+                        <img src="<?= $this->Url->build('/img/flyhigh-logo.png') ?>" alt="FlyHigh Logo" class="logo-img" style="height: 80px;">
                     </a>
                     <nav class="d-none d-md-flex">
                         <a href="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" class="nav-link-custom">Flight</a>
