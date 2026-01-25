@@ -64,8 +64,7 @@ class PassengersTable extends Table
     {
         $validator
             ->integer('user_id')
-            ->allowEmptyString('user_id')
-            ->add('user_id', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->allowEmptyString('user_id');
 
         $validator
             ->scalar('full_name')

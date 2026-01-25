@@ -231,7 +231,11 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                                         <i class="bi bi-gear me-2"></i> Settings
                                     </a>
                                 </li>
-                                <li><a class="dropdown-item text-white my-1" href="#"><i class="bi bi-ticket-perforated me-2"></i> My Bookings</a></li>
+                                <?php if (isset($identity->role) && strtolower($identity->role) === 'admin'): ?>
+                                    <li><a class="dropdown-item text-white my-1" href="<?= $this->Url->build(['controller' => 'Dashboards', 'action' => 'index']) ?>"><i class="bi bi-speedometer2 me-2"></i> Admin Dashboard</a></li>
+                                <?php else: ?>
+                                    <li><a class="dropdown-item text-white my-1" href="<?= $this->Url->build(['controller' => 'Bookings', 'action' => 'myBookings']) ?>"><i class="bi bi-ticket-perforated me-2"></i> My Bookings</a></li>
+                                <?php endif; ?>
                                 <li><hr class="dropdown-divider border-secondary"></li>
                                 <li><a class="dropdown-item text-danger my-1" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'logout']) ?>"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
                             </ul>
