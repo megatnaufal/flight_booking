@@ -15,6 +15,8 @@
     <meta charset="utf-8">
     <title>Booking Receipt - <?= h($booking->id) ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Include html2pdf library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -29,12 +31,16 @@
             background: #fff;
             padding: 40px;
         }
+        #receipt-content {
+            max-width: 720px;
+            margin: 0 auto;
+            background: white;
+        }
         .receipt {
-            max-width: 800px;
-            margin: 0 auto 40px;
             border: 1px solid #ddd;
             padding: 40px;
             page-break-after: always;
+            margin-bottom: 40px;
         }
         .receipt:last-of-type {
             page-break-after: auto;
@@ -218,19 +224,31 @@
             font-size: 12px;
         }
         .print-btn {
-            background: #4C1D95;
+            background: #7C3AED;
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 10px 24px;
             font-size: 14px;
             font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
-            margin: 20px auto;
-            display: block;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
         }
         .print-btn:hover {
-            background: #5B21B6;
+            background: #6D28D9;
+        }
+        .back-link {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #6B7280;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .back-link:hover {
+            color: #4B5563;
         }
         @media print {
             body {
@@ -435,15 +453,24 @@
     </div>
 
     <!-- Controls -->
-    <div style="text-align: center; margin-top: 20px;" id="action-buttons">
-        <?php 
-        $pdfUrl = ['action' => 'generatePdf', $booking->id];
-        if ($returnBooking) {
-            $pdfUrl['?']['return_id'] = $returnBooking->id;
-        }
-        ?>
-        <?= $this->Html->link('Download Receipt PDF', $pdfUrl, ['class' => 'print-btn', 'style' => 'text-decoration: none; display: inline-block;']) ?>
-        <?= $this->Html->link('Return to Home', ['controller' => 'Pages', 'action' => 'display', 'home'], ['class' => 'print-btn', 'style' => 'text-decoration: none; display: inline-block; background: #10B981;']) ?>
+    <div style="text-align: center; margin-top: 20px;" id="action-buttons" data-html2canvas-ignore="true">
+        <button onclick="downloadPDF()" class="print-btn">DOWNLOAD PDF</button>
+        <?= $this->Html->link('Return to Home', ['controller' => 'Pages', 'action' => 'display', 'home'], ['class' => 'back-link']) ?>
     </div>
+
+    <script>
+        function downloadPDF() {
+            const element = document.getElementById('receipt-content');
+            const opt = {
+                margin: 0,
+                filename: 'Booking-Receipt-<?= h($booking->id) ?>.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            // Use html2pdf to save the file
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
 </body>
 </html>

@@ -205,6 +205,12 @@ class BookingsController extends AppController
             $leadPax = null;
             if (!empty($allPassengersData)) {
                 $leadData = $allPassengersData[0];
+                // Verify User ID exists to prevent foreign key errors (stale sessions)
+                $userId = $session->read('Auth.id');
+                if ($userId && !$this->fetchTable('Users')->exists(['id' => $userId])) {
+                    $userId = null;
+                }
+
                 $leadPax = $passengersTable->newEmptyEntity();
                 $leadPax = $passengersTable->patchEntity($leadPax, [
                     'full_name' => trim(($leadData['first_name'] ?? '') . ' ' . ($leadData['last_name'] ?? '')),
@@ -212,7 +218,7 @@ class BookingsController extends AppController
                     'email' => $leadData['email'] ?? '',
                     'dob' => $leadData['dob'] ?? null,
                     'type' => $leadData['type'] ?? 'Adult',
-                    'user_id' => $session->read('Auth')->id ?? null,
+                    'user_id' => $userId,
                 ]);
                 if (empty($leadPax->passport_number)) {
                     $leadPax->passport_number = 'P' . rand(10000000, 99999999);
@@ -258,7 +264,7 @@ class BookingsController extends AppController
                         'dob' => $pData['dob'] ?? null,
                         'type' => $pData['type'] ?? '',
                         'booking_id' => $booking->id,
-                        'user_id' => $session->read('Auth')->id ?? null,
+                        'user_id' => $userId,
                     ]);
                     if (empty($pax->passport_number)) {
                         $pax->passport_number = 'P' . rand(10000000, 99999999);
@@ -513,67 +519,7 @@ class BookingsController extends AppController
         $this->viewBuilder()->setLayout('ajax');
     }
 
-    /**
-     * Generate PDF method
-     * Uses dompdf to generate a PDF receipt
-     *
-     * @param string|null $id Booking id.
-     * @return \Cake\Http\Response PDF file download
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function generatePdf($id = null)
-    {
-        $booking = $this->Bookings->get($id, [
-            'contain' => [
-                'Passengers', 
-                'Flights' => ['OriginAirports', 'DestAirports']
-            ]
-        ]);
-        
-        // Use lead passenger from booking
-        $passengers = [];
-        if ($booking->passenger) {
-            $passengers[] = $booking->passenger;
-        }
-        
-        // Check for return booking
-        $returnBookingId = $this->request->getQuery('return_id');
-        $returnBooking = null;
-        if ($returnBookingId) {
-            $returnBooking = $this->Bookings->get($returnBookingId, [
-                'contain' => ['Flights' => ['OriginAirports', 'DestAirports']]
-            ]);
-        }
-        
-        // Calculate prices
-        $departurePrice = (float)($booking->flight->base_price ?? 0);
-        $returnPrice = $returnBooking ? (float)($returnBooking->flight->base_price ?? 0) : 0;
-        
-        // Render the PDF template to HTML
-        $this->set(compact('booking', 'returnBooking', 'passengers', 'departurePrice', 'returnPrice'));
-        $this->viewBuilder()->disableAutoLayout();
-        $this->viewBuilder()->setTemplatePath('Bookings/pdf');
-        $this->viewBuilder()->setTemplate('receipt');
-        
-        $html = $this->viewBuilder()->build()->render();
-        
-        // Generate PDF with dompdf
-        $dompdf = new \Dompdf\Dompdf([
-            'isRemoteEnabled' => true,
-            'defaultFont' => 'Helvetica'
-        ]);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('letter', 'portrait');
-        $dompdf->render();
-        
-        // Stream the PDF
-        $response = $this->response;
-        $response = $response->withType('application/pdf');
-        $response = $response->withHeader('Content-Disposition', 'attachment; filename="receipt-' . $booking->id . '.pdf"');
-        $response = $response->withStringBody($dompdf->output());
-        
-        return $response;
-    }
+
     /**
      * Edit method
      *
