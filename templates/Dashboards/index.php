@@ -505,7 +505,7 @@ $users = $users ?? [];
             <div class="col-md-3">
                 <h6 class="footer-title">FlyHigh</h6>
                 <a href="#" class="footer-link">Home</a>
-                <a href="#" class="footer-link">About Us</a>
+                <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'about']) ?>" class="footer-link">About Us</a>
                 <a href="#" class="footer-link">FlyHigh Blog</a>
                 <a href="#" class="footer-link">Careers</a>
             </div>
