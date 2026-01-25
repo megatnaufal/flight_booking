@@ -139,7 +139,7 @@ class FlightsController extends AppController
             $originAirport = $airportsTable->get($originAirportId);
             $destAirport = $airportsTable->get($destAirportId);
 
-            $searchResults = $this->_generateFlights($originAirport, $destAirport, $departureDate);
+            $searchResults = $this->_searchFlights($originAirport, $destAirport, $departureDate);
         }
         
         $this->set(compact('searchResults', 'airports'));
@@ -209,7 +209,7 @@ class FlightsController extends AppController
         $originAirport = $airportsTable->get($originAirportId);
         $destAirport = $airportsTable->get($destAirportId);
 
-        $searchResults = $this->_generateFlights($originAirport, $destAirport, $departureDate);
+        $searchResults = $this->_searchFlights($originAirport, $destAirport, $departureDate);
         
         $this->set(compact('searchResults', 'airports', 'departureFlight'));
     }
@@ -232,141 +232,79 @@ class FlightsController extends AppController
     }
 
     /**
-     * Generate flights based on real-time factors
+     * Search flights from database
+     * 
+     * @param \App\Model\Entity\Airport $originAirport Origin airport entity
+     * @param \App\Model\Entity\Airport $destAirport Destination airport entity
+     * @param string $date Departure date in Y-m-d format
+     * @return array Array of Flight entities
      */
-    protected function _generateFlights($originAirport, $destAirport, $date)
+    protected function _searchFlights($originAirport, $destAirport, $date)
     {
-        // Mock Coordinates for Malaysian Airports (Lat, Lon)
-        $coords = [
-            'KUL' => [2.7433, 101.6981], // KLIA
-            'PEN' => [5.2925, 100.2745], // Penang
-            'BKI' => [5.9372, 116.0512], // Kota Kinabalu
-            'KCH' => [1.4851, 110.3430], // Kuching
-            'LGK' => [6.3297, 99.7344],  // Langkawi
-            'JHB' => [1.6368, 103.6697], // Johor Bahru
-            'MYY' => [4.3218, 113.9877], // Miri
-            'TGG' => [5.3826, 103.1026], // Kuala Terengganu
-        ];
-
-        $origCode = $originAirport->airport_code;
-        $destCode = $destAirport->airport_code;
-        
-        $coord1 = $coords[$origCode] ?? [3.1390, 101.6869]; // Default KL
-        $coord2 = $coords[$destCode] ?? [3.1390, 101.6869];
-
-        $distanceKm = $this->_calculateDistance($coord1[0], $coord1[1], $coord2[0], $coord2[1]);
-        
-        // If distance is very small (same city?), set min 100km
-        if ($distanceKm < 50) $distanceKm = 100;
-
-        // --- Calculate Logic ---
-        // Speed: ~750 km/h avg
-        // Taxi/Landing overhead: 30-40 mins
-        $flightDurationHours = ($distanceKm / 750) + 0.5; 
-        $durationMinutes = (int)($flightDurationHours * 60);
-        
-        // Price Base: RM 0.15 - 0.25 per km depending on route type
-        $isEastWest = ($origCode === 'KUL' && in_array($destCode, ['BKI', 'KCH', 'MYY'])) || 
-                      (in_array($origCode, ['BKI', 'KCH', 'MYY']) && $destCode === 'KUL');
-                      
-        $ratePerKm = $isEastWest ? 0.12 : 0.20; // Cheaper rate for longer east-west routes usually
-        $baseFare = $distanceKm * $ratePerKm;
-        
-        // Add Taxes and Surcharges
-        $taxes = 45; 
-        $minPrice = $baseFare + $taxes;
-        $maxPrice = $minPrice * 2.5; // Last minute / high demand range
-
-        // --- Generation ---
-        $allAirlines = [
-            ['name' => 'AirAsia', 'logo' => 'https://airhex.com/images/airline-logos/airasia.png', 'premium' => 1.0],
-            ['name' => 'Batik Air Malaysia', 'logo' => 'https://airhex.com/images/airline-logos/batik-air.png', 'premium' => 1.1],
-            ['name' => 'Malaysia Airlines', 'logo' => 'https://logos-world.net/wp-content/uploads/2023/01/Malaysia-Airlines-Logo.png', 'premium' => 1.5],
-            ['name' => 'Firefly', 'logo' => 'https://airhex.com/images/airline-logos/firefly.png', 'premium' => 1.2],
-        ];
-
-        // Filters
+        // Filters from query params
         $selectedAirlines = $this->request->getQuery('airlines', []);
         $selectedTime = $this->request->getQuery('time', '');
         $flightClass = $this->request->getQuery('flight_class', 'Economy');
+        $sort = $this->request->getQuery('sort', 'recommended');
         
-        $seedString = $origCode . $destCode . $date . json_encode($selectedAirlines) . $selectedTime; 
-        $seed = crc32($seedString);
-        srand($seed);
-
-        $results = [];
-        $numFlights = rand(5, 8);
-
-        for ($i = 0; $i < $numFlights; $i++) {
-            $airline = $allAirlines[array_rand($allAirlines)];
-            
-            // Skip if filtered out
-            if (!empty($selectedAirlines) && !in_array($airline['name'], $selectedAirlines)) {
-                 continue;
+        // Build query
+        $query = $this->Flights->find()
+            ->contain(['OriginAirports', 'DestAirports'])
+            ->where([
+                'Flights.origin_airport_id' => $originAirport->id,
+                'Flights.dest_airport_id' => $destAirport->id,
+                'DATE(Flights.departure_time)' => $date,
+            ]);
+        
+        // Filter by airlines
+        if (!empty($selectedAirlines)) {
+            $query->where(['Flights.airline_name IN' => $selectedAirlines]);
+        }
+        
+        // Filter by departure time
+        if (!empty($selectedTime)) {
+            switch ($selectedTime) {
+                case 'early':
+                    $query->where(['HOUR(Flights.departure_time) >=' => 0])
+                          ->where(['HOUR(Flights.departure_time) <' => 6]);
+                    break;
+                case 'morning':
+                    $query->where(['HOUR(Flights.departure_time) >=' => 6])
+                          ->where(['HOUR(Flights.departure_time) <' => 12]);
+                    break;
+                case 'afternoon':
+                    $query->where(['HOUR(Flights.departure_time) >=' => 12])
+                          ->where(['HOUR(Flights.departure_time) <' => 18]);
+                    break;
+                case 'night':
+                    $query->where(['HOUR(Flights.departure_time) >=' => 18])
+                          ->where(['HOUR(Flights.departure_time) <' => 24]);
+                    break;
             }
-
-            // Time Generation
-            $minHour = 6; $maxHour = 22;
-            if ($selectedTime === 'early') { $minHour = 0; $maxHour = 5; }
-            elseif ($selectedTime === 'morning') { $minHour = 6; $maxHour = 11; }
-            elseif ($selectedTime === 'afternoon') { $minHour = 12; $maxHour = 17; }
-            elseif ($selectedTime === 'night') { $minHour = 18; $maxHour = 23; }
-
-            $hour = rand($minHour, $maxHour);
-            $minute = rand(0, 11) * 5; // steps of 5 mins
-            $departureTime = new \Cake\I18n\DateTime($date . " $hour:$minute:00");
-            
-            // Price Calculation
-            $price = rand((int)$minPrice, (int)$maxPrice);
-            $price *= $airline['premium']; // Airline premium
-            
-            if ($flightClass === 'Business') $price *= 2.5;
-            elseif ($flightClass === 'First Class') $price *= 4.0;
-            
-            // Add some randomness to duration
-            $actualDuration = $durationMinutes + rand(-10, 15);
-
-            $flight = $this->Flights->newEmptyEntity();
-            $flight->departure_time = $departureTime;
-            $flight->base_price = $price;
-            $flight->origin_airport = $originAirport;
-            $flight->dest_airport = $destAirport;
-            $flight->airline_name = $airline['name'];
-            $flight->airline_logo = $airline['logo'];
-            $flight->duration_text = floor($actualDuration/60) . 'h ' . ($actualDuration%60) . 'm';
-            $flight->arrival_time = (clone $departureTime)->modify("+$actualDuration minutes");
-            $flight->duration_minutes = $actualDuration;
-            
-            $results[] = $flight;
         }
         
         // Sorting
-        $sort = $this->request->getQuery('sort', 'recommended');
-        usort($results, function($a, $b) use ($sort) {
-            switch ($sort) {
-                case 'cheapest': return $a->base_price <=> $b->base_price;
-                case 'fastest': return $a->duration_minutes <=> $b->duration_minutes;
-                default: return $a->base_price <=> $b->base_price;
+        switch ($sort) {
+            case 'cheapest':
+                $query->orderAsc('Flights.base_price');
+                break;
+            case 'fastest':
+                $query->orderAsc('TIMESTAMPDIFF(MINUTE, Flights.departure_time, Flights.arrival_time)');
+                break;
+            default: // recommended - sort by price
+                $query->orderAsc('Flights.base_price');
+                break;
+        }
+        
+        $results = $query->all()->toArray();
+        
+        // Apply class pricing
+        if ($flightClass === 'Business') {
+            foreach ($results as $flight) {
+                $flight->base_price = round((float)$flight->base_price * 2.5, 2);
             }
-        });
-
+        }
+        
         return $results;
-    }
-
-    /**
-     * Calculate distance between two coordinates using Haversine formula
-     */
-    protected function _calculateDistance($lat1, $lon1, $lat2, $lon2) {
-        $earthRadius = 6371; // km
-        $dLat = deg2rad($lat2 - $lat1);
-        $dLon = deg2rad($lon2 - $lon1);
-        
-        $a = sin($dLat/2) * sin($dLat/2) +
-             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
-             sin($dLon/2) * sin($dLon/2);
-             
-        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
-        
-        return $earthRadius * $c;
     }
 }

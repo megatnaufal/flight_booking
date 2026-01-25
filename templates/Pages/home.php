@@ -367,17 +367,17 @@
         <form action="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" method="get">
             <div class="d-flex flex-wrap gap-4 mb-3 border-bottom pb-3 align-items-center">
                 <div class="dropdown">
-                    <button class="btn btn-link text-decoration-none small fw-bold text-secondary p-0 dropdown-toggle border-end pe-3" type="button" id="journeyTypeDropdown" data-bs-toggle="dropdown">
+                    <button class="btn btn-link text-decoration-none small fw-bold text-secondary p-0 dropdown-toggle" type="button" id="journeyTypeDropdown" data-bs-toggle="dropdown">
                         Round Trip
                     </button>
                     <ul class="dropdown-menu dropdown-menu-dark shadow border-0">
-                        <li><a class="dropdown-item active" href="#" onclick="selectJourney('One Way', this)">One Way</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="selectJourney('Round Trip', this)">Round Trip</a></li>
+                        <li><a class="dropdown-item active" href="javascript:void(0)" onclick="selectJourney('One Way', this)">One Way</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)" onclick="selectJourney('Round Trip', this)">Round Trip</a></li>
                     </ul>
                     <input type="hidden" name="journey_type" id="journeyTypeInput" value="Round Trip">
                 </div>
                 <div class="dropdown">
-                    <button class="btn btn-link text-decoration-none small fw-bold text-secondary p-0 dropdown-toggle border-end pe-3" type="button" id="passengerDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                    <button class="btn btn-link text-decoration-none small fw-bold text-secondary p-0 dropdown-toggle" type="button" id="passengerDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
                         <span id="passengerLabel">1 Passenger</span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-dark shadow border-0 p-3" style="min-width: 280px;">
@@ -427,10 +427,8 @@
                         Economy
                     </button>
                     <ul class="dropdown-menu dropdown-menu-dark shadow border-0">
-                        <li><a class="dropdown-item active" href="#" onclick="selectClass('Economy', this)">Economy</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="selectClass('Premium Economy', this)">Premium Economy</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="selectClass('Business', this)">Business</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="selectClass('First Class', this)">First Class</a></li>
+                        <li><a class="dropdown-item active" href="javascript:void(0)" onclick="selectClass('Economy', this)">Economy</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)" onclick="selectClass('Business', this)">Business</a></li>
                     </ul>
                     <input type="hidden" name="flight_class" id="classInput" value="Economy">
                 </div>
@@ -461,13 +459,13 @@
                 <div class="col-md-2">
                     <div class="input-box">
                         <div class="label-mini">Departure</div>
-                        <input type="date" name="departure" id="departureDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" required onchange="updateReturnMinDate()">
+                        <input type="date" name="departure" id="departureDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" max="<?= date('Y-m-d', strtotime('+4 days')) ?>" required onchange="updateReturnMinDate()">
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="input-box">
                         <div class="label-mini">Return</div>
-                        <input type="date" name="return" id="returnDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= date('Y-m-d', strtotime('+1 day')) ?>" min="<?= date('Y-m-d') ?>" required>
+                        <input type="date" name="return" id="returnDateInput" class="form-control border-0 p-0 shadow-none fw-bold" value="<?= date('Y-m-d', strtotime('+1 day')) ?>" min="<?= date('Y-m-d') ?>" max="<?= date('Y-m-d', strtotime('+4 days')) ?>" required>
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -732,10 +730,19 @@
     function updateReturnMinDate() {
         const depInput = document.getElementById('departureDateInput');
         const returnInput = document.getElementById('returnDateInput');
+        const maxDate = '<?= date('Y-m-d', strtotime('+4 days')) ?>';
+        
         if (depInput.value) {
             returnInput.min = depInput.value;
+            // Keep max date within 5-day window
+            returnInput.max = maxDate;
+            
             if(returnInput.value && returnInput.value < depInput.value) {
                 returnInput.value = depInput.value;
+            }
+            // If return date exceeds max, reset it
+            if(returnInput.value && returnInput.value > maxDate) {
+                returnInput.value = maxDate;
             }
         }
     }

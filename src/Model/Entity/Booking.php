@@ -14,6 +14,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Date|null $booking_date
  * @property string|null $seat_number
  * @property string|null $ticket_status
+ * @property string|null $payment_method
  *
  * @property \App\Model\Entity\Passenger $passenger
  * @property \App\Model\Entity\Flight $flight
@@ -36,6 +37,7 @@ class Booking extends Entity
         'booking_date' => true,
         'seat_number' => true,
         'ticket_status' => true,
+        'payment_method' => true,
         'passenger' => true,
         'flight' => true,
         'luggages' => true,

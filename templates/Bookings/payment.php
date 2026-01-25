@@ -209,6 +209,59 @@
     </div>
 </div>
 
+<footer class="footer-section">
+    <div class="container">
+        <div class="text-center mb-5 pb-4 border-bottom">
+            <p class="text-muted small fw-bold mb-3">Accepted Payment Methods</p>
+            <div class="d-flex flex-wrap justify-content-center gap-4 opacity-50">
+                <span class="fw-bold">VISA</span> <span class="fw-bold">MasterCard</span> 
+                <span class="fw-bold">PayPal</span> <span class="fw-bold">Maybank</span>
+                <span class="fw-bold">CIMB</span> <span class="fw-bold">HSBC</span>
+                <span class="fw-bold">UOB</span> <span class="fw-bold">BSN</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <h6 class="footer-title">FlyHigh</h6>
+                <a href="#" class="footer-link">Home</a>
+                <a href="#" class="footer-link">About Us</a>
+                <a href="#" class="footer-link">FlyHigh Blog</a>
+                <a href="#" class="footer-link">Careers</a>
+            </div>
+            <div class="col-md-2">
+                <h6 class="footer-title">Account</h6>
+                <a href="#" class="footer-link">Sign in / Register</a>
+                <a href="#" class="footer-link">Forgot Password</a>
+            </div>
+            <div class="col-md-2">
+                <h6 class="footer-title">Support</h6>
+                <a href="#" class="footer-link">Help Center</a>
+                <a href="#" class="footer-link">How to Book</a>
+                <a href="#" class="footer-link">Terms & Conditions</a>
+            </div>
+            <div class="col-md-2 text-center">
+                <h6 class="footer-title">Follow us</h6>
+                <div class="d-flex justify-content-center gap-2">
+                    <i class="bi bi-facebook fs-5 text-secondary"></i>
+                    <i class="bi bi-instagram fs-5 text-secondary"></i>
+                    <i class="bi bi-twitter-x fs-5 text-secondary"></i>
+                </div>
+            </div>
+            <div class="col-md-3 text-end">
+                <h6 class="footer-title">Our App</h6>
+                <div class="mb-2"><span class="badge bg-dark p-2 w-75">Get it on Google Play</span></div>
+                <div><span class="badge bg-dark p-2 w-75">Download on App Store</span></div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5 py-4 border-top">
+            <p class="text-muted small mb-1">Copyright 2026 FlyHigh.com. All rights reserved.</p>
+            <p class="text-muted small" style="font-size: 0.65rem;">Global Airlines Holiday Sdn Bhd Bhd 105929-H</p>
+        </div>
+    </div>
+</footer>
+
 <style>
     .cursor-pointer { cursor: pointer; }
     .btn-red-theme {
@@ -220,3 +273,36 @@
         color: white;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const collapseCard = document.getElementById('collapseCard');
+        const collapseBank = document.getElementById('collapseBank');
+        
+        // Function to toggle inputs
+        function toggleInputs(container, enable) {
+            const inputs = container.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.disabled = !enable;
+            });
+        }
+
+        // Initially check implementation
+        if (collapseBank && collapseBank.classList.contains('show')) {
+            if (collapseCard) toggleInputs(collapseCard, false);
+        }
+
+        // Listen for events
+        if (collapseBank) {
+            collapseBank.addEventListener('show.bs.collapse', function () {
+                if (collapseCard) toggleInputs(collapseCard, false);
+            });
+        }
+
+        if (collapseCard) {
+            collapseCard.addEventListener('show.bs.collapse', function () {
+                toggleInputs(collapseCard, true);
+            });
+        }
+    });
+</script>
