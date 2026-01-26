@@ -41,4 +41,3 @@
         </div>
     </div>
 </main>
-</div>
