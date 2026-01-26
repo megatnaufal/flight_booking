@@ -381,7 +381,7 @@ $users = $users ?? [];
                                     <td style="color: #0d6efd; font-weight: bold;"><i class="bi bi-airplane-fill me-2"></i><?= h($flight->flight_number) ?></td>
                                     <td><?= $flight->hasValue('origin_airport') ? h($flight->origin_airport->airport_code) : '-' ?></td>
                                     <td><?= $flight->hasValue('dest_airport') ? h($flight->dest_airport->airport_code) : '-' ?></td>
-                                    <td><?= h($flight->departure_time?->format('d M Y')) ?></td>
+                                    <td><?= h($flight->departure_time?->format('d M Y, h:i A')) ?></td>
                                     <td>MYR <?= $flight->base_price === null ? '0.00' : $this->Number->format($flight->base_price) ?></td>
                                     <td class="actions">
                                         <?= $this->Html->link(__('View'), ['controller' => 'Flights', 'action' => 'view', $flight->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
