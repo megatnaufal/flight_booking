@@ -210,7 +210,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                             <a href="#" class="user-nav-link fw-bold dropdown-toggle text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-person-circle"></i> <?= h($getIdentityProp('full_name') ?: $getIdentityProp('email')) ?>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow" style="background: #1a1a1a; border-color: #333; min-width: 200px;">
+                            <ul class="dropdown-menu dropdown-menu-end shadow" style="min-width: 200px;">
                                 <li class="px-3 py-3 border-bottom border-secondary">
                                     <div class="d-flex align-items-center gap-3">
                                         <!-- Profile Picture Placeholder -->
@@ -219,19 +219,19 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                                         </div>
                                         <!-- User Info -->
                                         <div class="overflow-hidden">
-                                            <div class="fw-bold text-white text-truncate"><?= h($getIdentityProp('username') ?: $getIdentityProp('email')) ?></div>
+                                            <div class="fw-bold text-dark text-truncate"><?= h($getIdentityProp('username') ?: $getIdentityProp('email')) ?></div>
                                             <div class="small text-secondary text-truncate"><?= h($getIdentityProp('email')) ?></div>
                                         </div>
                                     </div>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item text-white my-1" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'settings']) ?>">
+                                    <a class="dropdown-item my-1" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'settings']) ?>">
                                         <i class="bi bi-person-gear me-2"></i> Profile
                                     </a>
                                 </li>
                                 <!-- Open Settings modal from here -->
                                 <li>
-                                    <a class="dropdown-item text-white my-1"
+                                    <a class="dropdown-item my-1"
                                        href="#"
                                        data-bs-toggle="modal"
                                        data-bs-target="#settingsModal">
@@ -239,9 +239,9 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                                     </a>
                                 </li>
                                 <?php if ($getIdentityProp('role') && strtolower($getIdentityProp('role')) === 'admin'): ?>
-                                    <li><a class="dropdown-item text-white my-1" href="<?= $this->Url->build(['controller' => 'Dashboards', 'action' => 'index']) ?>"><i class="bi bi-speedometer2 me-2"></i> Admin Dashboard</a></li>
+                                    <li><a class="dropdown-item my-1" href="<?= $this->Url->build(['controller' => 'Dashboards', 'action' => 'index']) ?>"><i class="bi bi-speedometer2 me-2"></i> Admin Dashboard</a></li>
                                 <?php else: ?>
-                                    <li><a class="dropdown-item text-white my-1" href="<?= $this->Url->build(['controller' => 'Bookings', 'action' => 'myBookings']) ?>"><i class="bi bi-ticket-perforated me-2"></i> My Bookings</a></li>
+                                    <li><a class="dropdown-item my-1" href="<?= $this->Url->build(['controller' => 'Bookings', 'action' => 'myBookings']) ?>"><i class="bi bi-ticket-perforated me-2"></i> My Bookings</a></li>
                                 <?php endif; ?>
                                 <li><hr class="dropdown-divider border-secondary"></li>
                                 <li><a class="dropdown-item text-danger my-1" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'logout']) ?>"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>

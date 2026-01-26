@@ -44,7 +44,7 @@ $this->Html->css('flights', ['block' => true]);
         </div>
     </div>
 <?php else: ?>
-<div class="flight-search-header bg-white shadow-sm py-3 mb-4">
+<div class="flight-search-header bg-white shadow-sm py-3 mb-4" style="background: #ffffff !important;">
     <div class="container">
         <h4 class="mb-0 fw-bold text-dark">Trip Summary</h4>
     </div>

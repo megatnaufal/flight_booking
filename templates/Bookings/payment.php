@@ -11,12 +11,18 @@
     
     <!-- Header/Nav handled by layout -->
     
-    <div class="container py-4">
+    <div class="flight-search-header bg-white shadow-sm py-3 mb-4" style="background: #ffffff !important;">
+        <div class="container">
+            <h4 class="mb-0 fw-bold text-dark">Payment Methods</h4>
+        </div>
+    </div>
+
+    <div class="container pb-4 pt-1">
         
         <div class="row">
             <!-- Left Column: Payment Methods -->
             <div class="col-md-8">
-                <h5 class="fw-bold mb-3">Payment Methods</h5>
+                <!-- Title moved to header -->
                 
                 <?= $this->Form->create(null, ['url' => ['action' => 'complete', $booking->id]]) ?>
                 
