@@ -55,16 +55,54 @@ class PagesController extends AppController
          * These specific values match the text in the provided image.
          */
         if ($page === 'home') {
-            $recommendations = [
-                ['city' => 'Kuala Lumpur', 'price' => '58.73', 'from' => 'Kota Bharu'],
-                ['city' => 'Kuching', 'price' => '69.00', 'from' => 'Bintulu'],
-                ['city' => 'Kota Kinabalu', 'price' => '58.00', 'from' => 'Sandakan'],
-                ['city' => 'Penang', 'price' => '58.73', 'from' => 'Langkawi'],
-                ['city' => 'Johor Bahru', 'price' => '58.73', 'from' => 'Kuala Lumpur'],
-                ['city' => 'Tawau', 'price' => '65.00', 'from' => 'Kota Kinabalu'],
-                ['city' => 'Sibu', 'price' => '68.16', 'from' => 'Kuala Lumpur'],
-                ['city' => 'Langkawi', 'price' => '58.73', 'from' => 'Penang'],
+            // Define the 5 specific destinations with their display labels
+            $targetDestinations = [
+                'Kuala Lumpur' => ['image' => 'kuala-lumpur.png', 'fromCity' => 'Kuala Lumpur', 'stateName' => 'Kuala Lumpur'],
+                'Kuching' => ['image' => 'kuching.png', 'fromCity' => 'Kuching', 'stateName' => 'Sarawak'],
+                'Penang' => ['image' => 'penang.png', 'fromCity' => 'George Town', 'stateName' => 'Penang'],
+                'Kota Kinabalu' => ['image' => 'kota-kinabalu.png', 'fromCity' => 'Kota Kinabalu', 'stateName' => 'Sabah'],
+                'Johor Bahru' => ['image' => 'johor-bahru.png', 'fromCity' => 'Johor Bahru', 'stateName' => 'Johor'],
             ];
+            
+            // Fetch lowest prices from the database for each destination
+            $flightsTable = $this->fetchTable('Flights');
+            $airportsTable = $this->fetchTable('Airports');
+            
+            $recommendations = [];
+            foreach ($targetDestinations as $city => $info) {
+                // Find the airport(s) for this city
+                $destAirport = $airportsTable->find()
+                    ->where(['city' => $city])
+                    ->first();
+                
+                if ($destAirport) {
+                    // Find the lowest price flight to this destination
+                    $lowestFlight = $flightsTable->find()
+                        ->contain(['OriginAirports'])
+                        ->where(['dest_airport_id' => $destAirport->id])
+                        ->orderBy(['base_price' => 'ASC'])
+                        ->first();
+                    
+                    if ($lowestFlight) {
+                        $recommendations[] = [
+                            'stateName' => $info['stateName'],
+                            'price' => number_format((float)$lowestFlight->base_price, 2),
+                            'fromCity' => $info['fromCity'],
+                            'image' => $info['image'],
+                            'airport_id' => $destAirport->id,
+                        ];
+                    } else {
+                        // No flights found, use default price
+                        $recommendations[] = [
+                            'stateName' => $info['stateName'],
+                            'price' => '99.00',
+                            'fromCity' => $info['fromCity'],
+                            'image' => $info['image'],
+                            'airport_id' => $destAirport->id,
+                        ];
+                    }
+                }
+            }
             
             // content of PagesController::display()
             $airportsTable = $this->fetchTable('Airports');

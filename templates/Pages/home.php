@@ -481,13 +481,13 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
     <h5 class="fw-bold mb-4" style="color: #7C3AED;">Exclusive Flight Recommendations</h5>
     <div class="row g-3">
         <?php foreach ($recommendations as $flight): ?>
-            <div class="col-6 col-lg-3">
-                <div class="card h-100 border-0 flight-card">
-                    <img src="https://picsum.photos/seed/<?= urlencode($flight['city']) ?>/400/250" class="flight-img" alt="<?= h($flight['city']) ?>">
+            <div class="col-6 col-lg-2-4" style="flex: 0 0 20%; max-width: 20%;">
+                <div class="card h-100 border-0 flight-card" style="cursor: pointer;" onclick="selectDestination(<?= h($flight['airport_id']) ?>)">
+                    <img src="<?= $this->Url->image('destinations/' . $flight['image']) ?>" class="flight-img" alt="<?= h($flight['stateName']) ?>">
                     <div class="card-body p-3">
-                        <div class="from-text"><?= h($flight['from']) ?></div>
+                        <div class="from-text"><?= h($flight['fromCity']) ?></div>
                         <div class="route-text mt-1">
-                             <i class="bi bi-airplane-fill me-1 small"></i> <?= h($flight['city']) ?>
+                             <i class="bi bi-airplane-fill me-1 small"></i> <?= h($flight['stateName']) ?>
                         </div>
                         <div class="price-tag mt-2">Start from RM <?= h($flight['price']) ?></div>
                     </div>
@@ -756,4 +756,25 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
             alert('Origin and Destination airports cannot be the same.');
         }
     });
+
+    function selectDestination(airportId) {
+        // Select the destination in the dropdown
+        const destSelect = document.querySelector('select[name="dest_airport_id"]');
+        if (destSelect) {
+            destSelect.value = airportId;
+            
+            // Highlight the dropdown briefly to show the selection
+            destSelect.style.transition = 'background-color 0.3s';
+            destSelect.style.backgroundColor = '#F5F3FF';
+            setTimeout(() => {
+                destSelect.style.backgroundColor = '';
+            }, 1000);
+        }
+        
+        // Scroll smoothly to the search form
+        const searchCard = document.querySelector('.search-card');
+        if (searchCard) {
+            searchCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
 </script>
