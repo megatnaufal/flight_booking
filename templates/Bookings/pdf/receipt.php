@@ -291,6 +291,7 @@
                         <th>#</th>
                         <th>Full Name</th>
                         <th>Type</th>
+                        <th>Seat</th>
                         <th>Contact</th>
                     </tr>
                 </thead>
@@ -300,6 +301,7 @@
                         <td><?= $index + 1 ?></td>
                         <td><strong><?= h($pax->full_name ?? 'N/A') ?></strong></td>
                         <td><?= h($pax->type ?? 'Adult') ?></td>
+                        <td><?= h($pax->seat_number ?? '-') ?></td>
                         <td><?= h($pax->phone_number ?? '-') ?></td>
                     </tr>
                     <?php endforeach; ?>
@@ -393,15 +395,17 @@
                         <th>#</th>
                         <th>Full Name</th>
                         <th>Type</th>
+                        <th>Seat</th>
                         <th>Contact</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($passengers as $index => $pax): ?>
+                    <?php foreach ($returnPassengers as $index => $pax): ?>
                     <tr>
                         <td><?= $index + 1 ?></td>
                         <td><strong><?= h($pax->full_name ?? 'N/A') ?></strong></td>
                         <td><?= h($pax->type ?? 'Adult') ?></td>
+                        <td><?= h($pax->seat_number ?? '-') ?></td>
                         <td><?= h($pax->phone_number ?? '-') ?></td>
                     </tr>
                     <?php endforeach; ?>

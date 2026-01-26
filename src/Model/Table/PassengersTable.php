@@ -83,6 +83,11 @@ class PassengersTable extends Table
             ->allowEmptyString('phone_number');
 
         $validator
+            ->scalar('seat_number')
+            ->maxLength('seat_number', 10)
+            ->allowEmptyString('seat_number');
+
+        $validator
             ->allowEmptyString('passport_photo');
 
         return $validator;

@@ -36,34 +36,53 @@
                 <th><?= __('Phone Number') ?></th>
                 <td><?= h($passenger->phone_number) ?></td>
             </tr>
+            <tr>
+                <th><?= __('Passenger Type') ?></th>
+                <td>
+                    <?php 
+                    $type = ucfirst(strtolower($passenger->type ?? 'Adult'));
+                    $badgeClass = match($type) {
+                        'Child' => 'bg-success',
+                        'Infant' => 'bg-info',
+                        default => 'bg-primary'
+                    };
+                    ?>
+                    <span class="badge <?= $badgeClass ?>"><?= h($type) ?></span>
+                </td>
+            </tr>
+            <tr>
+                <th><?= __('Seat Number') ?></th>
+                <td>
+                    <?php
+                    $seatList = [];
+                    if (!empty($passenger->bookings)) {
+                        foreach ($passenger->bookings as $booking) {
+                            $mySeat = null;
+                            
+                            // Find the passenger record for THIS booking that matches our current passenger
+                            // For Return bookings, the passenger ID changes (new record), so we match by unique details
+                            if (!empty($booking->booking_passengers)) {
+                                foreach ($booking->booking_passengers as $p) {
+                                    if ($p->id === $passenger->id || 
+                                        ($p->full_name === $passenger->full_name && $p->passport_number === $passenger->passport_number)) {
+                                        $mySeat = $p->seat_number;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            $flightInfo = $booking->flight->flight_number ?? '';
+                            if ($mySeat) {
+                                $seatList[] = h($mySeat) . ($flightInfo ? " ($flightInfo)" : '');
+                            }
+                        }
+                    }
+                    echo !empty($seatList) ? implode(', ', $seatList) : '-';
+                    ?>
+                </td>
+            </tr>
         </table>
         
-        <?php if (!empty($passenger->bookings)) : ?>
-        <h4 class="mt-4 mb-3"><?= __('Related Bookings') ?></h4>
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <tr>
-                    <th><?= __('Id') ?></th>
-                    <th><?= __('Flight Number') ?></th>
-                    <th><?= __('Booking Date') ?></th>
-                    <th><?= __('Seat Number') ?></th>
-                    <th><?= __('Status') ?></th>
-                    <th><?= __('Actions') ?></th>
-                </tr>
-                <?php $i = 1; foreach ($passenger->bookings as $booking) : ?>
-                <tr>
-                    <td><?= $i++ ?></td>
-                    <td><?= h($booking->flight->flight_number) ?></td>
-                    <td><?= h($booking->booking_date) ?></td>
-                    <td><?= h($booking->seat_number) ?></td>
-                    <td><?= $booking->ticket_status === 'Confirmed' ? 'Paid' : h($booking->ticket_status) ?></td>
-                    <td>
-                        <?= $this->Html->link(__('View'), ['controller' => 'Bookings', 'action' => 'view', $booking->id], ['class' => 'text-primary text-decoration-none']) ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
-        </div>
-        <?php endif; ?>
+
     </div>
 </div>

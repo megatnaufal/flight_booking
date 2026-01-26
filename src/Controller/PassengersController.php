@@ -34,7 +34,7 @@ class PassengersController extends AppController
      */
     public function view($id = null)
     {
-        $passenger = $this->Passengers->get($id, contain: ['Users', 'Bookings.Flights']);
+        $passenger = $this->Passengers->get($id, contain: ['Users', 'Bookings.Flights', 'Bookings.BookingPassengers']);
         $visualId = $this->Passengers->find()->where(['id <=' => $id])->count();
         $this->set(compact('passenger', 'visualId'));
     }
