@@ -34,7 +34,7 @@ class BookingsController extends AppController
      */
     public function view($id = null)
     {
-        $booking = $this->Bookings->get($id, contain: ['Passengers', 'Flights', 'Luggages']);
+        $booking = $this->Bookings->get($id, contain: ['Passengers', 'Flights']);
         $visualId = $this->Bookings->find()->where(['id <=' => $id])->count();
         $this->set(compact('booking', 'visualId'));
     }

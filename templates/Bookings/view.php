@@ -50,28 +50,6 @@
             </tr>
         </table>
         
-        <?php if (!empty($booking->luggages)) : ?>
-        <h4 class="mt-4 mb-3"><?= __('Related Luggages') ?></h4>
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <tr>
-                    <th><?= __('Id') ?></th>
-                    <th><?= __('Weight Kg') ?></th>
-                    <th><?= __('Type') ?></th>
-                    <th><?= __('Actions') ?></th>
-                </tr>
-                <?php foreach ($booking->luggages as $luggage) : ?>
-                <tr>
-                    <td><?= h($luggage->id) ?></td>
-                    <td><?= h($luggage->weight_kg) ?></td>
-                    <td><?= h($luggage->luggage_type) ?></td>
-                    <td>
-                        <?= $this->Html->link(__('View'), ['controller' => 'Luggages', 'action' => 'view', $luggage->id], ['class' => 'text-primary text-decoration-none']) ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
-        </div>
-        <?php endif; ?>
+
     </div>
 </div>

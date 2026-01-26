@@ -17,7 +17,7 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\Passenger $passenger
  * @property \App\Model\Entity\Flight $flight
- * @property \App\Model\Entity\Luggage[] $luggages
+
  */
 class Booking extends Entity
 {
@@ -38,6 +38,6 @@ class Booking extends Entity
         'ticket_status' => true,
         'passenger' => true,
         'flight' => true,
-        'luggages' => true,
+
     ];
 }
