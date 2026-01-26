@@ -505,28 +505,28 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
             <div class="col-6 col-md-3">
                 <a href="https://www.airasia.com" target="_blank" class="text-decoration-none">
                     <div class="partner-logo">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f5/AirAsia_New_Logo.svg" alt="AirAsia" style="max-width: 100%; height: auto; max-height: 80px; object-fit: contain;">
+                        <?= $this->Html->image('airlines/airasia.png', ['alt' => 'AirAsia', 'style' => 'max-width: 100%; height: auto; max-height: 80px; object-fit: contain;']) ?>
                     </div>
                 </a>
             </div>
             <div class="col-6 col-md-3">
                 <a href="https://www.malaysiaairlines.com" target="_blank" class="text-decoration-none">
                     <div class="partner-logo">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Malaysia_Airlines_Logo.svg/1200px-Malaysia_Airlines_Logo.svg.png" alt="Malaysia Airlines" style="max-width: 100%; height: auto; max-height: 80px; object-fit: contain;">
+                        <?= $this->Html->image('airlines/malaysia-airlines.png', ['alt' => 'Malaysia Airlines', 'style' => 'max-width: 100%; height: auto; max-height: 80px; object-fit: contain;']) ?>
                     </div>
                 </a>
             </div>
             <div class="col-6 col-md-3">
                 <a href="https://www.batikair.com" target="_blank" class="text-decoration-none">
                     <div class="partner-logo">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Batik_Air_logo.svg/1024px-Batik_Air_logo.svg.png" alt="Batik Air" style="max-width: 100%; height: auto; max-height: 80px; object-fit: contain;">
+                        <?= $this->Html->image('airlines/batik-air.png', ['alt' => 'Batik Air', 'style' => 'max-width: 100%; height: auto; max-height: 80px; object-fit: contain;']) ?>
                     </div>
                 </a>
             </div>
             <div class="col-6 col-md-3">
                 <a href="https://www.fireflyz.com.my" target="_blank" class="text-decoration-none">
                     <div class="partner-logo">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Firefly_Airline_logo.svg/1200px-Firefly_Airline_logo.svg.png" alt="Firefly" style="max-width: 100%; height: auto; max-height: 80px; object-fit: contain;">
+                        <?= $this->Html->image('airlines/firefly.png', ['alt' => 'Firefly', 'style' => 'max-width: 100%; height: auto; max-height: 80px; object-fit: contain;']) ?>
                     </div>
                 </a>
             </div>
