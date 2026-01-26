@@ -43,7 +43,7 @@
                         <td class="fw-bold text-muted"><?= $rowId ?></td>
                         <td><?= $booking->hasValue('passenger') ? $this->Html->link($booking->passenger->full_name, ['controller' => 'Passengers', 'action' => 'view', $booking->passenger->id], ['class' => 'text-decoration-none text-dark']) : '' ?></td>
                         <td><?= $booking->hasValue('flight') ? $this->Html->link($booking->flight->flight_number, ['controller' => 'Flights', 'action' => 'view', $booking->flight->id], ['class' => 'text-decoration-none text-primary']) : '' ?></td>
-                        <td><?= h($booking->booking_date) ?></td>
+                        <td><?= h($booking->booking_date?->format('d M Y')) ?></td>
                         <td><?= h($booking->seat_number) ?></td>
                         <td>
                             <?php 

@@ -295,7 +295,7 @@ $users = $users ?? [];
                                     <td class="fw-bold text-muted">#<?= $key + 1 ?></td>
                                     <td><?= $booking->hasValue('passenger') ? h($booking->passenger->full_name) : 'N/A' ?></td>
                                     <td><i class="bi bi-airplane me-2" style="color:var(--gotham-accent)"></i><?= $booking->hasValue('flight') ? h($booking->flight->flight_number) : 'N/A' ?></td>
-                                    <td><?= h($booking->booking_date) ?></td>
+                                    <td><?= h($booking->booking_date?->format('d M Y')) ?></td>
                                     <td>
                                         <?php 
                                             $status = strtolower($booking->ticket_status ?? ''); 
@@ -381,7 +381,7 @@ $users = $users ?? [];
                                     <td style="color: #0d6efd; font-weight: bold;"><i class="bi bi-airplane-fill me-2"></i><?= h($flight->flight_number) ?></td>
                                     <td><?= $flight->hasValue('origin_airport') ? h($flight->origin_airport->airport_code) : '-' ?></td>
                                     <td><?= $flight->hasValue('dest_airport') ? h($flight->dest_airport->airport_code) : '-' ?></td>
-                                    <td><?= h($flight->departure_time) ?></td>
+                                    <td><?= h($flight->departure_time?->format('d M Y, h:i A')) ?></td>
                                     <td>MYR <?= $flight->base_price === null ? '0.00' : $this->Number->format($flight->base_price) ?></td>
                                     <td class="actions">
                                         <?= $this->Html->link(__('View'), ['controller' => 'Flights', 'action' => 'view', $flight->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
@@ -469,7 +469,7 @@ $users = $users ?? [];
                                     <td style="font-weight: bold;"><i class="bi bi-person-circle me-2" style="color:#666;"></i><?= h($user->username) ?></td>
                                     <td><?= h($user->email) ?></td>
                                     <td><span class="status-badge <?= strtolower($user->role) == 'admin' ? 'role-admin' : 'role-user' ?>"><?= h($user->role) ?></span></td>
-                                    <td style="font-size: 0.85rem; color: #666;"><?= h($user->created) ?></td>
+                                    <td style="font-size: 0.85rem; color: #666;"><?= h($user->created?->format('d M Y')) ?></td>
                                     <td class="actions">
                                         <?= $this->Html->link(__('View'), ['controller' => 'Users', 'action' => 'view', $user->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
                                         <?= $this->Html->link(__('Edit'), ['controller' => 'Users', 'action' => 'edit', $user->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>

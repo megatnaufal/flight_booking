@@ -92,14 +92,19 @@
                         
                         <hr class="my-4">
                          
-                        <h6 class="fw-bold mb-3"><i class="bi bi-person me-2"></i>Lead Passenger</h6>
-                        <div class="d-flex align-items-center bg-white p-3 rounded border">
+                        <h6 class="fw-bold mb-3"><i class="bi bi-people me-2"></i>Passengers (<?= count($allPassengers ?? []) ?>)</h6>
+                        <?php foreach (($allPassengers ?? [$booking->passenger]) as $index => $pax): ?>
+                        <div class="d-flex align-items-center bg-white p-3 rounded border <?= $index > 0 ? 'mt-2' : '' ?>">
                             <i class="bi bi-person-circle fs-4 text-secondary me-3"></i>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold"><?= h($pax->full_name) ?></div>
+                                <div class="small text-muted"><?= h($pax->phone_number ?? '-') ?></div>
+                            </div>
                             <div>
-                                <div class="fw-bold"><?= h($booking->passenger->full_name) ?></div>
-                                <div class="small text-muted"><?= h($booking->passenger->phone_number) ?></div>
+                                <span class="badge bg-secondary"><?= h($pax->type ?? 'Adult') ?></span>
                             </div>
                         </div>
+                        <?php endforeach; ?>
                     </div>
                     
                     <div class="d-grid gap-2">

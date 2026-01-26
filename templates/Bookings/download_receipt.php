@@ -322,7 +322,7 @@
             </div>
     
             <div class="section">
-                <h3 class="section-title">Passenger</h3>
+                <h3 class="section-title">Passengers (<?= count($passengers) ?>)</h3>
                 <table class="passengers-table">
                     <thead>
                         <tr>
@@ -346,9 +346,14 @@
             </div>
     
             <div class="section">
+                <?php
+                    $passengerCount = max(count($passengers), 1);
+                    $taxPerPax = 45.00;
+                    $flightTotal = (($departurePrice ?? $booking->flight->base_price ?? 0) + $taxPerPax) * $passengerCount;
+                ?>
                 <div class="total-section">
-                    <div class="total-label">Flight Price</div>
-                    <div class="total-amount">RM <?= number_format($departurePrice ?? $booking->flight->base_price ?? 0, 2) ?></div>
+                    <div class="total-label">Flight Price (incl. taxes)</div>
+                    <div class="total-amount">RM <?= number_format($flightTotal, 2) ?></div>
                 </div>
             </div>
     
@@ -414,7 +419,7 @@
             </div>
     
             <div class="section">
-                <h3 class="section-title">Passenger</h3>
+                <h3 class="section-title">Passengers (<?= count($passengers) ?>)</h3>
                 <table class="passengers-table">
                     <thead>
                         <tr>
@@ -438,9 +443,14 @@
             </div>
     
             <div class="section">
+                <?php
+                    $passengerCount = max(count($passengers), 1);
+                    $taxPerPax = 45.00;
+                    $returnFlightTotal = (($returnPrice ?? $returnBooking->flight->base_price ?? 0) + $taxPerPax) * $passengerCount;
+                ?>
                 <div class="total-section">
-                    <div class="total-label">Flight Price</div>
-                    <div class="total-amount">RM <?= number_format($returnPrice ?? $returnBooking->flight->base_price ?? 0, 2) ?></div>
+                    <div class="total-label">Flight Price (incl. taxes)</div>
+                    <div class="total-amount">RM <?= number_format($returnFlightTotal, 2) ?></div>
                 </div>
             </div>
     

@@ -97,7 +97,7 @@ $this->Html->css('flights', ['block' => true]);
                                             <div class="col-3 fw-bold fs-5"><?= (new \DateTime($departureFlightData['departure_time']))->format('H:i') ?></div>
                                             <div class="col-9">
                                                  <div class="fw-bold fs-6"><?= h($departureFlightData['origin_city'] ?? $departureFlightData['origin_airport_code']) ?> (<?= h($departureFlightData['origin_airport_code']) ?>)</div>
-                                                 <div class="small text-muted"><?= (new \DateTime($departureFlightData['departure_time']))->format('d M Y') ?></div>
+                                                 <div class="small text-muted"><?= (new \DateTime($departureFlightData['departure_time']))->format('D, d M Y') ?></div>
                                             </div>
                                         </div>
                                     </div>
@@ -113,7 +113,7 @@ $this->Html->css('flights', ['block' => true]);
                                             <div class="col-3 fw-bold fs-5"><?= (new \DateTime($departureFlightData['arrival_time']))->format('H:i') ?></div>
                                             <div class="col-9">
                                                 <div class="fw-bold fs-6"><?= h($departureFlightData['dest_city'] ?? $departureFlightData['dest_airport_code']) ?> (<?= h($departureFlightData['dest_airport_code']) ?>)</div>
-                                                <div class="small text-muted"><?= (new \DateTime($departureFlightData['arrival_time']))->format('d M Y') ?></div>
+                                                <div class="small text-muted"><?= (new \DateTime($departureFlightData['arrival_time']))->format('D, d M Y') ?></div>
                                             </div>
                                         </div>
                                     </div>
@@ -166,7 +166,7 @@ $this->Html->css('flights', ['block' => true]);
                                             <div class="col-3 fw-bold fs-5"><?= (new \DateTime($returnFlightData['departure_time']))->format('H:i') ?></div>
                                             <div class="col-9">
                                                 <div class="fw-bold fs-6"><?= h($returnFlightData['origin_city'] ?? $returnFlightData['origin_airport_code']) ?> (<?= h($returnFlightData['origin_airport_code']) ?>)</div>
-                                                <div class="small text-muted"><?= (new \DateTime($returnFlightData['departure_time']))->format('d M Y') ?></div>
+                                                <div class="small text-muted"><?= (new \DateTime($returnFlightData['departure_time']))->format('D, d M Y') ?></div>
                                             </div>
                                         </div>
                                     </div>
@@ -180,7 +180,7 @@ $this->Html->css('flights', ['block' => true]);
                                             <div class="col-3 fw-bold fs-5"><?= (new \DateTime($returnFlightData['arrival_time']))->format('H:i') ?></div>
                                             <div class="col-9">
                                                 <div class="fw-bold fs-6"><?= h($returnFlightData['dest_city'] ?? $returnFlightData['dest_airport_code']) ?> (<?= h($returnFlightData['dest_airport_code']) ?>)</div>
-                                                <div class="small text-muted"><?= (new \DateTime($returnFlightData['arrival_time']))->format('d M Y') ?></div>
+                                                <div class="small text-muted"><?= (new \DateTime($returnFlightData['arrival_time']))->format('D, d M Y') ?></div>
                                             </div>
                                         </div>
                                     </div>
@@ -241,10 +241,7 @@ $this->Html->css('flights', ['block' => true]);
                                 ]) ?>
                                 <div class="form-text small text-muted"><i class="bi bi-info-circle"></i> (10 digits only, e.g. 0123456789)</div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-muted small">Email Address*</label>
-                                <?= $this->Form->email("passengers.adult.$i.email", ['class' => 'form-control', 'placeholder' => 'email@example.com', 'required' => true]) ?>
-                            </div>
+
                         </div>
                     <?php endfor; ?>
 
