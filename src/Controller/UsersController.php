@@ -148,11 +148,21 @@ class UsersController extends AppController
      */
     public function login()
     {
-        // Check if user is already logged in
-        $loggedInUser = $this->request->getSession()->read('Auth');
-        if ($loggedInUser) {
-            if ($loggedInUser->role === 'admin') {
+        $session = $this->request->getSession();
+        
+        // Check if user is already logged in (verify it's actual user data, not just metadata)
+        $loggedInUser = $session->read('Auth');
+        if ($loggedInUser && (is_object($loggedInUser) || isset($loggedInUser['id']))) {
+            // Handle both object and array access (session serialization may vary)
+            $role = is_array($loggedInUser) ? ($loggedInUser['role'] ?? null) : ($loggedInUser->role ?? null);
+            if ($role === 'admin') {
                 return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
+            }
+            // Check for stored redirect URL
+            $redirectUrl = $session->read('Login.redirect');
+            if ($redirectUrl) {
+                $session->delete('Login.redirect');
+                return $this->redirect($redirectUrl);
             }
             return $this->redirect('/');
         }
@@ -169,12 +179,19 @@ class UsersController extends AppController
                 // In production, uncomment password verification below
                 // $passwordValid = password_verify($password, $user->password) || $password === $user->password;
                 
-                $this->request->getSession()->write('Auth', $user);
+                $session->write('Auth', $user);
                 
                 $this->Flash->success(__('Welcome back, ' . ($user->full_name ?: $user->email)));
                 
                 if ($user->role === 'admin') {
                     return $this->redirect(['controller' => 'Dashboards', 'action' => 'admin']);
+                }
+                
+                // Check for stored redirect URL
+                $redirectUrl = $session->read('Login.redirect');
+                if ($redirectUrl) {
+                    $session->delete('Login.redirect');
+                    return $this->redirect($redirectUrl);
                 }
                 return $this->redirect('/');
             }
@@ -222,7 +239,8 @@ class UsersController extends AppController
         if ($identity) {
             $id = $identity->getIdentifier();
         } elseif ($userSession) {
-            $id = $userSession->id;
+            // Handle both array and object access
+            $id = is_array($userSession) ? ($userSession['id'] ?? null) : ($userSession->id ?? null);
         }
 
         if (!$id) {

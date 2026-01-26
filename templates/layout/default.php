@@ -197,11 +197,18 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                      if (!$identity) {
                          $identity = $this->request->getSession()->read('Auth');
                      }
+                     // Helper to access identity properties (handles both array and object)
+                     $getIdentityProp = function($prop) use ($identity) {
+                         if (is_array($identity)) {
+                             return $identity[$prop] ?? null;
+                         }
+                         return $identity->$prop ?? null;
+                     };
                     if ($identity): 
                     ?>
                         <div class="dropdown border-start ps-4">
                             <a href="#" class="user-nav-link fw-bold dropdown-toggle text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle"></i> <?= h($identity->full_name ?: $identity->email) ?>
+                                <i class="bi bi-person-circle"></i> <?= h($getIdentityProp('full_name') ?: $getIdentityProp('email')) ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow" style="background: #1a1a1a; border-color: #333; min-width: 200px;">
                                 <li class="px-3 py-3 border-bottom border-secondary">
@@ -212,8 +219,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                                         </div>
                                         <!-- User Info -->
                                         <div class="overflow-hidden">
-                                            <div class="fw-bold text-white text-truncate"><?= h($identity->username ?? $identity->email) ?></div>
-                                            <div class="small text-secondary text-truncate"><?= h($identity->email) ?></div>
+                                            <div class="fw-bold text-white text-truncate"><?= h($getIdentityProp('username') ?: $getIdentityProp('email')) ?></div>
+                                            <div class="small text-secondary text-truncate"><?= h($getIdentityProp('email')) ?></div>
                                         </div>
                                     </div>
                                 </li>
@@ -231,7 +238,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                                         <i class="bi bi-gear me-2"></i> Settings
                                     </a>
                                 </li>
-                                <?php if (isset($identity->role) && strtolower($identity->role) === 'admin'): ?>
+                                <?php if ($getIdentityProp('role') && strtolower($getIdentityProp('role')) === 'admin'): ?>
                                     <li><a class="dropdown-item text-white my-1" href="<?= $this->Url->build(['controller' => 'Dashboards', 'action' => 'index']) ?>"><i class="bi bi-speedometer2 me-2"></i> Admin Dashboard</a></li>
                                 <?php else: ?>
                                     <li><a class="dropdown-item text-white my-1" href="<?= $this->Url->build(['controller' => 'Bookings', 'action' => 'myBookings']) ?>"><i class="bi bi-ticket-perforated me-2"></i> My Bookings</a></li>

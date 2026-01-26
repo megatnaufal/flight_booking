@@ -59,6 +59,56 @@ class FlightSchedulesSeed extends BaseSeed
             ['PEN', 'JHB', 70, 99, ['AirAsia']],
             ['BKI', 'KCH', 90, 129, ['AirAsia', 'Malaysia Airlines']],
         ];
+
+        // START DYNAMIC ROUTE GENERATION
+        // Track covered routes to prevent duplicates (since the loop generates return flights)
+        $coveredRoutes = [];
+        foreach ($routes as $route) {
+            $coveredRoutes[$route[0] . '-' . $route[1]] = true;
+            $coveredRoutes[$route[1] . '-' . $route[0]] = true; // The loop generates return legs
+        }
+
+        $airportCodes = array_keys($airportMap);
+        $availableAirlineNames = array_keys($airlines);
+
+        foreach ($airportCodes as $origin) {
+            foreach ($airportCodes as $dest) {
+                if ($origin === $dest) {
+                    continue;
+                }
+                
+                // If this pair is already covered by hardcoded routes, skip
+                if (isset($coveredRoutes[$origin . '-' . $dest])) {
+                    continue;
+                }
+
+                // Generate dynamic route
+                // Random airlines (1 or 2)
+                $numAirlinesCount = rand(1, 2);
+                $routeAirlinesKeys = array_rand($availableAirlineNames, $numAirlinesCount);
+                if (!is_array($routeAirlinesKeys)) {
+                    $routeAirlinesKeys = [$routeAirlinesKeys];
+                }
+                $routeAirlines = [];
+                foreach ($routeAirlinesKeys as $k) {
+                    $routeAirlines[] = $availableAirlineNames[$k];
+                }
+
+                // Random attributes
+                // Malaysia domestic flights are usually 45m to 2h 30m (East Malaysia)
+                // We'll use a simplified random range
+                $duration = rand(45, 150); 
+                $basePrice = rand(60, 250); 
+
+                // Add to routes array
+                $routes[] = [$origin, $dest, $duration, $basePrice, $routeAirlines];
+
+                // Mark as covered
+                $coveredRoutes[$origin . '-' . $dest] = true;
+                $coveredRoutes[$dest . '-' . $origin] = true;
+            }
+        }
+        // END DYNAMIC ROUTE GENERATION
         
         // Flight time slots organized by filter periods
         // Each period should have at least 3 flight times

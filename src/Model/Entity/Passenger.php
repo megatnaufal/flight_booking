@@ -34,7 +34,9 @@ class Passenger extends Entity
         'full_name' => true,
         'passport_number' => true,
         'phone_number' => true,
-        'passport_photo' => true,
+        'dob' => true,
+        'type' => true,
+        'booking_id' => true,
         'user' => true,
         'bookings' => true,
     ];

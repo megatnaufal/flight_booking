@@ -142,6 +142,17 @@ class BookingsController extends AppController
             return;
         }
         
+        // Require Login for Customer Checkout
+        $userId = $this->request->getAttribute('identity')?->getIdentifier();
+        if (!$userId) {
+            $userId = $session->read('Auth.id');
+        }
+        if (!$userId) {
+            $this->Flash->error(__('Please log in or register to complete your booking.'));
+            $session->write('Login.redirect', '/bookings/add');
+            return $this->redirect(['controller' => 'Users', 'action' => 'login']);
+        }
+        
         // Fetch Airport details
         $airportsTable = $this->fetchTable('Airports');
         
@@ -249,7 +260,6 @@ class BookingsController extends AppController
                 $leadPax = $passengersTable->patchEntity($leadPax, [
                     'full_name' => trim(($leadData['first_name'] ?? '') . ' ' . ($leadData['last_name'] ?? '')),
                     'phone_number' => $leadData['phone_number'] ?? '',
-                    'email' => $leadData['email'] ?? '',
                     'dob' => $leadData['dob'] ?? null,
                     'type' => $leadData['type'] ?? 'Adult',
                     'user_id' => $userId,
@@ -286,7 +296,8 @@ class BookingsController extends AppController
                     $passengersTable->save($leadPax);
                 }
 
-                // 2. Save Remaining Passengers
+                // 2. Save Remaining Passengers (keep copy for return booking)
+                $allPassengersForReturn = $allPassengersData; // Full copy before removing lead
                 array_shift($allPassengersData); // Remove lead
                 
                 foreach ($allPassengersData as $pData) {
@@ -294,7 +305,6 @@ class BookingsController extends AppController
                     $pax = $passengersTable->patchEntity($pax, [
                         'full_name' => trim(($pData['first_name'] ?? '') . ' ' . ($pData['last_name'] ?? '')),
                         'phone_number' => $pData['phone_number'] ?? '',
-                        'email' => $pData['email'] ?? '',
                         'dob' => $pData['dob'] ?? null,
                         'type' => $pData['type'] ?? '',
                         'booking_id' => $booking->id,
@@ -360,6 +370,23 @@ class BookingsController extends AppController
                         $returnBooking->seat_number = $rows[array_rand($rows)] . $cols[array_rand($cols)];
                     }
                     $this->Bookings->save($returnBooking);
+                    
+                    // Link all passengers to return booking (use full copy)
+                    foreach ($allPassengersForReturn as $pData) {
+                        $returnPax = $passengersTable->newEmptyEntity();
+                        $returnPax = $passengersTable->patchEntity($returnPax, [
+                            'full_name' => trim(($pData['first_name'] ?? '') . ' ' . ($pData['last_name'] ?? '')),
+                            'phone_number' => $pData['phone_number'] ?? '',
+                            'dob' => $pData['dob'] ?? null,
+                            'type' => $pData['type'] ?? 'Adult',
+                            'booking_id' => $returnBooking->id,
+                            'user_id' => $userId,
+                        ]);
+                        if (empty($returnPax->passport_number)) {
+                            $returnPax->passport_number = 'P' . rand(10000000, 99999999);
+                        }
+                        $passengersTable->save($returnPax);
+                    }
                     
                     $session->write('Flight.ReturnBookingId', $returnBooking->id);
                 }
@@ -494,7 +521,11 @@ class BookingsController extends AppController
     public function confirmation($id = null)
     {
         $booking = $this->Bookings->get($id, [
-            'contain' => ['Passengers', 'Flights' => ['OriginAirports', 'DestAirports']]
+            'contain' => [
+                'Passengers', // Lead passenger
+                'BookingPassengers', // All passengers
+                'Flights' => ['OriginAirports', 'DestAirports']
+            ]
         ]);
         
         $returnBookingId = $this->request->getQuery('return_id');
@@ -505,7 +536,25 @@ class BookingsController extends AppController
             ]);
         }
         
-        $this->set(compact('booking', 'returnBooking'));
+        // Combine all passengers for display
+        $allPassengers = [];
+        if (!empty($booking->booking_passengers)) {
+            $allPassengers = $booking->booking_passengers;
+        }
+        if ($booking->passenger) {
+            $leadInList = false;
+            foreach ($allPassengers as $p) {
+                if ($p->id === $booking->passenger->id) {
+                    $leadInList = true;
+                    break;
+                }
+            }
+            if (!$leadInList) {
+                array_unshift($allPassengers, $booking->passenger);
+            }
+        }
+        
+        $this->set(compact('booking', 'returnBooking', 'allPassengers'));
     }
 
     /**
@@ -520,17 +569,30 @@ class BookingsController extends AppController
     {
         $booking = $this->Bookings->get($id, [
             'contain' => [
-                'Passengers', 
+                'Passengers', // Lead passenger
+                'BookingPassengers', // All passengers linked to this booking
                 'Flights' => ['OriginAirports', 'DestAirports']
             ]
         ]);
         
-        // Use lead passenger from booking (the relationship is Booking belongsTo Passenger)
+        // Get all passengers - prioritize BookingPassengers
         $passengers = [];
-        if ($booking->passenger) {
-            $passengers[] = $booking->passenger;
+        if (!empty($booking->booking_passengers)) {
+            $passengers = $booking->booking_passengers;
         }
         
+        // If empty (legacy bookings), fallback to lead passenger
+        if (empty($passengers) && $booking->passenger) {
+            $passengers[] = $booking->passenger;
+        }
+
+        // Ensure no duplicates if using mixed data (though above logic prevents it, safety check)
+        $uniquePassengers = [];
+        foreach ($passengers as $p) {
+            $uniquePassengers[$p->id] = $p;
+        }
+        $passengers = array_values($uniquePassengers);
+
         // Check for return booking
         $returnBookingId = $this->request->getQuery('return_id');
         $returnBooking = null;

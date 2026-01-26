@@ -53,7 +53,14 @@
                                         <span class="badge <?= strtolower($booking->ticket_status) === 'confirmed' ? 'bg-success' : 'bg-warning text-dark' ?>">
                                             <?= h($booking->ticket_status) ?>
                                         </span>
-                                        <span class="text-muted small">• <?= count($booking->booking_passengers ?? []) ?> Passenger(s)</span>
+                                        <?php 
+                                            // Count passengers: booking_passengers + lead passenger if not included
+                                            $passengerCount = count($booking->booking_passengers ?? []);
+                                            if ($passengerCount === 0 && $booking->passenger) {
+                                                $passengerCount = 1; // At least the lead passenger
+                                            }
+                                        ?>
+                                        <span class="text-muted small">• <?= $passengerCount ?> Passenger(s)</span>
                                     </div>
                                 </div>
 
@@ -61,7 +68,17 @@
                                 <div class="col-md-3 p-4 d-flex flex-column justify-content-center border-start bg-light bg-opacity-10 align-items-end">
                                     <div class="text-end mb-3">
                                         <span class="text-muted small d-block">Total Paid</span>
-                                        <span class="fs-5 fw-bold text-primary">MYR <?= number_format($booking->flight->base_price * count($booking->booking_passengers ?? []), 2) ?></span>
+                                        <?php
+                                            // Calculate total: (base_price + taxes) * passengers
+                                            $passengerCount = count($booking->booking_passengers ?? []);
+                                            if ($passengerCount === 0 && $booking->passenger) {
+                                                $passengerCount = 1;
+                                            }
+                                            $basePrice = (float)($booking->flight->base_price ?? 0);
+                                            $taxPerPax = 45.00;
+                                            $totalPrice = ($basePrice + $taxPerPax) * $passengerCount;
+                                        ?>
+                                        <span class="fs-5 fw-bold text-primary">MYR <?= number_format($totalPrice, 2) ?></span>
                                     </div>
                                     <a href="<?= $this->Url->build(['controller' => 'Bookings', 'action' => 'downloadReceipt', $booking->id]) ?>" class="btn btn-outline-primary w-100 mb-2">
                                         <i class="bi bi-receipt me-2"></i> Receipt
