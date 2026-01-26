@@ -182,8 +182,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                         <a href="#" class="nav-link-custom">Hotel</a>
                         <a href="#" class="nav-link-custom">Promo</a>
                         <a href="#" class="nav-link-custom">Orders</a>
-                        <a href="#" class="nav-link-custom">Deals <span class="badge-new">NEW</span></a>
                         <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'about']) ?>" class="nav-link-custom">About Us</a>
+                        <a href="#" class="nav-link-custom">Deals <span class="badge-new">NEW</span></a>
                     </nav>
                 </div>
 

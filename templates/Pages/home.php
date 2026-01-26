@@ -295,74 +295,6 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
     </div>
 </div>
 
-<!-- Trust Badges Section -->
-<div class="trust-section">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-6 col-md-3">
-                <div class="trust-badge">
-                    <i class="bi bi-shield-check"></i>
-                    <h6>Secure Booking</h6>
-                    <p>SSL Encrypted</p>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="trust-badge">
-                    <i class="bi bi-people"></i>
-                    <h6>2M+ Travelers</h6>
-                    <p>Trusted Worldwide</p>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="trust-badge">
-                    <i class="bi bi-headset"></i>
-                    <h6>24/7 Support</h6>
-                    <p>Always Here to Help</p>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="trust-badge">
-                    <i class="bi bi-tag"></i>
-                    <h6>Best Price</h6>
-                    <p>Guaranteed Lowest</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Statistics Section -->
-<div class="stats-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-6 col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number">2M+</div>
-                    <div class="stat-label">Happy Customers</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number">150+</div>
-                    <div class="stat-label">Countries Served</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number">5M+</div>
-                    <div class="stat-label">Bookings Made</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number">15+</div>
-                    <div class="stat-label">Years of Service</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="container search-wrapper">
     <div class="card search-card p-3 p-lg-4">
         <form action="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" method="get">
@@ -494,6 +426,74 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
                 </div>
             </div>
         <?php endforeach; ?>
+    </div>
+</div>
+
+<!-- Trust Badges Section -->
+<div class="trust-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+                <div class="trust-badge">
+                    <i class="bi bi-shield-check"></i>
+                    <h6>Secure Booking</h6>
+                    <p>SSL Encrypted</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="trust-badge">
+                    <i class="bi bi-people"></i>
+                    <h6>2M+ Travelers</h6>
+                    <p>Trusted Worldwide</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="trust-badge">
+                    <i class="bi bi-headset"></i>
+                    <h6>24/7 Support</h6>
+                    <p>Always Here to Help</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="trust-badge">
+                    <i class="bi bi-tag"></i>
+                    <h6>Best Price</h6>
+                    <p>Guaranteed Lowest</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">2M+</div>
+                    <div class="stat-label">Happy Customers</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">150+</div>
+                    <div class="stat-label">Countries Served</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">5M+</div>
+                    <div class="stat-label">Bookings Made</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Years of Service</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
