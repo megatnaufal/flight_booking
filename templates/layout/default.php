@@ -183,13 +183,13 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                         <a href="#" class="nav-link-custom">Promo</a>
                         <a href="#" class="nav-link-custom">Orders</a>
                         <a href="#" class="nav-link-custom">Deals <span class="badge-new">NEW</span></a>
+                        <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'about']) ?>" class="nav-link-custom">About Us</a>
                     </nav>
                 </div>
 
                 <div class="col-lg-6 d-flex justify-content-end align-items-center gap-4">
                     <div class="d-flex align-items-center gap-3">
                         <a href="#" class="user-nav-link"><i class="bi bi-translate"></i> MYR</a>
-                        <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'about']) ?>" class="user-nav-link">About Us</a>
                         <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'help']) ?>" class="user-nav-link">Help</a>
                     </div>
                     <?php 
