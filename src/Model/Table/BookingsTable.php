@@ -51,12 +51,6 @@ class BookingsTable extends Table
         $this->belongsTo('Flights', [
             'foreignKey' => 'flight_id',
         ]);
-        $this->hasMany('Luggages', [
-            'foreignKey' => 'booking_id',
-            'dependent' => true,
-            'cascadeCallbacks' => true,
-        ]);
-        
         // Association for all passengers in the booking
         $this->hasMany('BookingPassengers', [
             'className' => 'Passengers',
