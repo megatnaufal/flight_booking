@@ -100,6 +100,11 @@
                                 <div class="fw-bold"><?= h($pax->full_name) ?></div>
                                 <div class="small text-muted"><?= h($pax->phone_number ?? '-') ?></div>
                             </div>
+                            <div class="me-2">
+                                <?php if (!empty($pax->seat_number)): ?>
+                                    <span class="badge bg-primary">Seat <?= h($pax->seat_number) ?></span>
+                                <?php endif; ?>
+                            </div>
                             <div>
                                 <span class="badge bg-secondary"><?= h($pax->type ?? 'Adult') ?></span>
                             </div>

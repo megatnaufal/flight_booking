@@ -53,32 +53,11 @@
             <tr>
                 <th><?= __('Seat Number') ?></th>
                 <td>
-                    <?php
-                    $seatList = [];
-                    if (!empty($passenger->bookings)) {
-                        foreach ($passenger->bookings as $booking) {
-                            $mySeat = null;
-                            
-                            // Find the passenger record for THIS booking that matches our current passenger
-                            // For Return bookings, the passenger ID changes (new record), so we match by unique details
-                            if (!empty($booking->booking_passengers)) {
-                                foreach ($booking->booking_passengers as $p) {
-                                    if ($p->id === $passenger->id || 
-                                        ($p->full_name === $passenger->full_name && $p->passport_number === $passenger->passport_number)) {
-                                        $mySeat = $p->seat_number;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            $flightInfo = $booking->flight->flight_number ?? '';
-                            if ($mySeat) {
-                                $seatList[] = h($mySeat) . ($flightInfo ? " ($flightInfo)" : '');
-                            }
-                        }
-                    }
-                    echo !empty($seatList) ? implode(', ', $seatList) : '-';
-                    ?>
+                    <?php if (!empty($passenger->seat_number)) : ?>
+                        <span class="badge bg-secondary"><?= h($passenger->seat_number) ?></span>
+                    <?php else : ?>
+                        -
+                    <?php endif; ?>
                 </td>
             </tr>
         </table>
