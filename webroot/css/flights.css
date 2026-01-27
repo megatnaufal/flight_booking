@@ -63,6 +63,7 @@
     font-family: 'Inter', sans-serif;
     box-shadow: none;
 }
+
 /* ... skipped intermediate lines ... */
 
 .ui-menu-item .ui-menu-item-wrapper:hover,
@@ -353,3 +354,147 @@ a.text-danger.small {
 a.text-danger.small:hover {
     color: #4C1D95 !important;
 }
+
+/* ========================================
+   DARK MODE OVERRIDES
+   ======================================== */
+body.dark-mode .text-muted,
+body.dark-mode .small,
+body.dark-mode .form-text,
+body.dark-mode label,
+body.dark-mode label.small {
+    color: #a0aec0 !important;
+}
+
+body.dark-mode .text-dark,
+body.dark-mode .fw-bold.text-dark,
+body.dark-mode .custom-dropdown-toggle,
+body.dark-mode .flight-time,
+body.dark-mode .footer-title,
+body.dark-mode .flight-price-main {
+    color: #f7fafc !important;
+}
+
+body.dark-mode .bg-white,
+body.dark-mode .card,
+body.dark-mode .flight-result-card,
+body.dark-mode .input-box,
+body.dark-mode .form-control {
+    background-color: #1a1a2e !important;
+    border-color: #2d2d44 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .card .text-dark,
+body.dark-mode .card .fw-bold.text-dark,
+body.dark-mode .bg-white .text-dark {
+    color: #f7fafc !important;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .flight-result-card:hover {
+    border-color: #7C3AED !important;
+    background-color: #2d2d44 !important;
+}
+
+body.dark-mode .filter-title {
+    color: #f7fafc;
+}
+
+body.dark-mode h6 {
+    color: #f7fafc !important;
+}
+
+body.dark-mode .dropdown-menu {
+    background-color: #1a1a2e;
+    border-color: #2d2d44;
+}
+
+body.dark-mode .dropdown-item {
+    color: #e2e8f0;
+}
+
+body.dark-mode .dropdown-item:hover {
+    background-color: #2d2d44;
+    color: #fff;
+}
+
+body.dark-mode .sort-tabs .card {
+    background-color: #1a1a2e !important;
+    border-color: #2d2d44 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .sort-tabs .card.active {
+    border-color: #7C3AED !important;
+    background-color: #2d2d44 !important;
+}
+/* ========================================
+   SKELETON LOADING (Shimmer)
+   ======================================== */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.skeleton-box {
+    animation: shimmer 2s infinite linear;
+    background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
+    background-size: 1000px 100%;
+    border-radius: 4px;
+}
+
+body.dark-mode .skeleton-box {
+    background: linear-gradient(to right, #2d2d44 4%, #3d3d5c 25%, #2d2d44 36%);
+}
+
+.skeleton-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: #fff;
+    height: 180px; /* Approx height of flight card */
+}
+
+body.dark-mode .skeleton-card {
+    background: #1a1a2e;
+    border-color: #2d2d44;
+}
+
+/* ========================================
+   PAGE TRANSITIONS
+   ======================================== */
+.page-transition {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.page-transition.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* Back to Top Button Override */
+.back-to-top {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    right: auto !important;
+    bottom: 30px !important;
+    border-radius: 50px !important;
+    padding: 10px 20px !important;
+    width: auto !important;
+    height: auto !important;
+}
+

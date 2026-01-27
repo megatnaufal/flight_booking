@@ -28,6 +28,39 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
         z-index: 0;
     }
     
+    /* Fallback gradient while video loads */
+    .hero-fallback {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #4C1D95 0%, #7C3AED 50%, #A78BFA 100%);
+        z-index: 0;
+    }
+    
+    .hero-fallback::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 60px;
+        height: 60px;
+        margin: -30px 0 0 -30px;
+        border: 3px solid rgba(255,255,255,0.2);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: heroSpin 1s linear infinite;
+    }
+    
+    .hero-fallback.loaded::before {
+        opacity: 0;
+    }
+    
+    @keyframes heroSpin {
+        to { transform: rotate(360deg); }
+    }
+    
     .hero-video-wrapper iframe {
         position: absolute;
         top: 50%;
@@ -38,6 +71,12 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
         min-width: 150vw;
         transform: translate(-50%, -50%);
         pointer-events: none;
+        opacity: 0;
+        transition: opacity 1s ease;
+    }
+    
+    .hero-video-wrapper iframe.video-loaded {
+        opacity: 1;
     }
     
     /* Subtle dark overlay for text readability only */
@@ -70,6 +109,104 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
         text-shadow: 0 3px 15px rgba(0, 0, 0, 0.7),
                      0 2px 8px rgba(0, 0, 0, 0.5);
         font-size: 1.3rem;
+    }
+    
+    /* Decorative Hexagon Background */
+    .hexagon-bg {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hexagon-bg::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='115.47' viewBox='0 0 100 115.47'%3E%3Cpath d='M50 0L93.3 25v50L50 100 6.7 75V25z' fill='none' stroke='%237C3AED' stroke-width='0.5' opacity='0.08'/%3E%3C/svg%3E");
+        background-size: 80px 92px;
+        pointer-events: none;
+        z-index: 0;
+    }
+    
+    .hexagon-shape {
+        position: absolute;
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+        50% { transform: translateY(-15px) rotate(5deg); opacity: 1; }
+    }
+    
+    .hexagon-shape.hex-1 {
+        top: 5%;
+        left: 3%;
+        width: 100px;
+        height: 115px;
+        animation-delay: 0s;
+        background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(167, 139, 250, 0.04) 100%);
+    }
+    
+    .hexagon-shape.hex-2 {
+        top: 15%;
+        right: 5%;
+        width: 80px;
+        height: 92px;
+        animation-delay: -2s;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, rgba(52, 211, 153, 0.03) 100%);
+    }
+    
+    .hexagon-shape.hex-3 {
+        bottom: 30%;
+        left: 8%;
+        width: 60px;
+        height: 69px;
+        animation-delay: -4s;
+        background: linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(139, 92, 246, 0.02) 100%);
+    }
+    
+    .hexagon-shape.hex-4 {
+        bottom: 20%;
+        right: 10%;
+        width: 90px;
+        height: 104px;
+        animation-delay: -6s;
+        background: linear-gradient(135deg, rgba(124, 58, 237, 0.07) 0%, rgba(167, 139, 250, 0.03) 100%);
+    }
+    
+    .hexagon-shape.hex-5 {
+        top: 45%;
+        left: 15%;
+        width: 50px;
+        height: 58px;
+        animation-delay: -3s;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(52, 211, 153, 0.02) 100%);
+    }
+    
+    .hexagon-shape.hex-6 {
+        top: 35%;
+        right: 3%;
+        width: 70px;
+        height: 81px;
+        animation-delay: -5s;
+        background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(139, 92, 246, 0.03) 100%);
+    }
+    
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 0.7;
+        }
+        50% {
+            transform: translateY(-15px) rotate(5deg);
+            opacity: 1;
+        }
     }
     
     .search-wrapper { margin-top: 0; position: relative; z-index: 10; padding-top: 40px; }
@@ -128,7 +265,7 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
     }
     
     /* Trust Badges */
-    .trust-section { background: #F7FAFC; padding: 40px 0 30px 0; }
+    .trust-section { background: #F7FAFC; padding: 40px 0 30px 0; position: relative; z-index: 1; }
     .trust-badge {
         text-align: center;
         padding: 20px;
@@ -147,13 +284,13 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
     .trust-badge p { color: #718096; font-size: 0.85rem; margin: 0; }
     
     /* Statistics Counter */
-    .stats-section { background: linear-gradient(135deg, #FFFFFF 0%, #F5F3FF 100%); padding: 60px 0; border-bottom: 1px solid #E5E5E5; }
+    .stats-section { background: linear-gradient(135deg, #FFFFFF 0%, #F5F3FF 100%); padding: 60px 0; border-bottom: 1px solid #E5E5E5; position: relative; z-index: 1; }
     .stat-item { text-align: center; padding: 20px; }
     .stat-number { font-size: 3rem; font-weight: 700; color: #7C3AED; line-height: 1; }
     .stat-label { color: #718096; font-size: 0.95rem; margin-top: 10px; }
     
     /* Partner Airlines */
-    .partners-section { background: #FAFAFA; padding: 60px 0; border-bottom: 1px solid #E5E5E5; }
+    .partners-section { background: #FAFAFA; padding: 60px 0; border-bottom: 1px solid #E5E5E5; position: relative; z-index: 1; }
     .partner-logo {
         padding: 20px;
         background: #FFFFFF;
@@ -174,7 +311,7 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
     }
     
     /* Testimonials */
-    .testimonials-section { background: linear-gradient(135deg, #F7FAFC 0%, #FFFFFF 100%); padding: 60px 0; border-bottom: 1px solid #E5E5E5; }
+    .testimonials-section { background: linear-gradient(135deg, #F7FAFC 0%, #FFFFFF 100%); padding: 60px 0; border-bottom: 1px solid #E5E5E5; position: relative; z-index: 1; }
     .testimonial-card {
         background: #FFFFFF;
         border: 1px solid #E5E5E5;
@@ -193,7 +330,7 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
     .verified-badge { color: #10B981; font-size: 0.8rem; }
     
     /* Why Choose Us */
-    .why-section { background: #FAFAFA; padding: 60px 0; border-bottom: 1px solid #E5E5E5; }
+    .why-section { background: #FAFAFA; padding: 60px 0; border-bottom: 1px solid #E5E5E5; position: relative; z-index: 1; }
     .why-item {
         text-align: center;
         padding: 30px 20px;
@@ -215,11 +352,69 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
     /* Footer */
     .footer-section { background-color: #F7FAFC; padding-top: 50px; border-top: 1px solid #E5E5E5; margin-top: 0; }
     .footer-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 20px; color: #4C1D95; }
-    .footer-link { font-size: 0.85rem; color: #718096; text-decoration: none; display: block; margin-bottom: 8px; transition: color 0.3s; }
+    .footer-link { font-size: 0.85rem; color: #718096; text-decoration: none; display: block !important; margin-bottom: 8px; transition: color 0.3s; }
     .footer-link:hover { color: #7C3AED; }
     
     .section-title { color: #7C3AED; font-weight: 700; margin-bottom: 40px; text-align: center; }
     .section-subtitle { color: #718096; text-align: center; margin-bottom: 50px; }
+
+    /* ===== Home Page Dark Mode Overrides ===== */
+    body.dark-mode .trust-section,
+    body.dark-mode .stats-section,
+    body.dark-mode .partners-section,
+    body.dark-mode .testimonials-section,
+    body.dark-mode .why-section {
+        background: #0f0f23 !important;
+        border-color: #2d2d44 !important;
+    }
+
+    body.dark-mode .search-card,
+    body.dark-mode .trust-badge,
+    body.dark-mode .partner-logo,
+    body.dark-mode .testimonial-card,
+    body.dark-mode .why-item,
+    body.dark-mode .flight-card {
+        background: #1a1a2e !important;
+        border-color: #2d2d44 !important;
+        box-shadow: none;
+    }
+
+    body.dark-mode .trust-badge h6,
+    body.dark-mode .why-item h5,
+    body.dark-mode .stat-number {
+        color: #e2e8f0 !important;
+    }
+
+    body.dark-mode .trust-badge p,
+    body.dark-mode .why-item p,
+    body.dark-mode .stat-label,
+    body.dark-mode .testimonial-text,
+    body.dark-mode .testimonial-author,
+    body.dark-mode .route-text,
+    body.dark-mode .from-text,
+    body.dark-mode .input-box input,
+    body.dark-mode .input-box select {
+        color: #a0aec0 !important;
+    }
+
+    body.dark-mode .input-box {
+        background: #1a1a2e !important;
+        border-color: #2d2d44 !important;
+    }
+
+    body.dark-mode .section-subtitle {
+        color: #a0aec0 !important;
+    }
+    
+    body.dark-mode .partner-logo {
+        background: #1a1a2e !important; 
+        filter: grayscale(100%) brightness(0.8);
+    }
+    
+    body.dark-mode .partner-logo:hover {
+        filter: grayscale(0%) brightness(1);
+        background: #2d2d44 !important;
+    }
     
     /* Light theme form controls */
     .search-card .dropdown-toggle { color: #2D3748 !important; }
@@ -272,12 +467,24 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
         background: #A78BFA !important;
         border-color: #A78BFA !important;
     }
+    
+    /* Custom 5-column layout for desktop */
+    @media (min-width: 992px) {
+        .col-lg-2-4 {
+            flex: 0 0 20%;
+            max-width: 20%;
+        }
+    }
 </style>
 
 <div class="hero-bg text-center">
+    <!-- Fallback Gradient while video loads -->
+    <div class="hero-fallback" id="heroFallback"></div>
+    
     <!-- Video Background -->
     <div class="hero-video-wrapper">
         <iframe 
+            id="heroVideo"
             src="https://www.youtube.com/embed/2h8BZHtccXQ?autoplay=1&mute=1&loop=1&playlist=2h8BZHtccXQ&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
             frameborder="0"
             allow="autoplay; encrypted-media"
@@ -294,6 +501,16 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
         <p class="opacity-90 fs-5">Book Flight Tickets & Enjoy Travel Deals to Your Destination</p>
     </div>
 </div>
+
+<!-- Hexagon Background Section -->
+<div class="hexagon-bg">
+    <!-- Decorative Hexagon Shapes -->
+    <div class="hexagon-shape hex-1"></div>
+    <div class="hexagon-shape hex-2"></div>
+    <div class="hexagon-shape hex-3"></div>
+    <div class="hexagon-shape hex-4"></div>
+    <div class="hexagon-shape hex-5"></div>
+    <div class="hexagon-shape hex-6"></div>
 
 <div class="container search-wrapper">
     <div class="card search-card p-3 p-lg-4">
@@ -413,7 +630,7 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
     <h5 class="fw-bold mb-4" style="color: #7C3AED;">Exclusive Flight Recommendations</h5>
     <div class="row g-3">
         <?php foreach ($recommendations as $flight): ?>
-            <div class="col-6 col-lg-2-4" style="flex: 0 0 20%; max-width: 20%;">
+            <div class="col-6 col-md-4 col-lg-2-4">
                 <div class="card h-100 border-0 flight-card" style="cursor: pointer;" onclick="selectDestination(<?= h($flight['airport_id']) ?>)">
                     <img src="<?= $this->Url->image('destinations/' . $flight['image']) ?>" class="flight-img" alt="<?= h($flight['stateName']) ?>">
                     <div class="card-body p-3">
@@ -428,6 +645,8 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
         <?php endforeach; ?>
     </div>
 </div>
+
+
 
 <!-- Trust Badges Section -->
 <div class="trust-section">
@@ -569,28 +788,28 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
     <div class="container">
         <h2 class="section-title">Why Choose FlyHigh</h2>
         <div class="row g-4">
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="why-item">
                     <i class="bi bi-cash-coin"></i>
                     <h5>Best Price Guarantee</h5>
                     <p>Find a lower price? We'll match it!</p>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="why-item">
                     <i class="bi bi-x-circle"></i>
                     <h5>Easy Cancellation</h5>
                     <p>Flexible cancellation policies</p>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="why-item">
                     <i class="bi bi-headset"></i>
                     <h5>24/7 Support</h5>
                     <p>We're always here to help you</p>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="why-item">
                     <i class="bi bi-lightning"></i>
                     <h5>Instant Confirmation</h5>
@@ -600,6 +819,8 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
         </div>
     </div>
 </div>
+
+</div><!-- End Hexagon Background Section -->
 
 <!-- Footer -->
 <footer class="footer-section">
@@ -627,12 +848,12 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
             </div>
             <div class="col-md-2">
                 <h6 class="footer-title">Account</h6>
-                <a href="#" class="footer-link">Sign in / Register</a>
+                <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'login']) ?>" class="footer-link">Sign in / Register</a>
                 <a href="#" class="footer-link">Forgot Password</a>
             </div>
             <div class="col-md-2">
                 <h6 class="footer-title">Support</h6>
-                <a href="#" class="footer-link">Help Center</a>
+                <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'help']) ?>" class="footer-link">Help Center</a>
                 <a href="#" class="footer-link">How to Book</a>
                 <a href="#" class="footer-link">Terms & Conditions</a>
                 <a href="#" class="footer-link">Privacy Policy</a>
@@ -660,6 +881,28 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
 </footer>
 
 <script>
+    // Hero Video Load Detection
+    (function() {
+        const iframe = document.getElementById('heroVideo');
+        const fallback = document.getElementById('heroFallback');
+        
+        if (iframe && fallback) {
+            // Simulate load after timeout (YouTube API doesn't reliably fire load events)
+            setTimeout(() => {
+                iframe.classList.add('video-loaded');
+                fallback.classList.add('loaded');
+            }, 2000);
+            
+            // Also try normal load event
+            iframe.addEventListener('load', () => {
+                setTimeout(() => {
+                    iframe.classList.add('video-loaded');
+                    fallback.classList.add('loaded');
+                }, 500);
+            });
+        }
+    })();
+
     function selectJourney(type, element) {
         document.getElementById('journeyTypeDropdown').innerText = type;
         document.getElementById('journeyTypeInput').value = type;
@@ -777,4 +1020,53 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
             searchCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
+
+    // Interactive Hexagon Scroll Glow Effect
+    (function() {
+        const hexagons = document.querySelectorAll('.hexagon-shape');
+        let scrollTimeout;
+        let glowInterval;
+        
+        function triggerRandomGlow() {
+            // Pick a random hexagon to glow
+            const randomHex = hexagons[Math.floor(Math.random() * hexagons.length)];
+            randomHex.classList.add('glow');
+            
+            // Remove glow after a short duration
+            setTimeout(() => {
+                randomHex.classList.remove('glow');
+            }, 800);
+        }
+        
+        function onScroll() {
+            // Clear existing timeout
+            clearTimeout(scrollTimeout);
+            clearInterval(glowInterval);
+            
+            // Trigger multiple glows during scroll
+            glowInterval = setInterval(() => {
+                triggerRandomGlow();
+            }, 200);
+            
+            // Stop glowing after scroll ends
+            scrollTimeout = setTimeout(() => {
+                clearInterval(glowInterval);
+                hexagons.forEach(hex => hex.classList.remove('glow'));
+            }, 300);
+        }
+        
+        // Add scroll listener
+        window.addEventListener('scroll', onScroll, { passive: true });
+        
+        // Initial subtle animation on page load
+        setTimeout(() => {
+            hexagons.forEach((hex, index) => {
+                setTimeout(() => {
+                    hex.classList.add('glow');
+                    setTimeout(() => hex.classList.remove('glow'), 600);
+                }, index * 150);
+            });
+        }, 1000);
+    })();
 </script>
+

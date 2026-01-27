@@ -113,7 +113,7 @@ $users = $users ?? [];
         border-color: #C4B5FD; /* Light purple border on hover */
     }
 
-    .stat-number { font-family: 'Inter', sans-serif; font-size: 2.25rem; font-weight: 800; margin: 0; line-height: 1; color: var(--admin-text); letter-spacing: -0.03em; }
+    .stat-number { font-family: 'Inter', sans-serif; font-size: 2.25rem; font-weight: 800; margin: 0; line-height: 1; color: var(--admin-text); letter-spacing: -0.03em; white-space: nowrap; }
     
     .action-icon { 
         width: 48px; height: 48px; 

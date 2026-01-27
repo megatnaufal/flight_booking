@@ -26,14 +26,7 @@ class PagesController extends AppController
      */
     public function display(string ...$path): ?Response
     {
-        // Enforce Login or Guest Mode for Homepage
-        $session = $this->request->getSession();
-        if (!$session->read('Auth') && !$session->read('Guest')) {
-            // Render the Login View directly without redirecting
-            // This forces the Login Page to appear at the root URL '/'
-            $this->viewBuilder()->setTemplatePath('Users');
-            return $this->render('login');
-        }
+
         
         if (!$path) {
             return $this->redirect('/');

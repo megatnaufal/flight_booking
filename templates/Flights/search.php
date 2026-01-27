@@ -5,8 +5,16 @@
  */
 $this->Html->css('flights', ['block' => true]);
 ?>
+<!-- Hexagon Background Section -->
+<div class="hexagon-bg">
+    <div class="hexagon-shape hex-1"></div>
+    <div class="hexagon-shape hex-2"></div>
+    <div class="hexagon-shape hex-3"></div>
+    <div class="hexagon-shape hex-4"></div>
+    <div class="hexagon-shape hex-5"></div>
+    <div class="hexagon-shape hex-6"></div>
 
-<div class="flight-search-header">
+<div class="flight-search-header" style="position: relative; z-index: 1;">
     <div class="container">
         <?php 
             $destId = $this->request->getQuery('dest_airport_id');
@@ -170,15 +178,26 @@ $this->Html->css('flights', ['block' => true]);
     </div>
 </div>
 
-<div class="container pb-5">
+<div class="container pb-5" style="position: relative; z-index: 1;">
     <!-- Date Carousel -->
     <div class="row">
         <!-- Sidebar Filter -->
         <div class="col-md-3">
-            <div class="bg-white p-3 rounded border mb-3">
+            <!-- Mobile Filter Toggle -->
+            <button class="btn btn-purple-theme w-100 mb-3 d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#filterSidebar" aria-expanded="false" aria-controls="filterSidebar">
+                <i class="bi bi-funnel me-2"></i> Filter Flights
+            </button>
+
+            <div class="collapse d-md-block" id="filterSidebar">
+                <div class="bg-white p-3 rounded border mb-3">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="fw-bold mb-0">Filter</h6>
-                    <a href="#" class="text-danger small text-decoration-none">Reset All</a>
+                    <?php 
+                        $queryParams = $this->request->getQueryParams();
+                        unset($queryParams['airlines']);
+                        unset($queryParams['time']);
+                    ?>
+                    <a href="<?= $this->Url->build(['action' => 'search', '?' => $queryParams]) ?>" class="text-danger small text-decoration-none">Reset All</a>
                 </div>
 
                 <div class="filter-sidebar">
@@ -239,6 +258,7 @@ $this->Html->css('flights', ['block' => true]);
                         </div>
                     </form>
                 </div>
+            </div>
             </div>
         </div>
 
@@ -304,6 +324,37 @@ $this->Html->css('flights', ['block' => true]);
             </div>
 
             <!-- Flight List -->
+            
+            <!-- Skeleton Loading (Hidden by default) -->
+            <div id="flightResultsSkeleton" style="display: none;">
+                <?php for($i=0; $i<3; $i++): ?>
+                <div class="skeleton-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex gap-3 align-items-center">
+                             <div class="skeleton-box" style="width: 40px; height: 40px; border-radius: 50%;"></div>
+                             <div class="skeleton-box" style="width: 120px; height: 20px;"></div>
+                        </div>
+                        <div class="skeleton-box" style="width: 80px; height: 32px;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4 px-4">
+                        <div class="text-center">
+                            <div class="skeleton-box mb-2" style="width: 60px; height: 24px;"></div>
+                            <div class="skeleton-box" style="width: 40px; height: 14px;"></div>
+                        </div>
+                        <div class="skeleton-box" style="width: 100px; height: 4px;"></div>
+                        <div class="text-center">
+                            <div class="skeleton-box mb-2" style="width: 60px; height: 24px;"></div>
+                            <div class="skeleton-box" style="width: 40px; height: 14px;"></div>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="skeleton-box ms-auto mb-2" style="width: 140px; height: 30px;"></div>
+                        <div class="skeleton-box ms-auto" style="width: 100px; height: 14px;"></div>
+                    </div>
+                </div>
+                <?php endfor; ?>
+            </div>
+
             <?php if (empty($searchResults)): ?>
                 <div class="alert alert-warning text-center">
                     <h5 class="fw-bold"><i class="bi bi-exclamation-circle me-2"></i> No flights found</h5>
@@ -311,9 +362,9 @@ $this->Html->css('flights', ['block' => true]);
                 </div>
             <?php else: ?>
                 <?php foreach ($searchResults as $flight): ?>
-                <div class="flight-result-card p-3">
+                <div class="flight-result-card p-3 mb-3">
                     <div class="row align-items-center">
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3 mb-md-0">
                             <div class="badge bg-white border text-primary mb-2 px-2"><?= h($this->request->getQuery('flight_class', 'Economy')) ?></div>
                             <div class="d-flex align-items-center mb-2">
                                 <img src="<?= h($flight->airline_logo) ?>" alt="Logo" class="airline-logo-sm bg-light rounded-circle">
@@ -324,7 +375,7 @@ $this->Html->css('flights', ['block' => true]);
                             </div>
                         </div>
                         
-                        <div class="col-md-5">
+                        <div class="col-md-5 mb-3 mb-md-0">
                             <div class="d-flex align-items-center justify-content-between text-center">
                                 <div>
                                     <div class="flight-time"><?= $flight->departure_time->format('H:i') ?></div>
@@ -378,6 +429,7 @@ $this->Html->css('flights', ['block' => true]);
         </div>
     </div>
 </div>
+</div><!-- End Hexagon Background Section -->
 
 <footer class="footer-section">
     <div class="container">
@@ -401,12 +453,12 @@ $this->Html->css('flights', ['block' => true]);
             </div>
             <div class="col-md-2">
                 <h6 class="footer-title">Account</h6>
-                <a href="#" class="footer-link">Sign in / Register</a>
+                <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'login']) ?>" class="footer-link">Sign in / Register</a>
                 <a href="#" class="footer-link">Forgot Password</a>
             </div>
             <div class="col-md-2">
                 <h6 class="footer-title">Support</h6>
-                <a href="#" class="footer-link">Help Center</a>
+                <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'help']) ?>" class="footer-link">Help Center</a>
                 <a href="#" class="footer-link">How to Book</a>
                 <a href="#" class="footer-link">Terms & Conditions</a>
             </div>
@@ -550,5 +602,42 @@ $this->Html->css('flights', ['block' => true]);
             e.preventDefault();
             alert('Origin and Destination airports cannot be the same.');
         }
+    }); 
+
+    // Skeleton Loading Logic
+    document.addEventListener("DOMContentLoaded", function() {
+        const skeleton = document.getElementById('flightResultsSkeleton');
+        
+        function showSkeleton() {
+            if(skeleton) {
+                // Hide existing results/alerts
+                document.querySelectorAll('.flight-result-card, .alert').forEach(el => el.style.display = 'none');
+                
+                // Show skeleton
+                skeleton.style.display = 'block';
+                
+                // Scroll to top of results slightly
+                skeleton.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // Trigger on Filter Changes
+        document.querySelectorAll('#filterForm input').forEach(input => {
+            input.addEventListener('change', showSkeleton);
+        });
+
+        // Trigger on Search Submit
+        const searchForm = document.querySelector('#flightSearchForm form');
+        if(searchForm) {
+            searchForm.addEventListener('submit', function() {
+                // Only show if form is valid
+                if(this.checkValidity()) showSkeleton();
+            });
+        }
+        
+        // Trigger on Sort Tabs
+        document.querySelectorAll('.sort-tabs a').forEach(link => {
+            link.addEventListener('click', showSkeleton);
+        });
     });
 </script>
