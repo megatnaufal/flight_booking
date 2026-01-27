@@ -372,7 +372,7 @@ $this->Html->css('flights', ['block' => true]);
                         <div class="fw-bold fs-4 text-success">RM <?= number_format($totalPrice, 2) ?></div>
                     </div>
 
-                    <button type="submit" class="btn btn-red-theme w-100 py-3 fw-bold rounded shadow-sm">Checkout</button>
+                    <button type="submit" class="btn btn-red-theme w-100 py-3 fw-bold rounded shadow-sm btn-pulse">Checkout</button>
                     
                 </div>
             </div>

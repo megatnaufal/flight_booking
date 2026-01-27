@@ -498,3 +498,80 @@ body.dark-mode .skeleton-card {
     height: auto !important;
 }
 
+
+/* ========================================
+   PULSE BUTTON ANIMATION (UX)
+   ======================================== */
+@keyframes pulse-glow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(124, 58, 237, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+    }
+}
+
+.btn-pulse {
+    animation: pulse-glow 2s infinite;
+}
+
+.btn-pulse:hover {
+    animation: none; /* Stop pulsing on interaction */
+}
+
+
+/* ========================================
+   REAL-TIME VALIDATION STYLES
+   ======================================== */
+.input-box {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+/* Success State */
+.input-box.is-valid {
+    border-color: #10B981 !important; /* Green */
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+.input-box.is-valid::after {
+    font-family: 'Bootstrap-icons';
+    content: '\F26B'; /* check-circle-fill */
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #10B981;
+    font-size: 1.2rem;
+    pointer-events: none;
+}
+
+/* Error State */
+.input-box.is-invalid {
+    border-color: #EF4444 !important; /* Red */
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.input-box.is-invalid::after {
+    font-family: 'Bootstrap-icons';
+    content: '\F62A'; /* exclamation-circle-fill */
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #EF4444;
+    font-size: 1.2rem;
+    pointer-events: none;
+    background: #fff; /* masking potentially overlapping text */
+    padding-left: 5px;
+}
+
+
+/* Helper to hide validation icon on specific fields (e.g. Dates) */
+.input-box.no-icon::after {
+    display: none !important;
+}
+

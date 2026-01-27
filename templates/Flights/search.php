@@ -61,7 +61,7 @@ $this->Html->css('flights', ['block' => true]);
                 <div class="d-flex flex-wrap gap-4 mb-3 border-bottom pb-3 align-items-center">
                     <!-- Journey Type -->
                     <div class="dropdown">
-                        <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle custom-dropdown-toggle-white" type="button" id="journeyTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-link text-decoration-none small fw-bold text-dark p-0 dropdown-toggle custom-dropdown-toggle" type="button" id="journeyTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <?= h($this->request->getQuery('journey_type', 'Round Trip')) ?>
                         </button>
                         <ul class="dropdown-menu shadow border-0" aria-labelledby="journeyTypeDropdown">
@@ -73,7 +73,7 @@ $this->Html->css('flights', ['block' => true]);
     
                     <!-- Passenger Count -->
                     <div class="dropdown">
-                        <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle custom-dropdown-toggle-white" type="button" id="passengerDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                        <button class="btn btn-link text-decoration-none small fw-bold text-dark p-0 dropdown-toggle custom-dropdown-toggle" type="button" id="passengerDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                             <span id="passengerLabel"><?= $totalPax ?> Passenger<?= $totalPax !== 1 ? 's' : '' ?></span>
                         </button>
                         <div class="dropdown-menu shadow border-0 p-3" aria-labelledby="passengerDropdown" style="min-width: 280px;">
@@ -124,7 +124,7 @@ $this->Html->css('flights', ['block' => true]);
     
                     <!-- Class -->
                     <div class="dropdown">
-                        <button class="btn btn-link text-decoration-none small fw-bold text-white p-0 dropdown-toggle custom-dropdown-toggle-white" type="button" id="classDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-link text-decoration-none small fw-bold text-dark p-0 dropdown-toggle custom-dropdown-toggle" type="button" id="classDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <?= h($class) ?>
                         </button>
                         <ul class="dropdown-menu shadow border-0" aria-labelledby="classDropdown">
@@ -170,7 +170,7 @@ $this->Html->css('flights', ['block' => true]);
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-search-red w-100 h-100 py-2"><i class="bi bi-search me-2"></i>Search</button>
+                        <button type="submit" class="btn btn-search-red w-100 h-100 py-2 btn-pulse"><i class="bi bi-search me-2"></i>Search</button>
                     </div>
                 </div>
             </form>

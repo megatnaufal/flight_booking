@@ -156,7 +156,7 @@
                                     <?php endforeach; ?>
                                     
                                     <div class="col-12 mt-4">
-                                        <button type="submit" name="payment_method" value="Internet Banking" class="btn btn-red-theme w-100 py-3 fw-bold rounded">Pay with Online Banking</button>
+                                        <button type="submit" name="payment_method" value="Internet Banking" class="btn btn-red-theme w-100 py-3 fw-bold rounded btn-pulse">Pay with Online Banking</button>
                                     </div>
                                 </div>
                             </div>

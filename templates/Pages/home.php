@@ -619,7 +619,7 @@ $this->assign('title', 'FlyHigh - Find Cheap Flight Tickets');
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-search-gold w-100 h-100 py-2"><i class="bi bi-search me-2"></i>Search</button>
+                    <button type="submit" class="btn btn-search-gold w-100 h-100 py-2 btn-pulse"><i class="bi bi-search me-2"></i>Search</button>
                 </div>
             </div>
         </form>
