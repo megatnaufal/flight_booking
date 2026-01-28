@@ -14,7 +14,7 @@ $this->Html->css('flights', ['block' => true]);
     <div class="hexagon-shape hex-5"></div>
     <div class="hexagon-shape hex-6"></div>
 
-<div class="flight-search-header" style="position: relative; z-index: 1;">
+<div class="flight-search-header" style="position: relative; z-index: 20;">
     <div class="container">
         <?php 
             $destId = $this->request->getQuery('dest_airport_id');
@@ -76,7 +76,7 @@ $this->Html->css('flights', ['block' => true]);
                         <button class="btn btn-link text-decoration-none small fw-bold text-dark p-0 dropdown-toggle custom-dropdown-toggle" type="button" id="passengerDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                             <span id="passengerLabel"><?= $totalPax ?> Passenger<?= $totalPax !== 1 ? 's' : '' ?></span>
                         </button>
-                        <div class="dropdown-menu shadow border-0 p-3" aria-labelledby="passengerDropdown" style="min-width: 280px;">
+                        <div class="dropdown-menu shadow p-3" aria-labelledby="passengerDropdown" style="min-width: 280px; background-color: #fff !important; border: 1px solid #e5e7eb; border-radius: 8px;">
                             <!-- Adult -->
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div>

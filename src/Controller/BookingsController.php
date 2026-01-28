@@ -281,6 +281,7 @@ class BookingsController extends AppController
             $booking->flight_id = $flight->id; 
             $booking->booking_date = date('Y-m-d');
             $booking->ticket_status = 'Pending Payment';
+            $booking->trip_type = $returnFlightData ? 'Round Trip' : 'One Way';
             if (empty($booking->seat_number)) {
                 $rows = range(1, 30);
                 $cols = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -370,6 +371,7 @@ class BookingsController extends AppController
                     $returnBooking->flight_id = $returnFlight->id;
                     $returnBooking->booking_date = date('Y-m-d');
                     $returnBooking->ticket_status = 'Pending Payment';
+                    $returnBooking->trip_type = 'Round Trip';
                     if (empty($returnBooking->seat_number)) {
                         $rows = range(1, 30);
                         $cols = ['A', 'B', 'C', 'D', 'E', 'F'];

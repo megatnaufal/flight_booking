@@ -18,7 +18,7 @@ class PassengersController extends AppController
     public function index()
     {
         $query = $this->Passengers->find()
-            ->contain(['Users'])
+            ->contain(['Users', 'Booking'])
             ->order(['Passengers.id' => 'ASC']);
         $passengers = $this->paginate($query);
 
@@ -34,7 +34,7 @@ class PassengersController extends AppController
      */
     public function view($id = null)
     {
-        $passenger = $this->Passengers->get($id, contain: ['Users', 'Bookings.Flights', 'Bookings.BookingPassengers']);
+        $passenger = $this->Passengers->get($id, contain: ['Users', 'Booking', 'Bookings.Flights', 'Bookings.BookingPassengers']);
         $visualId = $this->Passengers->find()->where(['id <=' => $id])->count();
         $this->set(compact('passenger', 'visualId'));
     }

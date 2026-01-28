@@ -1102,28 +1102,28 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     </script>
 
     <style>
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
-        .toast.slide-in-right {
-            animation: slideInRight 0.4s ease-out forwards;
+        .toast.slide-in-left {
+            animation: slideInLeft 0.4s ease-out forwards;
         }
 
         /* FORCE OVERRIDES (Bypass Cache) */
         .back-to-top {
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            right: auto !important;
+            right: 30px !important;
+            left: auto !important;
+            transform: none !important;
             bottom: 30px !important;
-            border-radius: 50px !important;
-            padding: 10px 20px !important;
+            border-radius: 50% !important;
+            padding: 0 !important;
         }
     </style>
 
     <!-- Toast Container -->
-    <div class="toast-container position-fixed bottom-0 p-3" style="z-index: 1060; right: 0 !important; left: auto !important; width: auto !important; max-width: 350px;">
-        <div id="liveToast" class="toast slide-in-right align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-container position-fixed bottom-0 p-3" style="z-index: 1060; left: 0 !important; right: auto !important; width: auto !important; max-width: 350px;">
+        <div id="liveToast" class="toast slide-in-left align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body d-flex align-items-center gap-2">
                     <i class="bi bi-info-circle-fill fs-5" id="toastIcon"></i>

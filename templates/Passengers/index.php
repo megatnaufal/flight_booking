@@ -25,6 +25,7 @@
                         <th><?= $this->Paginator->sort('full_name') ?></th>
                         <th><?= $this->Paginator->sort('passport_number') ?></th>
                         <th><?= $this->Paginator->sort('phone_number') ?></th>
+                        <th><?= __('Trip Type') ?></th>
                         <th class="actions"><?= __('Actions') ?></th>
                     </tr>
                 </thead>
@@ -45,6 +46,17 @@
                         <td><?= h($passenger->full_name) ?></td>
                         <td><span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 2px;"><?= h($passenger->passport_number) ?></span></td>
                         <td><?= h($passenger->phone_number) ?></td>
+                        <td>
+                            <?php 
+                                $tripType = $passenger->booking->trip_type ?? 'One Way';
+                                $tripBadgeStyle = $tripType === 'Round Trip' 
+                                    ? 'background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD;' 
+                                    : 'background: #F3E8FF; color: #6B21A8; border: 1px solid #D8B4FE;';
+                            ?>
+                            <span class="status-badge" style="<?= $tripBadgeStyle ?>">
+                                <i class="bi bi-<?= $tripType === 'Round Trip' ? 'arrow-repeat' : 'arrow-right' ?> me-1"></i><?= $tripType ?>
+                            </span>
+                        </td>
                         <td class="actions">
                             <?= $this->Html->link(__('View'), ['action' => 'view', $passenger->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
                             <?= $this->Html->link(__('Edit'), ['action' => 'edit', $passenger->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>

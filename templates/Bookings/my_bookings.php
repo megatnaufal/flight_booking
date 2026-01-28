@@ -15,7 +15,12 @@
 
 <div class="container py-5" style="position: relative; z-index: 1;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold" style="color: #4C1D95;">My Bookings</h2>
+        <div class="d-flex align-items-center gap-3">
+            <a href="<?= $this->Url->build('/') ?>" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+            <h2 class="fw-bold mb-0" style="color: #4C1D95;">My Bookings</h2>
+        </div>
         <a href="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" class="btn btn-primary d-flex align-items-center gap-2">
             <i class="bi bi-plus-lg"></i> Book New Flight
         </a>

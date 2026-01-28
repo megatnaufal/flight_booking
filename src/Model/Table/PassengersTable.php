@@ -47,6 +47,10 @@ class PassengersTable extends Table
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
         ]);
+        $this->belongsTo('Booking', [
+            'className' => 'Bookings',
+            'foreignKey' => 'booking_id',
+        ]);
         $this->hasMany('Bookings', [
             'foreignKey' => 'passenger_id',
             'dependent' => true,

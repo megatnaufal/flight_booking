@@ -286,7 +286,7 @@ $users = $users ?? [];
                 <div class="table-responsive">
                     <table class="table-flyhigh">
                         <thead>
-                            <tr><th>ID</th><th>Passenger</th><th>Flight</th><th>Date</th><th>Status</th><th class="actions">Actions</th></tr>
+                            <tr><th>ID</th><th>Passenger</th><th>Flight</th><th>Date</th><th>Trip Type</th><th>Status</th><th class="actions">Actions</th></tr>
                         </thead>
                         <tbody>
                             <?php if (!empty($bookings)): ?>
@@ -296,6 +296,15 @@ $users = $users ?? [];
                                     <td><?= $booking->hasValue('passenger') ? h($booking->passenger->full_name) : 'N/A' ?></td>
                                     <td><i class="bi bi-airplane me-2" style="color:var(--gotham-accent)"></i><?= $booking->hasValue('flight') ? h($booking->flight->flight_number) : 'N/A' ?></td>
                                     <td><?= h($booking->booking_date?->format('d M Y')) ?></td>
+                                    <td>
+                                        <?php 
+                                            $tripType = $booking->trip_type ?? 'One Way';
+                                            $tripBadgeClass = $tripType === 'Round Trip' ? 'background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD;' : 'background: #F3E8FF; color: #6B21A8; border: 1px solid #D8B4FE;';
+                                        ?>
+                                        <span class="status-badge" style="<?= $tripBadgeClass ?>">
+                                            <i class="bi bi-<?= $tripType === 'Round Trip' ? 'arrow-repeat' : 'arrow-right' ?> me-1"></i><?= $tripType ?>
+                                        </span>
+                                    </td>
                                     <td>
                                         <?php 
                                             $status = strtolower($booking->ticket_status ?? ''); 
@@ -313,7 +322,7 @@ $users = $users ?? [];
                                 </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <tr><td colspan="6" class="text-center p-5 text-muted">No bookings found.</td></tr>
+                                <tr><td colspan="7" class="text-center p-5 text-muted">No bookings found.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
@@ -411,7 +420,7 @@ $users = $users ?? [];
                 <div class="table-responsive">
                     <table class="table-flyhigh">
                         <thead>
-                            <tr><th>ID</th><th>User Account</th><th>Full Name</th><th>Passport No.</th><th>Phone</th><th class="actions">Actions</th></tr>
+                            <tr><th>ID</th><th>User Account</th><th>Full Name</th><th>Passport No.</th><th>Phone</th><th>Trip Type</th><th class="actions">Actions</th></tr>
                         </thead>
                         <tbody>
                             <?php if (!empty($passengers)): ?>
@@ -428,6 +437,17 @@ $users = $users ?? [];
                                     <td style="font-weight: bold;"><?= h($passenger->full_name) ?></td>
                                     <td><span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 2px;"><?= h($passenger->passport_number) ?></span></td>
                                     <td><?= h($passenger->phone_number) ?></td>
+                                    <td>
+                                        <?php 
+                                            $tripType = $passenger->booking->trip_type ?? 'One Way';
+                                            $tripBadgeStyle = $tripType === 'Round Trip' 
+                                                ? 'background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD;' 
+                                                : 'background: #F3E8FF; color: #6B21A8; border: 1px solid #D8B4FE;';
+                                        ?>
+                                        <span class="status-badge" style="<?= $tripBadgeStyle ?>">
+                                            <i class="bi bi-<?= $tripType === 'Round Trip' ? 'arrow-repeat' : 'arrow-right' ?> me-1"></i><?= $tripType ?>
+                                        </span>
+                                    </td>
                                     <td class="actions">
                                         <?= $this->Html->link(__('View'), ['controller' => 'Passengers', 'action' => 'view', $passenger->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
                                         <?= $this->Html->link(__('Edit'), ['controller' => 'Passengers', 'action' => 'edit', $passenger->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>
@@ -436,7 +456,7 @@ $users = $users ?? [];
                                 </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <tr><td colspan="6" class="text-center p-5 text-muted">No passengers found.</td></tr>
+                                <tr><td colspan="7" class="text-center p-5 text-muted">No passengers found.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>

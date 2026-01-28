@@ -25,9 +25,10 @@ class DashboardsController extends AppController
         // We use fetchTable() to get counts from the respective tables
         $stats = [
             // Calculate Monthly Revenue (Bookings this month with Confirmed/Paid status)
+            // Revenue = (base_price + tax_per_pax) * passenger_count for each booking
             'revenue' => (function() {
                 $bookings = $this->fetchTable('Bookings')->find()
-                    ->contain(['Flights'])
+                    ->contain(['Flights', 'BookingPassengers'])
                     ->where([
                         'Bookings.booking_date >=' => date('Y-m-01'),
                         'Bookings.booking_date <=' => date('Y-m-t'),
@@ -39,9 +40,15 @@ class DashboardsController extends AppController
                     ->all();
                 
                 $total = 0;
+                $taxPerPax = 45.00; // Tax per passenger (same as in my_bookings.php)
                 foreach ($bookings as $booking) {
                     if ($booking->flight && $booking->flight->base_price) {
-                        $total += $booking->flight->base_price;
+                        // Count passengers: booking_passengers or at least 1 (lead passenger)
+                        $passengerCount = count($booking->booking_passengers ?? []);
+                        if ($passengerCount === 0 && $booking->passenger_id) {
+                            $passengerCount = 1; // At least the lead passenger
+                        }
+                        $total += ($booking->flight->base_price + $taxPerPax) * $passengerCount;
                     }
                 }
                 return $total;
@@ -73,8 +80,9 @@ class DashboardsController extends AppController
 
         // 5. Fetch Recent Passengers
         // Contains 'Users' to link to the user account if it exists
+        // Contains 'Bookings' to get trip type
         $passengers = $this->fetchTable('Passengers')->find()
-            ->contain(['Users'])
+            ->contain(['Users', 'Booking'])
             ->limit(10)
             ->order(['Passengers.id' => 'ASC'])
             ->all();

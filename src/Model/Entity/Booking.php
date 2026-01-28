@@ -15,6 +15,7 @@ use Cake\ORM\Entity;
  * @property string|null $seat_number
  * @property string|null $ticket_status
  * @property string|null $payment_method
+ * @property string|null $trip_type
  *
  * @property \App\Model\Entity\Passenger $passenger
  * @property \App\Model\Entity\Flight $flight
@@ -38,8 +39,10 @@ class Booking extends Entity
         'seat_number' => true,
         'ticket_status' => true,
         'payment_method' => true,
+        'trip_type' => true,
         'passenger' => true,
         'flight' => true,
 
     ];
 }
+

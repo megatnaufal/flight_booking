@@ -14,6 +14,7 @@
 <head>
     <meta charset="utf-8">
     <title>Booking Receipt - <?= h($booking->id) ?></title>
+    <link rel="icon" type="image/png" href="/img/flyhigh-logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Include html2pdf library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>

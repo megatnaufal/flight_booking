@@ -60,6 +60,20 @@
                     <?php endif; ?>
                 </td>
             </tr>
+            <tr>
+                <th><?= __('Trip Type') ?></th>
+                <td>
+                    <?php 
+                        $tripType = $passenger->booking->trip_type ?? 'One Way';
+                        $tripBadgeStyle = $tripType === 'Round Trip' 
+                            ? 'background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD;' 
+                            : 'background: #F3E8FF; color: #6B21A8; border: 1px solid #D8B4FE;';
+                    ?>
+                    <span class="status-badge" style="<?= $tripBadgeStyle ?>">
+                        <i class="bi bi-<?= $tripType === 'Round Trip' ? 'arrow-repeat' : 'arrow-right' ?> me-1"></i><?= $tripType ?>
+                    </span>
+                </td>
+            </tr>
         </table>
         
 
