@@ -21,8 +21,8 @@ class ReportsController extends AppController
     {
         // Fetch Data for Report
         $bookings = $this->fetchTable('Bookings')->find()
-            ->contain(['Passengers', 'Flights'])
-            ->order(['Bookings.id' => 'DESC'])
+            ->contain(['BookingPassengers', 'Flights'])
+            ->order(['Bookings.id' => 'ASC'])
             ->limit(50) // Limit to last 50 for the repost
             ->all();
 

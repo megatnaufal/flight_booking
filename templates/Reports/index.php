@@ -9,6 +9,7 @@ $this->disableAutoLayout();
 <html>
 <head>
     <title>Monthly Report - FlyHigh</title>
+    <?= $this->Html->meta('icon', 'img/flyhigh-logo.png') ?>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Include html2pdf library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -74,6 +75,7 @@ $this->disableAutoLayout();
                     <th>Passenger</th>
                     <th>Flight</th>
                     <th>Date</th>
+                    <th>Trip Type</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -82,8 +84,8 @@ $this->disableAutoLayout();
                 <tr>
                     <td>#<?= $booking->id ?></td>
                     <td>
-                        <?php if ($booking->passenger): ?>
-                            <?= h($booking->passenger->first_name . ' ' . $booking->passenger->last_name) ?>
+                        <?php if (!empty($booking->booking_passengers)): ?>
+                            <?= h($booking->booking_passengers[0]->full_name) ?>
                         <?php else: ?>
                             <span style="color: #999;">-</span>
                         <?php endif; ?>
@@ -96,6 +98,7 @@ $this->disableAutoLayout();
                         <?php endif; ?>
                     </td>
                     <td><?= h($booking->booking_date) ?></td>
+                    <td><?= h($booking->trip_type ?? 'One Way') ?></td>
                     <td><?= h($booking->ticket_status) ?></td>
                 </tr>
                 <?php endforeach; ?>
