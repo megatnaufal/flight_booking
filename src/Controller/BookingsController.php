@@ -519,7 +519,7 @@ class BookingsController extends AppController
             // Clear session flight data
             $session->delete('Flight');
             
-            $this->Flash->success(__('Payment successful! Your booking is confirmed. Airpaz Code: ' . $booking->id));
+            $this->Flash->success(__('Payment successful! Your booking is confirmed. Booking Code: ' . $booking->id));
             
             $redirectUrl = ['action' => 'confirmation', $booking->id];
             if ($returnBookingId) {

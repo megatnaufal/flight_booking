@@ -44,8 +44,7 @@ class PagesController extends AppController
         }
 
         /**
-         * CUSTOM DATA FOR AIRPAZ HOMEPAGE
-         * These specific values match the text in the provided image.
+         * DATA FOR HOMEPAGE
          */
         if ($page === 'home') {
             // Define the 5 specific destinations with their display labels

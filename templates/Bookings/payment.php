@@ -174,7 +174,7 @@
                         
                         <!-- Header Info -->
                         <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-                            <div class="text-muted small">Airpaz Code</div>
+                            <div class="text-muted small">Booking Code</div>
                             <div class="fw-bold fs-5"><?= h($booking->id) ?></div>
                         </div>
 
