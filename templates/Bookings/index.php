@@ -24,6 +24,7 @@
                         <th><?= $this->Paginator->sort('flight_id') ?></th>
                         <th><?= $this->Paginator->sort('booking_date') ?></th>
                         <th><?= $this->Paginator->sort('seat_number') ?></th>
+                        <th><?= $this->Paginator->sort('trip_type') ?></th>
                         <th><?= $this->Paginator->sort('ticket_status') ?></th>
                         <th class="actions"><?= __('Actions') ?></th>
                     </tr>
@@ -45,6 +46,17 @@
                         <td><?= $booking->hasValue('flight') ? $this->Html->link($booking->flight->flight_number, ['controller' => 'Flights', 'action' => 'view', $booking->flight->id], ['class' => 'text-decoration-none text-primary']) : '' ?></td>
                         <td><?= h($booking->booking_date?->format('d M Y')) ?></td>
                         <td><?= h($booking->seat_number) ?></td>
+                        <td>
+                            <?php 
+                                $tripType = $booking->trip_type ?? 'One Way';
+                                $tripBadgeStyle = $tripType === 'Round Trip' 
+                                    ? 'background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD;' 
+                                    : 'background: #F3E8FF; color: #6B21A8; border: 1px solid #D8B4FE;';
+                            ?>
+                            <span class="status-badge" style="<?= $tripBadgeStyle ?>">
+                                <i class="bi bi-<?= $tripType === 'Round Trip' ? 'arrow-repeat' : 'arrow-right' ?> me-1"></i><?= $tripType ?>
+                            </span>
+                        </td>
                         <td>
                             <?php 
                                 $status = strtolower($booking->ticket_status ?? ''); 

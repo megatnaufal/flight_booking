@@ -4,7 +4,41 @@
  * @var \App\Model\Entity\Booking $booking
  */
 ?>
-<div class="bg-light min-vh-100 py-5">
+<!-- Hexagon Background Section -->
+<div class="hexagon-bg">
+    <div class="hexagon-shape hex-1"></div>
+    <div class="hexagon-shape hex-2"></div>
+    <div class="hexagon-shape hex-3"></div>
+    <div class="hexagon-shape hex-4"></div>
+    <div class="hexagon-shape hex-5"></div>
+    <div class="hexagon-shape hex-6"></div>
+
+<!-- Booking Progress Indicator -->
+<div class="booking-progress">
+    <div class="progress-steps">
+        <div class="progress-step completed">
+            <div class="step-circle"><i class="bi bi-check"></i></div>
+            <div class="step-label">Search</div>
+        </div>
+        <div class="step-connector completed"></div>
+        <div class="progress-step completed">
+            <div class="step-circle"><i class="bi bi-check"></i></div>
+            <div class="step-label">Details</div>
+        </div>
+        <div class="step-connector completed"></div>
+        <div class="progress-step completed">
+            <div class="step-circle"><i class="bi bi-check"></i></div>
+            <div class="step-label">Payment</div>
+        </div>
+        <div class="step-connector completed"></div>
+        <div class="progress-step active">
+            <div class="step-circle"><i class="bi bi-check"></i></div>
+            <div class="step-label">Confirmed</div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light min-vh-100 py-5" style="position: relative; z-index: 1;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 text-center">
@@ -100,6 +134,11 @@
                                 <div class="fw-bold"><?= h($pax->full_name) ?></div>
                                 <div class="small text-muted"><?= h($pax->phone_number ?? '-') ?></div>
                             </div>
+                            <div class="me-2">
+                                <?php if (!empty($pax->seat_number)): ?>
+                                    <span class="badge bg-primary">Seat <?= h($pax->seat_number) ?></span>
+                                <?php endif; ?>
+                            </div>
                             <div>
                                 <span class="badge bg-secondary"><?= h($pax->type ?? 'Adult') ?></span>
                             </div>
@@ -129,3 +168,4 @@
         </div>
     </div>
 </div>
+</div><!-- End Hexagon Background Section -->

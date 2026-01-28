@@ -48,30 +48,102 @@
                     </span>
                 </td>
             </tr>
+            <tr>
+                <th><?= __('Trip Type') ?></th>
+                <td>
+                    <?php 
+                        $tripType = $booking->trip_type ?? 'One Way';
+                        $tripBadgeStyle = $tripType === 'Round Trip' 
+                            ? 'background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD;' 
+                            : 'background: #F3E8FF; color: #6B21A8; border: 1px solid #D8B4FE;';
+                    ?>
+                    <span class="status-badge" style="<?= $tripBadgeStyle ?>">
+                        <i class="bi bi-<?= $tripType === 'Round Trip' ? 'arrow-repeat' : 'arrow-right' ?> me-1"></i><?= $tripType ?>
+                    </span>
+                </td>
+            </tr>
         </table>
         
-        <?php if (!empty($booking->luggages)) : ?>
-        <h4 class="mt-4 mb-3"><?= __('Related Luggages') ?></h4>
+        <?php
+        // Get all passengers for this booking from BookingPassengers
+        $allPassengers = [];
+        if (!empty($booking->booking_passengers)) {
+            $allPassengers = $booking->booking_passengers;
+        }
+        
+        // Count by type
+        $adultCount = 0;
+        $childCount = 0;
+        $infantCount = 0;
+        foreach ($allPassengers as $p) {
+            $type = strtolower($p->type ?? 'adult');
+            if ($type === 'child') {
+                $childCount++;
+            } elseif ($type === 'infant') {
+                $infantCount++;
+            } else {
+                $adultCount++;
+            }
+        }
+        ?>
+        
+        <?php if (!empty($allPassengers)) : ?>
+        <h4 class="mt-4 mb-3"><?= __('Passengers in this Booking') ?></h4>
+        <div class="mb-3">
+            <span class="badge bg-primary me-2"><?= $adultCount ?> Adult<?= $adultCount !== 1 ? 's' : '' ?></span>
+            <span class="badge bg-success me-2"><?= $childCount ?> Child<?= $childCount !== 1 ? 'ren' : '' ?></span>
+            <span class="badge bg-info"><?= $infantCount ?> Infant<?= $infantCount !== 1 ? 's' : '' ?></span>
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered">
-                <tr>
-                    <th><?= __('Id') ?></th>
-                    <th><?= __('Weight Kg') ?></th>
-                    <th><?= __('Type') ?></th>
-                    <th><?= __('Actions') ?></th>
-                </tr>
-                <?php foreach ($booking->luggages as $luggage) : ?>
-                <tr>
-                    <td><?= h($luggage->id) ?></td>
-                    <td><?= h($luggage->weight_kg) ?></td>
-                    <td><?= h($luggage->luggage_type) ?></td>
-                    <td>
-                        <?= $this->Html->link(__('View'), ['controller' => 'Luggages', 'action' => 'view', $luggage->id], ['class' => 'text-primary text-decoration-none']) ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
+                <thead>
+                    <tr>
+                        <th><?= __('#') ?></th>
+                        <th><?= __('Type') ?></th>
+                        <th><?= __('Full Name') ?></th>
+                        <th><?= __('Passport Number') ?></th>
+                        <th><?= __('Phone Number') ?></th>
+                        <th><?= __('Seat Number') ?></th>
+                        <th><?= __('Actions') ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    $i = 1; 
+                    foreach ($allPassengers as $pax) : 
+                    ?>
+                    <tr>
+                        <td><?= $i++ ?></td>
+                        <td>
+                            <?php 
+                            $type = ucfirst(strtolower($pax->type ?? 'Adult'));
+                            $badgeClass = match($type) {
+                                'Child' => 'bg-success',
+                                'Infant' => 'bg-info',
+                                default => 'bg-primary'
+                            };
+                            ?>
+                            <span class="badge <?= $badgeClass ?>"><?= h($type) ?></span>
+                        </td>
+                        <td><?= h($pax->full_name) ?></td>
+                        <td><?= h($pax->passport_number) ?></td>
+                        <td><?= h($pax->phone_number) ?></td>
+                        <td>
+                            <?php if (!empty($pax->seat_number)) : ?>
+                                <span class="badge bg-secondary"><?= h($pax->seat_number) ?></span>
+                            <?php else : ?>
+                                <span class="text-muted">-</span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?= $this->Html->link(__('View'), ['controller' => 'Passengers', 'action' => 'view', $pax->id], ['class' => 'text-primary text-decoration-none']) ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
             </table>
         </div>
         <?php endif; ?>
+
     </div>
 </div>

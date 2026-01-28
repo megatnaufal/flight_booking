@@ -37,6 +37,7 @@ class Passenger extends Entity
         'dob' => true,
         'type' => true,
         'booking_id' => true,
+        'seat_number' => true,
         'user' => true,
         'bookings' => true,
     ];

@@ -21,15 +21,16 @@ class ReportsController extends AppController
     {
         // Fetch Data for Report
         $bookings = $this->fetchTable('Bookings')->find()
-            ->contain(['Passengers', 'Flights'])
-            ->order(['Bookings.id' => 'DESC'])
+            ->contain(['BookingPassengers', 'Flights'])
+            ->order(['Bookings.id' => 'ASC'])
             ->limit(50) // Limit to last 50 for the repost
             ->all();
 
         // Calculate Monthly Revenue (Same logic as Dashboard)
+        // Revenue = (base_price + tax_per_pax) * passenger_count for each booking
         $monthlyRevenue = (function() {
             $bookings = $this->fetchTable('Bookings')->find()
-                ->contain(['Flights'])
+                ->contain(['Flights', 'BookingPassengers'])
                 ->where([
                     'Bookings.booking_date >=' => date('Y-m-01'),
                     'Bookings.booking_date <=' => date('Y-m-t'),
@@ -41,9 +42,15 @@ class ReportsController extends AppController
                 ->all();
             
             $total = 0;
+            $taxPerPax = 45.00; // Tax per passenger
             foreach ($bookings as $booking) {
                 if ($booking->flight && $booking->flight->base_price) {
-                    $total += $booking->flight->base_price;
+                    // Count passengers: booking_passengers or at least 1 (lead passenger)
+                    $passengerCount = count($booking->booking_passengers ?? []);
+                    if ($passengerCount === 0 && $booking->passenger_id) {
+                        $passengerCount = 1; // At least the lead passenger
+                    }
+                    $total += ($booking->flight->base_price + $taxPerPax) * $passengerCount;
                 }
             }
             return $total;

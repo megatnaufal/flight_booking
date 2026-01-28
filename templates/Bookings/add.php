@@ -44,7 +44,41 @@ $this->Html->css('flights', ['block' => true]);
         </div>
     </div>
 <?php else: ?>
-<div class="flight-search-header bg-white shadow-sm py-3 mb-4">
+<!-- Hexagon Background Section -->
+<div class="hexagon-bg">
+    <div class="hexagon-shape hex-1"></div>
+    <div class="hexagon-shape hex-2"></div>
+    <div class="hexagon-shape hex-3"></div>
+    <div class="hexagon-shape hex-4"></div>
+    <div class="hexagon-shape hex-5"></div>
+    <div class="hexagon-shape hex-6"></div>
+
+<!-- Booking Progress Indicator -->
+<div class="booking-progress">
+    <div class="progress-steps">
+        <div class="progress-step completed">
+            <div class="step-circle"><i class="bi bi-check"></i></div>
+            <div class="step-label">Search</div>
+        </div>
+        <div class="step-connector completed"></div>
+        <div class="progress-step active">
+            <div class="step-circle">2</div>
+            <div class="step-label">Details</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="progress-step">
+            <div class="step-circle">3</div>
+            <div class="step-label">Payment</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="progress-step">
+            <div class="step-circle">4</div>
+            <div class="step-label">Confirmed</div>
+        </div>
+    </div>
+</div>
+
+<div class="flight-search-header bg-white shadow-sm py-3 mb-4" style="position: relative; z-index: 1;">
     <div class="container">
         <h4 class="mb-0 fw-bold text-dark">Trip Summary</h4>
     </div>
@@ -290,7 +324,7 @@ $this->Html->css('flights', ['block' => true]);
 
         <!-- Right Column: Price Detail -->
         <div class="col-md-4">
-            <div class="card border-0 shadow-sm">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 20px; z-index: 10;">
                 <div class="card-body p-4">
                     <h5 class="fw-bold mb-4">Price Detail</h5>
                     
@@ -338,7 +372,7 @@ $this->Html->css('flights', ['block' => true]);
                         <div class="fw-bold fs-4 text-success">RM <?= number_format($totalPrice, 2) ?></div>
                     </div>
 
-                    <button type="submit" class="btn btn-red-theme w-100 py-3 fw-bold rounded shadow-sm">Checkout</button>
+                    <button type="submit" class="btn btn-red-theme w-100 py-3 fw-bold rounded shadow-sm btn-pulse">Checkout</button>
                     
                 </div>
             </div>
@@ -346,6 +380,7 @@ $this->Html->css('flights', ['block' => true]);
     </div>
     <?= $this->Form->end() ?>
 </div>
+</div><!-- End Hexagon Background Section -->
 <footer class="footer-section">
     <div class="container">
         <div class="text-center mb-5 pb-4 border-bottom">
@@ -368,12 +403,12 @@ $this->Html->css('flights', ['block' => true]);
             </div>
             <div class="col-md-2">
                 <h6 class="footer-title">Account</h6>
-                <a href="#" class="footer-link">Sign in / Register</a>
+                <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'login']) ?>" class="footer-link">Sign in / Register</a>
                 <a href="#" class="footer-link">Forgot Password</a>
             </div>
             <div class="col-md-2">
                 <h6 class="footer-title">Support</h6>
-                <a href="#" class="footer-link">Help Center</a>
+                <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'help']) ?>" class="footer-link">Help Center</a>
                 <a href="#" class="footer-link">How to Book</a>
                 <a href="#" class="footer-link">Terms & Conditions</a>
             </div>

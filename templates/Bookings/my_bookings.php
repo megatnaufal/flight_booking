@@ -4,9 +4,23 @@
  * @var iterable<\App\Model\Entity\Booking> $bookings
  */
 ?>
-<div class="container py-5">
+<!-- Hexagon Background Section -->
+<div class="hexagon-bg">
+    <div class="hexagon-shape hex-1"></div>
+    <div class="hexagon-shape hex-2"></div>
+    <div class="hexagon-shape hex-3"></div>
+    <div class="hexagon-shape hex-4"></div>
+    <div class="hexagon-shape hex-5"></div>
+    <div class="hexagon-shape hex-6"></div>
+
+<div class="container py-5" style="position: relative; z-index: 1;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold" style="color: #4C1D95;">My Bookings</h2>
+        <div class="d-flex align-items-center gap-3">
+            <a href="<?= $this->Url->build('/') ?>" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+            <h2 class="fw-bold mb-0" style="color: #4C1D95;">My Bookings</h2>
+        </div>
         <a href="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" class="btn btn-primary d-flex align-items-center gap-2">
             <i class="bi bi-plus-lg"></i> Book New Flight
         </a>
@@ -103,6 +117,7 @@
         </div>
     <?php endif; ?>
 </div>
+</div><!-- End Hexagon Background Section -->
 
 <style>
     /* Footer Styles */
@@ -138,12 +153,12 @@
             </div>
             <div class="col-md-2">
                 <h6 class="footer-title">Account</h6>
-                <a href="#" class="footer-link">Sign in / Register</a>
+                <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'login']) ?>" class="footer-link">Sign in / Register</a>
                 <a href="#" class="footer-link">Forgot Password</a>
             </div>
             <div class="col-md-2">
                 <h6 class="footer-title">Support</h6>
-                <a href="#" class="footer-link">Help Center</a>
+                <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'help']) ?>" class="footer-link">Help Center</a>
                 <a href="#" class="footer-link">How to Book</a>
                 <a href="#" class="footer-link">Terms & Conditions</a>
                 <a href="#" class="footer-link">Privacy Policy</a>

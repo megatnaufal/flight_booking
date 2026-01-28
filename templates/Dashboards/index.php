@@ -113,7 +113,7 @@ $users = $users ?? [];
         border-color: #C4B5FD; /* Light purple border on hover */
     }
 
-    .stat-number { font-family: 'Inter', sans-serif; font-size: 2.25rem; font-weight: 800; margin: 0; line-height: 1; color: var(--admin-text); letter-spacing: -0.03em; }
+    .stat-number { font-family: 'Inter', sans-serif; font-size: 2.25rem; font-weight: 800; margin: 0; line-height: 1; color: var(--admin-text); letter-spacing: -0.03em; white-space: nowrap; }
     
     .action-icon { 
         width: 48px; height: 48px; 
@@ -286,7 +286,7 @@ $users = $users ?? [];
                 <div class="table-responsive">
                     <table class="table-flyhigh">
                         <thead>
-                            <tr><th>ID</th><th>Passenger</th><th>Flight</th><th>Date</th><th>Status</th><th class="actions">Actions</th></tr>
+                            <tr><th>ID</th><th>Passenger</th><th>Flight</th><th>Date</th><th>Trip Type</th><th>Status</th><th class="actions">Actions</th></tr>
                         </thead>
                         <tbody>
                             <?php if (!empty($bookings)): ?>
@@ -296,6 +296,15 @@ $users = $users ?? [];
                                     <td><?= $booking->hasValue('passenger') ? h($booking->passenger->full_name) : 'N/A' ?></td>
                                     <td><i class="bi bi-airplane me-2" style="color:var(--gotham-accent)"></i><?= $booking->hasValue('flight') ? h($booking->flight->flight_number) : 'N/A' ?></td>
                                     <td><?= h($booking->booking_date?->format('d M Y')) ?></td>
+                                    <td>
+                                        <?php 
+                                            $tripType = $booking->trip_type ?? 'One Way';
+                                            $tripBadgeClass = $tripType === 'Round Trip' ? 'background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD;' : 'background: #F3E8FF; color: #6B21A8; border: 1px solid #D8B4FE;';
+                                        ?>
+                                        <span class="status-badge" style="<?= $tripBadgeClass ?>">
+                                            <i class="bi bi-<?= $tripType === 'Round Trip' ? 'arrow-repeat' : 'arrow-right' ?> me-1"></i><?= $tripType ?>
+                                        </span>
+                                    </td>
                                     <td>
                                         <?php 
                                             $status = strtolower($booking->ticket_status ?? ''); 
@@ -313,7 +322,7 @@ $users = $users ?? [];
                                 </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <tr><td colspan="6" class="text-center p-5 text-muted">No bookings found.</td></tr>
+                                <tr><td colspan="7" class="text-center p-5 text-muted">No bookings found.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
@@ -411,7 +420,7 @@ $users = $users ?? [];
                 <div class="table-responsive">
                     <table class="table-flyhigh">
                         <thead>
-                            <tr><th>ID</th><th>User Account</th><th>Full Name</th><th>Passport No.</th><th>Phone</th><th class="actions">Actions</th></tr>
+                            <tr><th>ID</th><th>User Account</th><th>Full Name</th><th>Passport No.</th><th>Phone</th><th>Trip Type</th><th class="actions">Actions</th></tr>
                         </thead>
                         <tbody>
                             <?php if (!empty($passengers)): ?>
@@ -428,6 +437,17 @@ $users = $users ?? [];
                                     <td style="font-weight: bold;"><?= h($passenger->full_name) ?></td>
                                     <td><span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 2px;"><?= h($passenger->passport_number) ?></span></td>
                                     <td><?= h($passenger->phone_number) ?></td>
+                                    <td>
+                                        <?php 
+                                            $tripType = $passenger->booking->trip_type ?? 'One Way';
+                                            $tripBadgeStyle = $tripType === 'Round Trip' 
+                                                ? 'background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD;' 
+                                                : 'background: #F3E8FF; color: #6B21A8; border: 1px solid #D8B4FE;';
+                                        ?>
+                                        <span class="status-badge" style="<?= $tripBadgeStyle ?>">
+                                            <i class="bi bi-<?= $tripType === 'Round Trip' ? 'arrow-repeat' : 'arrow-right' ?> me-1"></i><?= $tripType ?>
+                                        </span>
+                                    </td>
                                     <td class="actions">
                                         <?= $this->Html->link(__('View'), ['controller' => 'Passengers', 'action' => 'view', $passenger->id], ['class' => 'text-primary me-2 text-decoration-none fw-bold']) ?>
                                         <?= $this->Html->link(__('Edit'), ['controller' => 'Passengers', 'action' => 'edit', $passenger->id], ['class' => 'text-muted me-2 text-decoration-none']) ?>
@@ -436,7 +456,7 @@ $users = $users ?? [];
                                 </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <tr><td colspan="6" class="text-center p-5 text-muted">No passengers found.</td></tr>
+                                <tr><td colspan="7" class="text-center p-5 text-muted">No passengers found.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
@@ -489,58 +509,7 @@ $users = $users ?? [];
             </div>
         </div>
 
-        <footer class="footer-section">
-    <div class="container">
-        <div class="text-center mb-5 pb-4 border-bottom">
-            <p class="text-muted small fw-bold mb-3">Accepted Payment Methods</p>
-            <div class="d-flex flex-wrap justify-content-center gap-4 opacity-50">
-                <span class="fw-bold">VISA</span> <span class="fw-bold">MasterCard</span> 
-                <span class="fw-bold">PayPal</span> <span class="fw-bold">Maybank</span>
-                <span class="fw-bold">CIMB</span> <span class="fw-bold">HSBC</span>
-                <span class="fw-bold">UOB</span> <span class="fw-bold">BSN</span>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-3">
-                <h6 class="footer-title">FlyHigh</h6>
-                <a href="#" class="footer-link">Home</a>
-                <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'about']) ?>" class="footer-link">About Us</a>
-                <a href="#" class="footer-link">FlyHigh Blog</a>
-                <a href="#" class="footer-link">Careers</a>
-            </div>
-            <div class="col-md-2">
-                <h6 class="footer-title">Account</h6>
-                <a href="#" class="footer-link">Sign in / Register</a>
-                <a href="#" class="footer-link">Forgot Password</a>
-            </div>
-            <div class="col-md-2">
-                <h6 class="footer-title">Support</h6>
-                <a href="#" class="footer-link">Help Center</a>
-                <a href="#" class="footer-link">How to Book</a>
-                <a href="#" class="footer-link">Terms & Conditions</a>
-            </div>
-            <div class="col-md-2 text-center">
-                <h6 class="footer-title">Follow us</h6>
-                <div class="d-flex justify-content-center gap-2">
-                    <i class="bi bi-facebook fs-5 text-secondary"></i>
-                    <i class="bi bi-instagram fs-5 text-secondary"></i>
-                    <i class="bi bi-twitter-x fs-5 text-secondary"></i>
-                </div>
-            </div>
-            <div class="col-md-3 text-end">
-                <h6 class="footer-title">Our App</h6>
-                <div class="mb-2"><span class="badge bg-dark p-2 w-75">Get it on Google Play</span></div>
-                <div><span class="badge bg-dark p-2 w-75">Download on App Store</span></div>
-            </div>
-        </div>
-        
-        <div class="text-center mt-5 py-4 border-top">
-            <p class="text-muted small mb-1">Copyright 2026 FlyHigh.com. All rights reserved.</p>
-            <p class="text-muted small" style="font-size: 0.65rem;">Domestic Airlines Sdn Bhd 105929-H</p>
-        </div>
-    </div>
-</footer>
 
     </main>
 </div>

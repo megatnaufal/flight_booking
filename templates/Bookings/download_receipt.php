@@ -14,6 +14,7 @@
 <head>
     <meta charset="utf-8">
     <title>Booking Receipt - <?= h($booking->id) ?></title>
+    <link rel="icon" type="image/png" href="/img/flyhigh-logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Include html2pdf library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -25,11 +26,11 @@
         }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 14px;
-            line-height: 1.6;
+            font-size: 12px;
+            line-height: 1.5;
             color: #333;
             background: #fff;
-            padding: 40px;
+            padding: 10px;
         }
         #receipt-content {
             max-width: 720px;
@@ -38,23 +39,25 @@
         }
         .receipt {
             border: 1px solid #ddd;
-            padding: 40px;
+            padding: 25px;
             page-break-after: always;
-            margin-bottom: 40px;
+            page-break-inside: avoid;
+            margin-bottom: 15px;
         }
         .receipt:last-of-type {
             page-break-after: auto;
+            margin-bottom: 0;
         }
         .header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             border-bottom: 2px solid #4C1D95;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
         }
         .logo {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 700;
             color: #4C1D95;
         }
@@ -65,21 +68,21 @@
             text-align: right;
         }
         .receipt-title h1 {
-            font-size: 24px;
+            font-size: 18px;
             color: #4C1D95;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
         .receipt-title p {
             color: #666;
             font-size: 13px;
         }
         .flight-type-badge {
-            padding: 8px 20px;
-            border-radius: 20px;
+            padding: 5px 15px;
+            border-radius: 15px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
             display: inline-block;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
         .badge-departure {
             background: #4C1D95;
@@ -90,46 +93,46 @@
             color: white;
         }
         .section {
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
         .section-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             color: #4C1D95;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
             border-bottom: 1px solid #E5E7EB;
         }
         .info-table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 10px;
+            border-spacing: 5px;
         }
         .info-table td {
             background: #F9FAFB;
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 6px;
+            padding: 8px;
             width: 33.333%;
             vertical-align: top;
         }
         .info-label {
-            font-size: 11px;
+            font-size: 9px;
             color: #666;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .info-value {
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 600;
             color: #111;
         }
 
         .flight-card {
             background: #F9FAFB;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
         }
         .flight-header {
             font-weight: 600;
@@ -146,28 +149,28 @@
             text-align: center;
         }
         .flight-city .city {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
             color: #111;
         }
         .flight-city .code {
-            font-size: 13px;
+            font-size: 11px;
             color: #666;
         }
         .flight-city .time {
-            font-size: 12px;
+            font-size: 10px;
             color: #888;
-            margin-top: 5px;
+            margin-top: 3px;
         }
         .flight-arrow {
-            font-size: 24px;
+            font-size: 20px;
             color: #4C1D95;
-            padding: 0 30px;
+            padding: 0 20px;
         }
         .flight-number {
             text-align: center;
-            margin-top: 15px;
-            padding-top: 15px;
+            margin-top: 10px;
+            padding-top: 10px;
             border-top: 1px dashed #ddd;
         }
         .flight-number span {
@@ -184,7 +187,7 @@
         }
         .passengers-table th,
         .passengers-table td {
-            padding: 12px;
+            padding: 8px;
             text-align: left;
             border-bottom: 1px solid #E5E7EB;
         }
@@ -201,27 +204,27 @@
         .total-section {
             background: linear-gradient(135deg, #4C1D95 0%, #7C3AED 100%);
             color: white;
-            padding: 25px;
-            border-radius: 10px;
+            padding: 15px 20px;
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         .total-label {
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 500;
         }
         .total-amount {
-            font-size: 28px;
+            font-size: 20px;
             font-weight: 700;
         }
         .footer {
             text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
+            margin-top: 15px;
+            padding-top: 10px;
             border-top: 1px solid #E5E7EB;
             color: #888;
-            font-size: 12px;
+            font-size: 10px;
         }
         .print-btn {
             background: #7C3AED;
@@ -329,6 +332,7 @@
                             <th>#</th>
                             <th>Full Name</th>
                             <th>Type</th>
+                            <th>Seat</th>
                             <th>Contact</th>
                         </tr>
                     </thead>
@@ -338,6 +342,7 @@
                             <td><?= $index + 1 ?></td>
                             <td><strong><?= h($pax->full_name ?? 'N/A') ?></strong></td>
                             <td><?= h($pax->type ?? 'Adult') ?></td>
+                            <td><?= h($pax->seat_number ?? '-') ?></td>
                             <td><?= h($pax->phone_number ?? '-') ?></td>
                         </tr>
                         <?php endforeach; ?>
@@ -426,15 +431,17 @@
                             <th>#</th>
                             <th>Full Name</th>
                             <th>Type</th>
+                            <th>Seat</th>
                             <th>Contact</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($passengers as $index => $pax): ?>
+                        <?php foreach ($returnPassengers as $index => $pax): ?>
                         <tr>
                             <td><?= $index + 1 ?></td>
                             <td><strong><?= h($pax->full_name ?? 'N/A') ?></strong></td>
                             <td><?= h($pax->type ?? 'Adult') ?></td>
+                            <td><?= h($pax->seat_number ?? '-') ?></td>
                             <td><?= h($pax->phone_number ?? '-') ?></td>
                         </tr>
                         <?php endforeach; ?>

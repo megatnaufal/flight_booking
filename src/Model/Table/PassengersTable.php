@@ -47,6 +47,10 @@ class PassengersTable extends Table
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
         ]);
+        $this->belongsTo('Booking', [
+            'className' => 'Bookings',
+            'foreignKey' => 'booking_id',
+        ]);
         $this->hasMany('Bookings', [
             'foreignKey' => 'passenger_id',
             'dependent' => true,
@@ -81,6 +85,11 @@ class PassengersTable extends Table
             ->scalar('phone_number')
             ->maxLength('phone_number', 20)
             ->allowEmptyString('phone_number');
+
+        $validator
+            ->scalar('seat_number')
+            ->maxLength('seat_number', 10)
+            ->allowEmptyString('seat_number');
 
         $validator
             ->allowEmptyString('passport_photo');

@@ -36,34 +36,46 @@
                 <th><?= __('Phone Number') ?></th>
                 <td><?= h($passenger->phone_number) ?></td>
             </tr>
+            <tr>
+                <th><?= __('Passenger Type') ?></th>
+                <td>
+                    <?php 
+                    $type = ucfirst(strtolower($passenger->type ?? 'Adult'));
+                    $badgeClass = match($type) {
+                        'Child' => 'bg-success',
+                        'Infant' => 'bg-info',
+                        default => 'bg-primary'
+                    };
+                    ?>
+                    <span class="badge <?= $badgeClass ?>"><?= h($type) ?></span>
+                </td>
+            </tr>
+            <tr>
+                <th><?= __('Seat Number') ?></th>
+                <td>
+                    <?php if (!empty($passenger->seat_number)) : ?>
+                        <span class="badge bg-secondary"><?= h($passenger->seat_number) ?></span>
+                    <?php else : ?>
+                        -
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <th><?= __('Trip Type') ?></th>
+                <td>
+                    <?php 
+                        $tripType = $passenger->booking->trip_type ?? 'One Way';
+                        $tripBadgeStyle = $tripType === 'Round Trip' 
+                            ? 'background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD;' 
+                            : 'background: #F3E8FF; color: #6B21A8; border: 1px solid #D8B4FE;';
+                    ?>
+                    <span class="status-badge" style="<?= $tripBadgeStyle ?>">
+                        <i class="bi bi-<?= $tripType === 'Round Trip' ? 'arrow-repeat' : 'arrow-right' ?> me-1"></i><?= $tripType ?>
+                    </span>
+                </td>
+            </tr>
         </table>
         
-        <?php if (!empty($passenger->bookings)) : ?>
-        <h4 class="mt-4 mb-3"><?= __('Related Bookings') ?></h4>
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <tr>
-                    <th><?= __('Id') ?></th>
-                    <th><?= __('Flight Number') ?></th>
-                    <th><?= __('Booking Date') ?></th>
-                    <th><?= __('Seat Number') ?></th>
-                    <th><?= __('Status') ?></th>
-                    <th><?= __('Actions') ?></th>
-                </tr>
-                <?php $i = 1; foreach ($passenger->bookings as $booking) : ?>
-                <tr>
-                    <td><?= $i++ ?></td>
-                    <td><?= h($booking->flight->flight_number) ?></td>
-                    <td><?= h($booking->booking_date) ?></td>
-                    <td><?= h($booking->seat_number) ?></td>
-                    <td><?= $booking->ticket_status === 'Confirmed' ? 'Paid' : h($booking->ticket_status) ?></td>
-                    <td>
-                        <?= $this->Html->link(__('View'), ['controller' => 'Bookings', 'action' => 'view', $booking->id], ['class' => 'text-primary text-decoration-none']) ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
-        </div>
-        <?php endif; ?>
+
     </div>
 </div>

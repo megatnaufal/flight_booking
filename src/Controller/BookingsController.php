@@ -34,7 +34,7 @@ class BookingsController extends AppController
      */
     public function view($id = null)
     {
-        $booking = $this->Bookings->get($id, contain: ['Passengers', 'Flights', 'Luggages']);
+        $booking = $this->Bookings->get($id, contain: ['Passengers', 'Flights', 'BookingPassengers']);
         $visualId = $this->Bookings->find()->where(['id <=' => $id])->count();
         $this->set(compact('booking', 'visualId'));
     }
@@ -281,6 +281,7 @@ class BookingsController extends AppController
             $booking->flight_id = $flight->id; 
             $booking->booking_date = date('Y-m-d');
             $booking->ticket_status = 'Pending Payment';
+            $booking->trip_type = $returnFlightData ? 'Round Trip' : 'One Way';
             if (empty($booking->seat_number)) {
                 $rows = range(1, 30);
                 $cols = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -289,10 +290,12 @@ class BookingsController extends AppController
             
             if ($this->Bookings->save($booking)) {
                 
-                // 1. Update Lead Passenger with Booking ID
+                // 1. Update Lead Passenger with Booking ID & Seat
+                $currentSeat = $booking->seat_number;
                 if ($leadPassengerId) {
                     $leadPax = $passengersTable->get($leadPassengerId);
                     $leadPax->booking_id = $booking->id;
+                    $leadPax->seat_number = $currentSeat;
                     $passengersTable->save($leadPax);
                 }
 
@@ -301,6 +304,9 @@ class BookingsController extends AppController
                 array_shift($allPassengersData); // Remove lead
                 
                 foreach ($allPassengersData as $pData) {
+                    // Increment seat for next passenger
+                    $currentSeat = $this->_nextSeat($currentSeat);
+                    
                     $pax = $passengersTable->newEmptyEntity();
                     $pax = $passengersTable->patchEntity($pax, [
                         'full_name' => trim(($pData['first_name'] ?? '') . ' ' . ($pData['last_name'] ?? '')),
@@ -309,6 +315,7 @@ class BookingsController extends AppController
                         'type' => $pData['type'] ?? '',
                         'booking_id' => $booking->id,
                         'user_id' => $userId,
+                        'seat_number' => $currentSeat,
                     ]);
                     if (empty($pax->passport_number)) {
                         $pax->passport_number = 'P' . rand(10000000, 99999999);
@@ -364,6 +371,7 @@ class BookingsController extends AppController
                     $returnBooking->flight_id = $returnFlight->id;
                     $returnBooking->booking_date = date('Y-m-d');
                     $returnBooking->ticket_status = 'Pending Payment';
+                    $returnBooking->trip_type = 'Round Trip';
                     if (empty($returnBooking->seat_number)) {
                         $rows = range(1, 30);
                         $cols = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -371,6 +379,8 @@ class BookingsController extends AppController
                     }
                     $this->Bookings->save($returnBooking);
                     
+                    $currentSeatReturn = $returnBooking->seat_number;
+
                     // Link all passengers to return booking (use full copy)
                     foreach ($allPassengersForReturn as $pData) {
                         $returnPax = $passengersTable->newEmptyEntity();
@@ -381,11 +391,15 @@ class BookingsController extends AppController
                             'type' => $pData['type'] ?? 'Adult',
                             'booking_id' => $returnBooking->id,
                             'user_id' => $userId,
+                            'seat_number' => $currentSeatReturn,
                         ]);
                         if (empty($returnPax->passport_number)) {
                             $returnPax->passport_number = 'P' . rand(10000000, 99999999);
                         }
                         $passengersTable->save($returnPax);
+                        
+                        // Increment seat for next passenger
+                        $currentSeatReturn = $this->_nextSeat($currentSeatReturn);
                     }
                     
                     $session->write('Flight.ReturnBookingId', $returnBooking->id);
@@ -505,7 +519,7 @@ class BookingsController extends AppController
             // Clear session flight data
             $session->delete('Flight');
             
-            $this->Flash->success(__('Payment successful! Your booking is confirmed. Airpaz Code: ' . $booking->id));
+            $this->Flash->success(__('Payment successful! Your booking is confirmed. Booking Code: ' . $booking->id));
             
             $redirectUrl = ['action' => 'confirmation', $booking->id];
             if ($returnBookingId) {
@@ -596,10 +610,18 @@ class BookingsController extends AppController
         // Check for return booking
         $returnBookingId = $this->request->getQuery('return_id');
         $returnBooking = null;
+        $returnPassengers = [];
         if ($returnBookingId) {
             $returnBooking = $this->Bookings->get($returnBookingId, [
-                'contain' => ['Flights' => ['OriginAirports', 'DestAirports']]
+                'contain' => [
+                    'BookingPassengers',
+                    'Flights' => ['OriginAirports', 'DestAirports']
+                ]
             ]);
+            
+            if (!empty($returnBooking->booking_passengers)) {
+                $returnPassengers = $returnBooking->booking_passengers;
+            }
         }
         
         // Calculate total price (departure + return if exists)
@@ -609,7 +631,7 @@ class BookingsController extends AppController
         $totalPassengers = max(count($passengers), 1);
         $totalPrice = (($departurePrice + $returnPrice) * $totalPassengers) + ($taxPerPax * $totalPassengers);
         
-        $this->set(compact('booking', 'returnBooking', 'passengers', 'totalPrice', 'departurePrice', 'returnPrice'));
+        $this->set(compact('booking', 'returnBooking', 'passengers', 'returnPassengers', 'totalPrice', 'departurePrice', 'returnPrice'));
         
         // Use ajax layout for clean print output
         $this->viewBuilder()->setLayout('ajax');
@@ -643,5 +665,23 @@ class BookingsController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Helper to calculate next seat number
+     */
+    private function _nextSeat($seat)
+    {
+        $val = $seat ?? '1A';
+        $row = (int)preg_replace('/\D/', '', $val);
+        $col = preg_replace('/\d/', '', $val);
+        $cols = ['A', 'B', 'C', 'D', 'E', 'F'];
+        $k = array_search($col, $cols);
+        
+        if ($k !== false && $k < 5) {
+            return $row . $cols[$k+1];
+        } else {
+            return ($row + 1) . 'A';
+        }
     }
 }

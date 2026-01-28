@@ -6,8 +6,16 @@
  */
 $this->Html->css('flights', ['block' => true]);
 ?>
+<!-- Hexagon Background Section -->
+<div class="hexagon-bg">
+    <div class="hexagon-shape hex-1"></div>
+    <div class="hexagon-shape hex-2"></div>
+    <div class="hexagon-shape hex-3"></div>
+    <div class="hexagon-shape hex-4"></div>
+    <div class="hexagon-shape hex-5"></div>
+    <div class="hexagon-shape hex-6"></div>
 
-<div class="flight-search-header">
+<div class="flight-search-header" style="position: relative; z-index: 1;">
     <div class="container">
         <?php 
             // Inverted for Return
@@ -50,7 +58,7 @@ $this->Html->css('flights', ['block' => true]);
     </div>
 </div>
 
-<div class="container pb-5 mt-4">
+<div class="container pb-5 mt-4" style="position: relative; z-index: 1;">
     <div class="row">
         <!-- Sidebar Filter (Same as Search mostly) -->
         <div class="col-md-3">
@@ -190,6 +198,7 @@ $this->Html->css('flights', ['block' => true]);
         </div>
     </div>
 </div>
+</div><!-- End Hexagon Background Section -->
 
 <footer class="footer-section">
     <div class="container">
@@ -213,12 +222,12 @@ $this->Html->css('flights', ['block' => true]);
             </div>
             <div class="col-md-2">
                 <h6 class="footer-title">Account</h6>
-                <a href="#" class="footer-link">Sign in / Register</a>
+                <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'login']) ?>" class="footer-link">Sign in / Register</a>
                 <a href="#" class="footer-link">Forgot Password</a>
             </div>
             <div class="col-md-2">
                 <h6 class="footer-title">Support</h6>
-                <a href="#" class="footer-link">Help Center</a>
+                <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'help']) ?>" class="footer-link">Help Center</a>
                 <a href="#" class="footer-link">How to Book</a>
                 <a href="#" class="footer-link">Terms & Conditions</a>
             </div>

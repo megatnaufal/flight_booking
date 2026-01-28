@@ -51,40 +51,38 @@ class BookingsTable extends Table
         $this->belongsTo('Flights', [
             'foreignKey' => 'flight_id',
         ]);
-        $this->hasMany('Luggages', [
-            'foreignKey' => 'booking_id',
-            'dependent' => true,
-            'cascadeCallbacks' => true,
-        ]);
-        
+        // Association for all passengers in the booking
         // Association for all passengers in the booking
         $this->hasMany('BookingPassengers', [
             'className' => 'Passengers',
             'foreignKey' => 'booking_id',
-            'dependent' => true,
+            // 'dependent' => true, // Disabled to prevent FK conflict during delete
         ]);
     }
 
+    /**
+     * After delete callback - clean up associated passengers and flights
+     */
     public function afterDelete(\Cake\Event\EventInterface $event, \Cake\Datasource\EntityInterface $entity, \ArrayObject $options): void
     {
         $tableLocator = \Cake\ORM\TableRegistry::getTableLocator();
 
-        // 1. Delete the associated Flight
+        // 1. Delete all passengers associated with this booking
+        // We do this manually because 'dependent' => true causes a foreign key constraint violation
+        // since the booking (parent) still references one of the passengers (child) during the delete process.
+        $passengersTable = $tableLocator->get('Passengers');
+        $bookingPassengers = $passengersTable->find()->where(['booking_id' => $entity->id])->all();
+        
+        foreach ($bookingPassengers as $pax) {
+            $passengersTable->delete($pax, ['atomic' => false]);
+        }
+
+        // 2. Delete the associated Flight
         if (!empty($entity->flight_id)) {
             $flightsTable = $tableLocator->get('Flights');
             $flight = $flightsTable->find()->where(['id' => $entity->flight_id])->first();
             if ($flight) {
-                // Prevent infinite recursion if flight deletes booking
                 $flightsTable->delete($flight, ['atomic' => false]);
-            }
-        }
-
-        // 2. Delete the associated Passenger
-        if (!empty($entity->passenger_id)) {
-            $passengersTable = $tableLocator->get('Passengers');
-            $passenger = $passengersTable->find()->where(['id' => $entity->passenger_id])->first();
-            if ($passenger) {
-                 $passengersTable->delete($passenger, ['atomic' => false]);
             }
         }
     }
