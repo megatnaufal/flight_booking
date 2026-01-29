@@ -142,6 +142,43 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%) !important;
         }
 
+        /* Modal Dark Mode Overrides */
+        body.dark-mode .modal-content {
+            background-color: #1a1a2e !important;
+            border-color: #2d2d44 !important;
+        }
+        
+        body.dark-mode .modal-header {
+            border-bottom-color: #2d2d44 !important;
+        }
+        
+        body.dark-mode .modal-title {
+            color: #e2e8f0 !important;
+        }
+        
+        body.dark-mode .nav-tabs {
+            background-color: #1a1a2e !important;
+            border-bottom-color: #2d2d44 !important;
+        }
+        
+        body.dark-mode .nav-tabs .nav-link {
+            color: #a0aec0 !important;
+        }
+        
+        body.dark-mode .nav-tabs .nav-link.active {
+            color: #a78bfa !important;
+            background-color: transparent !important;
+        }
+
+        body.dark-mode .nav-tabs .nav-link.active {
+            color: #a78bfa !important;
+            background-color: transparent !important;
+        }
+        
+        body.dark-mode .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
         /* ===== Search Page Critical Overrides (Force High Contrast) ===== */
         body.dark-mode .flight-result-card,
         body.dark-mode .card,
@@ -609,6 +646,9 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                     <div class="d-flex align-items-center gap-3">
                         <a href="#" class="user-nav-link"><i class="bi bi-translate"></i> MYR</a>
                         <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'help']) ?>" class="user-nav-link">Help</a>
+                        <button id="themeToggle" class="btn btn-link nav-link-custom p-0 text-white" title="Toggle Dark Mode">
+                            <i class="bi bi-moon-fill"></i>
+                        </button>
                     </div>
                     <?php 
                      $identity = $this->request->getAttribute('identity');
@@ -707,6 +747,10 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                 <a href="<?= $this->Url->build(['controller' => 'Flights', 'action' => 'search']) ?>" class="nav-link text-white fs-5 border-bottom border-white border-opacity-10 py-3"><i class="bi bi-airplane me-3"></i> Flight</a>
                 <a href="#" class="nav-link text-white fs-5 border-bottom border-white border-opacity-10 py-3"><i class="bi bi-buildings me-3"></i> Hotel</a>
                 <a href="#" class="nav-link text-white fs-5 border-bottom border-white border-opacity-10 py-3"><i class="bi bi-percent me-3"></i> Promo</a>
+                <div class="nav-link text-white fs-5 border-bottom border-white border-opacity-10 py-3 d-flex align-items-center justify-content-between cursor-pointer" onclick="document.getElementById('themeToggle').click()">
+                    <span><i class="bi bi-moon-stars me-3"></i> Dark Mode</span>
+                    <i class="bi bi-toggle-off fs-4"></i>
+                </div>
                 <?php if ($identity): ?>
                     <a href="<?= $this->Url->build(['controller' => 'Bookings', 'action' => 'myBookings']) ?>" class="nav-link text-white fs-5 border-bottom border-white border-opacity-10 py-3"><i class="bi bi-ticket-perforated me-3"></i> My Bookings</a>
                     <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'settings']) ?>" class="nav-link text-white fs-5 border-bottom border-white border-opacity-10 py-3"><i class="bi bi-gear me-3"></i> Settings</a>
@@ -742,6 +786,35 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             }
         }, 200);
     }
+    
+    // Theme Toggle Logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        const body = document.body;
+        
+        // Check local storage for saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            themeIcon.classList.remove('bi-moon-fill');
+            themeIcon.classList.add('bi-sun-fill');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                themeIcon.classList.remove('bi-moon-fill');
+                themeIcon.classList.add('bi-sun-fill');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeIcon.classList.remove('bi-sun-fill');
+                themeIcon.classList.add('bi-moon-fill');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    });
     </script>
 
     <main class="main">
