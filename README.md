@@ -1,53 +1,81 @@
-# CakePHP Application Skeleton
+# FlyHigh Flight Booking System ✈️
 
-![Build Status](https://github.com/cakephp/app/actions/workflows/ci.yml/badge.svg?branch=5.x)
-[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
-[![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
+A flight booking website built for our Web Development course assignment. Made with CakePHP 4 & Bootstrap 5.
 
-A skeleton for creating applications with [CakePHP](https://cakephp.org) 5.x.
+## Features
+- 🔍 Flight search with real-time validation
+- 🌙 Dark mode toggle
+- 📄 PDF receipt generation
+- 📊 Admin dashboard with charts
+- 🔒 Secure login & registration
 
-The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
+## Tech Stack
+- **Backend:** PHP 8.1, CakePHP 4.4
+- **Frontend:** Bootstrap 5, Chart.js
+- **Database:** MySQL
 
-## Installation
+---
 
-1. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+## Setup Instructions
 
-If Composer is installed globally, run
-
+### 1. Clone the Repository
 ```bash
-composer create-project --prefer-dist cakephp/app
+git clone https://github.com/[your-username]/flight_booking.git
+cd flight_booking
 ```
 
-In case you want to use a custom app dir name (e.g. `/myapp/`):
-
+### 2. Install Dependencies
 ```bash
-composer create-project --prefer-dist cakephp/app myapp
+composer install
 ```
 
-You can now either use your machine's webserver to view the default home page, or start
-up the built-in webserver with:
+### 3. Setup Database
+1. Create a MySQL database called `flight_booking`
+2. Import the SQL file:
+   ```bash
+   mysql -u root -p flight_booking < database/flight_booking.sql
+   ```
+   Or use phpMyAdmin to import `database/flight_booking.sql`
 
+### 4. Configure Database Connection
+1. Copy `config/app_local.example.php` to `config/app_local.php`
+2. Edit `config/app_local.php` with your MySQL credentials:
+   ```php
+   'username' => 'root',
+   'password' => '',
+   'database' => 'flight_booking',
+   ```
+
+### 5. Run the Application
 ```bash
-bin/cake server -p 8765
+bin/cake server
 ```
+Open your browser and go to: `http://localhost:8765`
 
-Then visit `http://localhost:8765` to see the welcome page.
+---
 
-## Update
+## Demo Accounts
 
-Since this skeleton is a starting point for your application and various files
-would have been modified as per your needs, there isn't a way to provide
-automated upgrades, so you have to do any updates manually.
+| Role  | Username | Password |
+|:------|:---------|:---------|
+| Admin | admin    | 123      |
+| User  | user     | 123      |
 
-## Configuration
+---
 
-Read and edit the environment specific `config/app_local.php` and set up the
-`'Datasources'` and any other configuration relevant for your application.
-Other environment agnostic settings can be changed in `config/app.php`.
+## Team Members
+| Name | Role | Contribution |
+|:-----|:-----|:-------------|
+| [Your Name] | Lead Developer | System Architecture, Core Logic |
+| [Member 2] | Frontend | CSS Styling, Dark Mode |
+| [Member 3] | Database | Database Design, Testing |
 
-## Layout
+---
 
-The app skeleton uses [Milligram](https://milligram.io/) (v1.3) minimalist CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+## Screenshots
+
+*Add screenshots of your application here*
+
+---
+
+Made with ☕ for [Course Name] Assignment
