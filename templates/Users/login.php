@@ -178,7 +178,7 @@ $this->disableAutoLayout();
         <div class="hero-content">
             <div class="hero-icon"><i class="bi bi-airplane"></i></div>
             <h2 class="hero-title">Discover the World with FlyHigh</h2>
-            <p class="hero-text">Book flights to 500+ destinations with best prices and instant confirmations.</p>
+            <p class="hero-text">Book domestic flights to all major Malaysian cities with unbeatable fares and instant confirmations.</p>
             <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>Best price guarantee</span></div>
             <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>24/7 customer support</span></div>
             <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>Secure instant booking</span></div>
