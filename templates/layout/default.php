@@ -793,13 +793,12 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         const themeIcon = themeToggle.querySelector('i');
         const body = document.body;
         
-        // Check local storage for saved theme
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            body.classList.add('dark-mode');
-            themeIcon.classList.remove('bi-moon-fill');
-            themeIcon.classList.add('bi-sun-fill');
-        }
+        // Removed auto-load from localStorage as requested
+        // AGGRESSIVE RESET: Force removal of dark mode and clear storage to fix stuck state
+        body.classList.remove('dark-mode');
+        localStorage.removeItem('theme');
+        themeIcon.classList.remove('bi-sun-fill');
+        themeIcon.classList.add('bi-moon-fill');
         
         themeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-mode');
@@ -807,11 +806,9 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             if (body.classList.contains('dark-mode')) {
                 themeIcon.classList.remove('bi-moon-fill');
                 themeIcon.classList.add('bi-sun-fill');
-                localStorage.setItem('theme', 'dark');
             } else {
                 themeIcon.classList.remove('bi-sun-fill');
                 themeIcon.classList.add('bi-moon-fill');
-                localStorage.setItem('theme', 'light');
             }
         });
     });
@@ -1060,13 +1057,11 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             const storedContrast = localStorage.getItem('flyhigh-contrast');
             const storedFontSize = localStorage.getItem('flyhigh-fontsize');
 
-            if (storedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-                if (darkToggle) darkToggle.checked = true;
-            } else {
-                document.body.classList.remove('dark-mode');
-                if (darkToggle) darkToggle.checked = false;
-            }
+            // DISABLED: Do not auto-load dark mode on page load
+            // Always start in light mode, user must manually toggle
+            document.body.classList.remove('dark-mode');
+            localStorage.removeItem('flyhigh-theme');
+            if (darkToggle) darkToggle.checked = false;
 
             if (storedContrast === 'high') {
                 html.classList.add('high-contrast');
@@ -1082,10 +1077,9 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                 darkToggle.addEventListener('change', function () {
                     if (this.checked) {
                         document.body.classList.add('dark-mode');
-                        localStorage.setItem('flyhigh-theme', 'dark');
+                        // No longer persist to localStorage
                     } else {
                         document.body.classList.remove('dark-mode');
-                        localStorage.setItem('flyhigh-theme', 'light');
                     }
                 });
             }
