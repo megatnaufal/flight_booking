@@ -1,20 +1,25 @@
 # FlyHigh Flight Booking System ✈️
 
-A domestic flight booking system for Malaysia built for our Web Development course assignment.
+## About
+FlyHigh is a flight booking management system developed as part of the **IMS566 - Advanced Web Design Development And Content Management** course assignment. The system allows users to search for flights, make bookings, and download PDF receipts. Administrators have access to a dashboard for managing flights, bookings, and user accounts.
 
 ## Tech Stack
 - **Backend:** PHP 8.1, CakePHP 4.4
 - **Frontend:** Bootstrap 5, Chart.js
 - **Database:** MySQL
 
-## Features
-- 🔍 Flight search with real-time validation
-- 🌙 Dark mode toggle
-- 📄 PDF receipt generation
-- 📊 Admin dashboard with charts
-- 🔒 Secure login & registration
-
 ---
+## Features
+|       Feature            | Description |
+|:------------------------|:--------------|
+| 🔍 **Flight Search**    | Real-time search with origin, destination, date, and passenger selection |
+| 🗓️**Booking System**    | Multi-step booking workflow with session management |
+| 📄 **PDF Receipts**     | Professional ticket generation using DomPDF |
+| 🌙**Dark Mode**         | System-wide theme toggle for user preference |
+| 📊**Admin Dashboard**   | Analytics, charts, and CRUD operations for all entities |
+| 📲**Responsive Design** | Mobile-first approach using Bootstrap 5 |
+---
+
 
 ## Setup Instructions
 
