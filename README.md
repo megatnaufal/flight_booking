@@ -14,7 +14,7 @@ FlyHigh is a flight booking management system developed as part of the **IMS566 
 |:------------------------|:--------------|
 | 🔍 **Flight Search**    | Real-time search with origin, destination, date, and passenger selection |
 | 🗓️**Booking System**    | Multi-step booking workflow with session management |
-| 📄 **PDF Receipts**     | Professional ticket generation using DomPDF |
+| 📄 **PDF Receipts**     | Professional ticket generation  |
 | 🌙**Dark Mode**         | System-wide theme toggle for user preference |
 | 📊**Admin Dashboard**   | Analytics, charts, and CRUD operations for all entities |
 | 📲**Responsive Design** | Mobile-first approach using Bootstrap 5 |
