@@ -1,6 +1,6 @@
 <?php
 /**
- * Receipt PDF Template - Rendered by dompdf
+ * Receipt Template - Printable via browser (Ctrl+P)
  * @var \App\Model\Entity\Booking $booking
  * @var \App\Model\Entity\Booking|null $returnBooking
  * @var array $passengers
