@@ -57,7 +57,6 @@ FlyHigh is a flight booking management system developed as part of the **IMS566 
 - CakePHP Framework
 - Bootstrap 5
 - Chart.js
-- DomPDF
 
 ---
 
