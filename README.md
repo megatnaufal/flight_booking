@@ -4,7 +4,7 @@
 FlyHigh is a flight booking management system developed as part of the **IMS566 - Advanced Web Design Development And Content Management** course assignment. The system allows users to search for flights, make bookings, and download PDF receipts. Administrators have access to a dashboard for managing flights, bookings, and user accounts.
 
 ## Tech Stack
-- **Backend:** PHP 8.1, CakePHP 4.4
+- **Backend:** PHP 8.1, CakePHP 5.2
 - **Frontend:** Bootstrap 5, Chart.js
 - **Database:** MySQL
 
