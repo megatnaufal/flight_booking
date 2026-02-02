@@ -28,6 +28,13 @@ The group report for this assignment is located in the `docs/` folder:
 
 ---
 
+## Database Location 🗄️
+For the lecturer's reference, the SQL database file is located in the **database** folder:
+- **File:** `database/flight_booking.sql`
+- **Instructions:** Please import this file into your MySQL database as described in the Setup Instructions.
+
+---
+
 ## Setup Instructions
 
 1. **Clone or Download:**
