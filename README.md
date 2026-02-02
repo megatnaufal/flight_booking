@@ -47,7 +47,7 @@ For the lecturer's reference, the SQL database file is located in the **database
    - *Note: This will recreate the `vendor` folder with all required libraries.*
 
 3. **Database Setup:**
-   - Open Laragon Database (HeidiSQL).
+   - Open Laragon Database (MySQL).
    - Create a new database named `flight_booking`.
    - Import the file `database/flight_booking.sql` into this new database.
 
