@@ -21,15 +21,36 @@ FlyHigh is a flight booking management system developed as part of the **IMS566 
 ---
 
 
+## Group Report 📄
+The group report for this assignment is located in the `docs/` folder:
+- **Location:** `docs/IMS566 FLIGHT_BOOKING_REPORT.pdf`
+- **Note:** If you download this repository as a ZIP file, the report will be included inside the `docs` folder as a PDF.
+
+---
+
 ## Setup Instructions
 
-1. Clone this repository
-2. Run `composer install`
-3. Create MySQL database `flight_booking`
-4. Import [database/flight_booking.sql](cci:7://file:///c:/laragon/www/flight_booking/database/flight_booking.sql:0:0-0:0)
-5. Configure [config/app_local.php](cci:7://file:///c:/laragon/www/flight_booking/config/app_local.php:0:0-0:0) with your database credentials
-6. Run `bin/cake server`
-7. Open the given server
+1. **Clone or Download:**
+   - Clone this repository OR click **Code > Download ZIP**.
+   - If downloading ZIP, extract it to your `c:\laragon\www\` folder.
+
+2. **Install Dependencies:**
+   - Open your terminal in the project directory.
+   - Run command: `composer install`
+   - *Note: This will recreate the `vendor` folder with all required libraries.*
+
+3. **Database Setup:**
+   - Open Laragon Database (HeidiSQL).
+   - Create a new database named `flight_booking`.
+   - Import the file `database/flight_booking.sql` into this new database.
+
+4. **Configuration:**
+   - Copy `config/app_local.example.php` to `config/app_local.php` (if it doesn't exist).
+   - Configure `config/app_local.php` with your database credentials.
+
+5. **Run the App:**
+   - Run `bin/cake server`
+   - Access the homepage at the given URL (usually `http://localhost:8765`).
 
 ---
 
